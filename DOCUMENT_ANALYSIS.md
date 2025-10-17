@@ -1,18 +1,16 @@
 # Go-Reloaded: My Analysis Document
 
-**Student:** [Your Name]  
+**Student:** Theodore Vairaktaris
 **Project:** go-reloaded  
-**Date:** October 15, 2025  
+**Date:** October 18, 2025  
 **Week 1 Assignment** - Problem Analysis (No Coding!)
 
 ---
 
-## Part 1: What is this project about? (In my own words)
+## What is this project about? 
 
 ### The Problem
-I need to build a command-line tool in Go that reads a text file, applies some transformation rules to it, and writes the result to another file.
-
-Think of it like this: someone gives me a messy text with special commands inside it, and my program needs to clean it up and apply those commands.
+I need to build a command-line tool in Go that reads a text file, applies some commands and transformation rules to it, and writes the result to another file.
 
 **How it works:**
 ```
@@ -21,28 +19,15 @@ go run . input.txt output.txt
 
 The program reads `input.txt`, transforms the text according to rules, and saves the result in `output.txt`.
 
-### Why is this challenging?
-The text has special "markers" like `(hex)`, `(up)`, `(cap)` that tell my program what to do. The hard part is:
-1. Understanding what each marker means
-2. Applying them in the right order
-3. Making sure the output is **exactly** correct (100% match)
-4. Handling weird cases (what if something is missing? what if there are too many quotes?)
-
-### What I'm learning:
-- Reading and writing files in Go
-- String manipulation (changing text)
-- Number conversions (hex, binary → decimal)
-- Thinking about edge cases
-- Planning before coding!
-
 ---
 
-## Part 2: The Transformation Rules
+## The Transformation Rules
 
-Here are all the rules my program needs to follow. I'm writing them in my own words with examples.
+Here are all the rules my program needs to follow. 
 
 ### Rule 1: Hexadecimal to Decimal
-**What it does:** When I see `(hex)` after a word, that word is a hexadecimal number and I need to convert it to decimal.
+
+**What it does:** When I see the command `(hex)` after a word, that word is a hexadecimal number and I need to convert it to decimal.
 
 **Example:**
 ```
@@ -53,20 +38,22 @@ Output: "30 files"
 **Why:** 1E in hex = 30 in decimal.
 
 **Another example:**
+
 ```
 Input:  "FF (hex) is the max"
 Output: "255 is the max"
 ```
 
-**Things to think about:**
+**Matters to think about:**
 - What if the hex has lowercase letters? (should work)
-- What if it's not a valid hex number?
-- What if `(hex)` is at the beginning with no word before it?
+- What if it's not a valid hex number? (leave it as it is or error handling?)
+- What if `(hex)` is at the beginning with no word before it? (leave it as it is or erase command?)
 
 ---
 
 ### Rule 2: Binary to Decimal
-**What it does:** When I see `(bin)` after a word, that word is a binary number and I need to convert it to decimal.
+
+**What it does:** When I see the command `(bin)` after a word, that word is a binary number and I need to convert it to decimal.
 
 **Example:**
 ```
@@ -77,113 +64,139 @@ Output: "2 years"
 **Why:** 10 in binary = 2 in decimal.
 
 **Another example:**
+
 ```
 Input:  "1010 (bin) equals"
 Output: "10 equals"
 ```
 
-**Things to think about:**
-- What if it has numbers other than 0 and 1?
-- What if `(bin)` has no word before it?
+**Matters to think about:**
+
+- What if it has numbers other than 0 and 1? (leave it as it is or error handling?)
+- What if `(bin)` has no word before it? (leave it as it is or erase command?)
 
 ---
 
 ### Rule 3: Uppercase
+
 **What it does:** `(up)` makes the previous word uppercase. If there's a number like `(up, 3)`, it makes the previous 3 words uppercase.
 
 **Example:**
+
 ```
 Input:  "ready, set, go (up)!"
 Output: "ready, set, GO!"
 ```
 
 **With a number:**
+
 ```
 Input:  "this is exciting (up, 2)"
 Output: "this is SO EXCITING"
 ```
 
-**Things to think about:**
-- What if I say `(up, 5)` but there are only 2 words before it?
+**Matters to think about:**
+
+- What if I say `(up, 5)` but there are only 2 words before it? (alter all of them or error handling?)
 - What if the word is already uppercase?
 
 ---
 
 ### Rule 4: Lowercase
+
 **What it does:** `(low)` makes the previous word lowercase. With `(low, N)` it makes N previous words lowercase.
 
 **Example:**
+
 ```
 Input:  "STOP SHOUTING (low)"
 Output: "STOP shouting"
 ```
 
 **With a number:**
+
 ```
 Input:  "WHY ARE WE YELLING (low, 4)"
 Output: "why are we yelling"
 ```
 
+**Matters to think about:**
+
+- What if I say `(low, 5)` but there are only 2 words before it? (alter all of them or error handling?)
+- What if the word is already lowercase?
+
 ---
 
 ### Rule 5: Capitalize
+
 **What it does:** `(cap)` capitalizes the first letter of the previous word. With `(cap, N)` it capitalizes N previous words.
 
 **Example:**
+
 ```
 Input:  "welcome to the brooklyn bridge (cap)"
 Output: "welcome to the brooklyn Bridge"
 ```
 
-**With a number (like titles):**
+**With a number:**
+
 ```
 Input:  "the new york times (cap, 4)"
 Output: "The New York Times"
 ```
 
-**Things to think about:**
-- If a word is all CAPS, does it become "Word"? (probably yes)
+**Matters to think about:**
+- If a word is already uppercase, does it become "Word"? (probably yes)
+- If there are less words before the command than the number suggests? (transform all of them or error handling)
 
 ---
 
 ### Rule 6: Article Correction (a → an)
+
 **What it does:** Automatically changes "a" to "an" when the next word starts with a vowel (a, e, i, o, u) or the letter 'h'.
 
 **Example:**
+
 ```
 Input:  "a apple a day"
 Output: "an apple a day"
 ```
 
 **Another example:**
+
 ```
 Input:  "There it was. A amazing rock!"
 Output: "There it was. An amazing rock!"
 ```
 
 **With 'h':**
+
 ```
 Input:  "a hour passed"
 Output: "an hour passed"
 ```
 
-**Things to think about:**
+**Matters to think about:**
+
 - What about capital 'A'? (should become "An")
 - What if "a" is at the end with no word after? (leave it as "a")
-- Edge case: "a university" technically sounds like "you-niversity" so should stay "a", but the spec says all vowels and 'h', so maybe it becomes "an"? Need to check!
+- Edge case: "a university" according to english grammar rules is correct, but the spec says all vowels and 'h', so maybe it becomes "an"? Need to verify!
 
 ---
 
 ### Rule 7: Punctuation Spacing
+
 **What it does:** Punctuation marks (. , ! ? : ;) should be right next to the word before them (no space), and have one space after them.
 
 **Example:**
+
 ```
 Input:  "Hello , world !"
 Output: "Hello, world!"
 ```
 
 **Special case - groups of punctuation:**
+
 When there are groups like `...` or `!?` they stay together.
 
 ```
@@ -192,36 +205,42 @@ Output: "Wait... really?"
 ```
 
 **Another group example:**
+
 ```
 Input:  "What !? No way"
 Output: "What!? No way"
 ```
 
-**Things to think about:**
-- What counts as a "group"? (probably `...`, `!!`, `??`, `!?`, `?!`)
+**Matters to think about:**
+
+- What counts as a "group"? (probably `...`, `!!`, `??`, `!?`, `?!`) Need to verify!
 - What if there's punctuation at the very start?
 
 ---
 
 ### Rule 8: Quote Handling
+
 **What it does:** Single quotes `'` come in pairs. Remove spaces between the quotes and the words inside them.
 
 **Single word:**
+
 ```
 Input:  "He said: ' hello '"
 Output: "He said: 'hello'"
 ```
 
 **Multiple words:**
+
 ```
 Input:  "As he said: ' I am the best player '"
 Output: "As he said: 'I am the best player'"
 ```
 
-**Things to think about:**
+**Matters to think about:**
+
 - What if there's an odd number of quotes? (3 quotes total)
 - What if quotes are empty? `' '`
-- Do other rules (like punctuation) still apply inside quotes?
+- Do other rules (like punctuation) still apply inside quotes? (most probably yes!)
 
 ---
 
@@ -232,6 +251,7 @@ Now I need to choose HOW to build this. There are two main approaches:
 ### Approach 1: The Pipeline ("Car Wash")
 
 **How it works:**
+
 The text goes through multiple "stations", each station does one job.
 
 ```
@@ -266,6 +286,7 @@ Output Text
 - ❌ Uses more memory (keeps everything in memory)
 
 **Example of a function:**
+
 ```
 Function: ConvertHex
 Input: List of words
@@ -278,9 +299,11 @@ Output: List of words with conversions done
 ### Approach 2: The FSM ("Conveyor Belt")
 
 **How it works:**
+
 Read the text character by character, and the program is in different "states". Depending on what I see, I change state and do actions.
 
 **States might be:**
+
 - Reading a word
 - Reading a command like (hex)
 - Reading punctuation
@@ -288,6 +311,7 @@ Read the text character by character, and the program is in different "states". 
 - Between words
 
 **Good things:**
+
 - ✅ **Fast** - only reads through text once
 - ✅ **Memory efficient** - doesn't need to store everything
 - ✅ **Professional** - this is how real parsers work
@@ -317,23 +341,27 @@ Read the text character by character, and the program is in different "states". 
 - Each rule is a separate function
 
 **Trade-off I'm accepting:**
+
 My solution won't be the fastest possible, but it will be correct and easy to understand. For this project, **correctness is more important than speed**.
 
 ---
 
 ## Part 4: Golden Test Set (Success Test Cases)
 
-These are the tests I'll use to know if my program works correctly. I'm writing them in plain language (no code yet).
+These are the tests I'll use to know if my program works correctly.
 
 ### Category A: Basic Audit Examples (from the project spec)
 
 #### Test 1: Hex and Binary Conversion
+
 **Input:**
+
 ```
 Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
 ```
 
 **Expected Output:**
+
 ```
 Simply add 66 and 2 and you will see the result is 68.
 ```
@@ -343,12 +371,15 @@ Simply add 66 and 2 and you will see the result is 68.
 ---
 
 #### Test 2: Article Correction
+
 **Input:**
+
 ```
 There is no greater agony than bearing a untold story inside you.
 ```
 
 **Expected Output:**
+
 ```
 There is no greater agony than bearing an untold story inside you.
 ```
@@ -358,12 +389,15 @@ There is no greater agony than bearing an untold story inside you.
 ---
 
 #### Test 3: Punctuation Spacing
+
 **Input:**
+
 ```
 Punctuation tests are ... kinda boring ,what do you think ?
 ```
 
 **Expected Output:**
+
 ```
 Punctuation tests are... kinda boring, what do you think?
 ```
@@ -372,13 +406,16 @@ Punctuation tests are... kinda boring, what do you think?
 
 ---
 
-#### Test 4: Multiple Rules Combined (The Big One)
+#### Test 4: Multiple Rules Combined 
+
 **Input:**
+
 ```
 it (cap) was the best of times, it was the worst of times (up) , it was the age of wisdom, it was the age of foolishness (cap, 6) , it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, IT WAS THE (low, 3) winter of despair.
 ```
 
 **Expected Output:**
+
 ```
 It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
 ```
@@ -396,17 +433,20 @@ It was the best of times, it was the worst of TIMES, it was the age of wisdom, I
 ### Category B: Tricky Cases (My Own Test Cases)
 
 #### Test 5: Quote with Multiple Words and Punctuation
+
 **Input:**
 ```
 She said: ' hello , how are you ? '
 ```
 
 **Expected Output:**
+
 ```
 She said: 'hello, how are you?'
 ```
 
 **Why this is tricky:** 
+
 - Quotes need to be fixed (remove spaces)
 - Punctuation inside quotes also needs fixing
 - Tests if rules work inside quotes
@@ -414,12 +454,15 @@ She said: 'hello, how are you?'
 ---
 
 #### Test 6: Article Before 'H'
+
 **Input:**
+
 ```
 We waited a hour for a bus.
 ```
 
 **Expected Output:**
+
 ```
 We waited an hour for an bus.
 ```
@@ -429,6 +472,7 @@ We waited an hour for a bus.
 ```
 
 **Why this is tricky:**
+
 - The spec says 'h' → an
 - But "a bus" is correct English (b is consonant)
 - Need to check: does spec mean ALL 'h' or just silent 'h'?
@@ -436,12 +480,15 @@ We waited an hour for a bus.
 ---
 
 #### Test 7: Count Exceeds Available Words
+
 **Input:**
+
 ```
 only two words (up, 10)
 ```
 
 **Expected Output:** (Need to test what happens!)
+
 ```
 ONLY TWO WORDS
 ```
@@ -454,12 +501,15 @@ OR maybe error?
 ---
 
 #### Test 8: Multiple Hex in One Line
+
 **Input:**
+
 ```
 Values: 1E (hex) and FF (hex) and A (hex)
 ```
 
 **Expected Output:**
+
 ```
 Values: 30 and 255 and 10
 ```
@@ -471,42 +521,51 @@ Values: 30 and 255 and 10
 ---
 
 #### Test 9: Uppercase After Already Uppercase
+
 **Input:**
+
 ```
 THIS WORD (up) again
 ```
 
 **Expected Output:**
+
 ```
 THIS WORD again
 ```
 
 **Why this is tricky:**
+
 - Word is already uppercase
 - Should stay uppercase (idempotent)
 
 ---
 
 #### Test 10: Empty or Edge Cases
+
 **Input 10a (empty file):**
+
 ```
 [empty file]
 ```
 **Expected:** Program runs without crashing, creates empty output
 
 **Input 10b (only spaces):**
+
 ```
      
 ```
 **Expected:** Program handles it gracefully
 
 **Input 10c (marker at beginning):**
+
 ```
 (hex) word
 ```
 **Expected:** Probably leaves it unchanged (no word before)
 
 **Why this is tricky:**
+
 - Edge cases that could break my program
 - Need graceful handling
 
@@ -514,18 +573,21 @@ THIS WORD again
 
 ### Category C: The Big Complex Test
 
-#### Test 11: Kitchen Sink (Everything at Once)
+#### Test 11: Everything at Once
+
 **Input:**
 ```
 here (cap) is a interesting text with 1A (hex) items and 11 (bin) more , all in ' a epic document (cap, 2) ' ... what do you think (up, 4) ?
 ```
 
 **Expected Output:**
+
 ```
 Here is an interesting text with 26 items and 3 more, all in 'an Epic Document'... WHAT DO YOU THINK?
 ```
 
 **What's being tested:**
+
 1. `(cap)` - capitalize "here"
 2. `a` → `an` before "interesting"
 3. `1A (hex)` → `26`
@@ -538,6 +600,7 @@ Here is an interesting text with 26 items and 3 more, all in 'an Epic Document'.
 10. All rules working together!
 
 **Why this matters:**
+
 This is my ultimate test. If this works, I'm confident my program is correct!
 
 ---
@@ -545,30 +608,25 @@ This is my ultimate test. If this works, I'm confident my program is correct!
 ## My Questions / Things I'm Unsure About
 
 1. **Order of operations:** If I have hex conversion and article correction, which happens first?
+
    - My guess: Probably hex/bin first (they remove markers), then case changes, then articles, then punctuation, then quotes
 
 2. **What if (up, 10) but only 3 words exist?**
+
    - My guess: Transform all 3 available words (graceful)
 
 3. **Invalid hex like "XYZ (hex)":**
+
    - My guess: Leave it unchanged
 
 4. **Odd number of quotes (3 quotes total):**
+
    - My guess: This is an error, but need to check what to do
 
 5. **Article + h rule:**
+
    - Spec says all 'h' → an, but "a university" is correct English
    - Need to clarify: strict spec or smart about pronunciation?
-
----
-
-## My Next Steps
-
-1. ✅ This analysis document
-2. ⏭️ Ask instructor about my questions above
-3. ⏭️ Create test files for all my test cases
-4. ⏭️ Plan my functions (what does each function do?)
-5. ⏭️ Start coding next week!
 
 ---
 
