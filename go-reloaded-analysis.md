@@ -10,7 +10,7 @@
 ## What is this project about? 
 
 ### The Problem
-I need to build a command-line tool in Go that reads a text file, applies some commands and transformation rules to it, and writes the result to another file.
+I need to build a command-line tool in Go that reads a text file, applies some commands and transformation rules to it, and writes the modified result to another file.
 
 **How it works:**
 ```
@@ -23,7 +23,8 @@ The program reads `input.txt`, transforms the text according to rules, and saves
 
 ## The Transformation Rules
 
-Here are all the rules my program needs to follow. 
+Bellow are all the rules my program needs to follow. 
+
 
 ### Rule 1: Hexadecimal to Decimal
 
@@ -37,8 +38,8 @@ Output: "30 files"
 
 **Why:** 1E in hex = 30 in decimal.
 
-**Another example:**
 
+**Another example:**
 ```
 Input:  "FF (hex) is the max"
 Output: "255 is the max"
@@ -46,7 +47,7 @@ Output: "255 is the max"
 
 **Matters to think about:**
 - What if the hex has lowercase letters? (should work)
-- What if it's not a valid hex number? (leave it as it is or error handling?)
+- What if it's not a valid hex number? (probably leave it as it is or error handling?)
 - What if `(hex)` is at the beginning with no word before it? (leave it as it is or erase command?)
 
 ---
@@ -64,15 +65,13 @@ Output: "2 years"
 **Why:** 10 in binary = 2 in decimal.
 
 **Another example:**
-
 ```
 Input:  "1010 (bin) equals"
 Output: "10 equals"
 ```
 
 **Matters to think about:**
-
-- What if it has numbers other than 0 and 1? (leave it as it is or error handling?)
+- What if it has numbers other than 0 and 1? (probably leave it as it is or error handling?)
 - What if `(bin)` has no word before it? (leave it as it is or erase command?)
 
 ---
@@ -82,21 +81,18 @@ Output: "10 equals"
 **What it does:** `(up)` makes the previous word uppercase. If there's a number like `(up, 3)`, it makes the previous 3 words uppercase.
 
 **Example:**
-
 ```
 Input:  "ready, set, go (up)!"
 Output: "ready, set, GO!"
 ```
 
 **With a number:**
-
 ```
 Input:  "this is exciting (up, 2)"
 Output: "this is SO EXCITING"
 ```
 
 **Matters to think about:**
-
 - What if I say `(up, 5)` but there are only 2 words before it? (alter all of them or error handling?)
 - What if the word is already uppercase?
 
@@ -107,21 +103,18 @@ Output: "this is SO EXCITING"
 **What it does:** `(low)` makes the previous word lowercase. With `(low, N)` it makes N previous words lowercase.
 
 **Example:**
-
 ```
 Input:  "STOP SHOUTING (low)"
 Output: "STOP shouting"
 ```
 
 **With a number:**
-
 ```
 Input:  "WHY ARE WE YELLING (low, 4)"
 Output: "why are we yelling"
 ```
 
 **Matters to think about:**
-
 - What if I say `(low, 5)` but there are only 2 words before it? (alter all of them or error handling?)
 - What if the word is already lowercase?
 
@@ -132,14 +125,12 @@ Output: "why are we yelling"
 **What it does:** `(cap)` capitalizes the first letter of the previous word. With `(cap, N)` it capitalizes N previous words.
 
 **Example:**
-
 ```
 Input:  "welcome to the brooklyn bridge (cap)"
 Output: "welcome to the brooklyn Bridge"
 ```
 
 **With a number:**
-
 ```
 Input:  "the new york times (cap, 4)"
 Output: "The New York Times"
@@ -156,21 +147,18 @@ Output: "The New York Times"
 **What it does:** Automatically changes "a" to "an" when the next word starts with a vowel (a, e, i, o, u) or the letter 'h'.
 
 **Example:**
-
 ```
 Input:  "a apple a day"
 Output: "an apple a day"
 ```
 
 **Another example:**
-
 ```
 Input:  "There it was. A amazing rock!"
 Output: "There it was. An amazing rock!"
 ```
 
 **With 'h':**
-
 ```
 Input:  "a hour passed"
 Output: "an hour passed"
@@ -189,7 +177,6 @@ Output: "an hour passed"
 **What it does:** Punctuation marks (. , ! ? : ;) should be right next to the word before them (no space), and have one space after them.
 
 **Example:**
-
 ```
 Input:  "Hello , world !"
 Output: "Hello, world!"
@@ -199,20 +186,20 @@ Output: "Hello, world!"
 
 When there are groups like `...` or `!?` they stay together.
 
+
+**Example**
 ```
 Input:  "Wait ... really ?"
 Output: "Wait... really?"
 ```
 
 **Another group example:**
-
 ```
 Input:  "What !? No way"
 Output: "What!? No way"
 ```
 
 **Matters to think about:**
-
 - What counts as a "group"? (probably `...`, `!!`, `??`, `!?`, `?!`) Need to verify!
 - What if there's punctuation at the very start?
 
@@ -223,21 +210,18 @@ Output: "What!? No way"
 **What it does:** Single quotes `'` come in pairs. Remove spaces between the quotes and the words inside them.
 
 **Single word:**
-
 ```
 Input:  "He said: ' hello '"
 Output: "He said: 'hello'"
 ```
 
 **Multiple words:**
-
 ```
 Input:  "As he said: ' I am the best player '"
 Output: "As he said: 'I am the best player'"
 ```
 
 **Matters to think about:**
-
 - What if there's an odd number of quotes? (3 quotes total)
 - What if quotes are empty? `' '`
 - Do other rules (like punctuation) still apply inside quotes? (most probably yes!)
@@ -246,9 +230,9 @@ Output: "As he said: 'I am the best player'"
 
 ## Part 3: Architecture Comparison
 
-Now I need to choose HOW to build this. There are two main approaches:
+Now I need to choose HOW to build this. There are two models to choose between:
 
-### Approach 1: The Pipeline ("Car Wash")
+### Model 1: The Pipeline ("Car Wash")
 
 **How it works:**
 
@@ -276,8 +260,8 @@ Output Text
 
 **Good things:**
 - ✅ **Simple to understand** - each function does ONE thing
-- ✅ **Easy to test** - I can test each step separately
-- ✅ **Easy to debug** - if something breaks, I know which step
+- ✅ **Easy to test** - i can test each step separately
+- ✅ **Easy to debug** - if something breaks, i know which step
 - ✅ **Easy to change** - want to add a new rule? Just add a new step
 - ✅ **Good for learning** - clear and organized
 
@@ -286,7 +270,6 @@ Output Text
 - ❌ Uses more memory (keeps everything in memory)
 
 **Example of a function:**
-
 ```
 Function: ConvertHex
 Input: List of words
@@ -296,7 +279,7 @@ Output: List of words with conversions done
 
 ---
 
-### Approach 2: The FSM ("Conveyor Belt")
+### Model 2: The FSM ("Conveyor Belt")
 
 **How it works:**
 
@@ -311,10 +294,10 @@ Read the text character by character, and the program is in different "states". 
 - Between words
 
 **Good things:**
-
 - ✅ **Fast** - only reads through text once
 - ✅ **Memory efficient** - doesn't need to store everything
 - ✅ **Professional** - this is how real parsers work
+
 
 **Not so good things:**
 - ❌ **Complex** - harder to understand
@@ -326,7 +309,7 @@ Read the text character by character, and the program is in different "states". 
 
 ### My Choice: Pipeline Architecture
 
-**I'm choosing the Pipeline approach because:**
+**I'm choosing the Pipeline model because:**
 
 1. **I'm learning** - I want to understand the problem clearly, and Pipeline is more clear
 2. **Easier to test** - I can write tests for each small function
@@ -334,11 +317,14 @@ Read the text character by character, and the program is in different "states". 
 4. **Good enough** - The project files won't be huge, so speed isn't critical
 5. **Team-friendly** - If I work with someone, we can each do different steps
 
+
 **My plan:**
+
 - Split text into pieces (tokens)
 - Apply each rule one by one
 - Put text back together
 - Each rule is a separate function
+
 
 **Trade-off I'm accepting:**
 
@@ -350,18 +336,18 @@ My solution won't be the fastest possible, but it will be correct and easy to un
 
 These are the tests I'll use to know if my program works correctly.
 
-### Category A: Basic Audit Examples (from the project spec)
+
+### Category A: Official Audit Examples (from the project spec)
+
 
 #### Test 1: Hex and Binary Conversion
 
 **Input:**
-
 ```
 Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
 ```
 
 **Expected Output:**
-
 ```
 Simply add 66 and 2 and you will see the result is 68.
 ```
@@ -373,13 +359,11 @@ Simply add 66 and 2 and you will see the result is 68.
 #### Test 2: Article Correction
 
 **Input:**
-
 ```
 There is no greater agony than bearing a untold story inside you.
 ```
 
 **Expected Output:**
-
 ```
 There is no greater agony than bearing an untold story inside you.
 ```
@@ -391,13 +375,11 @@ There is no greater agony than bearing an untold story inside you.
 #### Test 3: Punctuation Spacing
 
 **Input:**
-
 ```
 Punctuation tests are ... kinda boring ,what do you think ?
 ```
 
 **Expected Output:**
-
 ```
 Punctuation tests are... kinda boring, what do you think?
 ```
@@ -409,13 +391,11 @@ Punctuation tests are... kinda boring, what do you think?
 #### Test 4: Multiple Rules Combined 
 
 **Input:**
-
 ```
 it (cap) was the best of times, it was the worst of times (up) , it was the age of wisdom, it was the age of foolishness (cap, 6) , it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, IT WAS THE (low, 3) winter of despair.
 ```
 
 **Expected Output:**
-
 ```
 It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
 ```
@@ -432,6 +412,7 @@ It was the best of times, it was the worst of TIMES, it was the age of wisdom, I
 
 ### Category B: Tricky Cases (My Own Test Cases)
 
+
 #### Test 5: Quote with Multiple Words and Punctuation
 
 **Input:**
@@ -440,7 +421,6 @@ She said: ' hello , how are you ? '
 ```
 
 **Expected Output:**
-
 ```
 She said: 'hello, how are you?'
 ```
@@ -456,13 +436,11 @@ She said: 'hello, how are you?'
 #### Test 6: Article Before 'H'
 
 **Input:**
-
 ```
 We waited a hour for a bus.
 ```
 
 **Expected Output:**
-
 ```
 We waited an hour for an bus.
 ```
@@ -472,7 +450,6 @@ We waited an hour for a bus.
 ```
 
 **Why this is tricky:**
-
 - The spec says 'h' → an
 - But "a bus" is correct English (b is consonant)
 - Need to check: does spec mean ALL 'h' or just silent 'h'?
@@ -481,14 +458,13 @@ We waited an hour for a bus.
 
 #### Test 7: Count Exceeds Available Words
 
-**Input:**
 
+**Input:**
 ```
 only two words (up, 10)
 ```
 
 **Expected Output:** (Need to test what happens!)
-
 ```
 ONLY TWO WORDS
 ```
@@ -502,19 +478,19 @@ OR maybe error?
 
 #### Test 8: Multiple Hex in One Line
 
-**Input:**
 
+**Input:**
 ```
 Values: 1E (hex) and FF (hex) and A (hex)
 ```
 
 **Expected Output:**
-
 ```
 Values: 30 and 255 and 10
 ```
 
 **Why this is tricky:**
+
 - Multiple conversions in one line
 - Tests if my program handles multiple markers
 
@@ -522,20 +498,18 @@ Values: 30 and 255 and 10
 
 #### Test 9: Uppercase After Already Uppercase
 
-**Input:**
 
+**Input:**
 ```
 THIS WORD (up) again
 ```
 
 **Expected Output:**
-
 ```
 THIS WORD again
 ```
 
 **Why this is tricky:**
-
 - Word is already uppercase
 - Should stay uppercase (idempotent)
 
@@ -543,37 +517,49 @@ THIS WORD again
 
 #### Test 10: Empty or Edge Cases
 
-**Input 10a (empty file):**
 
+**Input 10a (empty file):**
 ```
 [empty file]
 ```
 **Expected:** Program runs without crashing, creates empty output
 
-**Input 10b (only spaces):**
 
+**Input 10b (only spaces):**
 ```
      
 ```
 **Expected:** Program handles it gracefully
 
 **Input 10c (marker at beginning):**
-
 ```
 (hex) word
 ```
 **Expected:** Probably leaves it unchanged (no word before)
 
 **Why this is tricky:**
-
 - Edge cases that could break my program
 - Need graceful handling
+
+### Test 11: Invalid commands
+
+**Input:**
+```
+(hex) word and (low, -1)
+```
+**Output:**
+```
+(hex) word and (low, -1)
+```
+**Why this is tricky:**
+- The program should handle such cases gracefully without crashing.
 
 ---
 
 ### Category C: The Big Complex Test
 
-#### Test 11: Everything at Once
+
+#### Test 12: Everything at Once
 
 **Input:**
 ```
@@ -581,7 +567,6 @@ here (cap) is a interesting text with 1A (hex) items and 11 (bin) more , all in 
 ```
 
 **Expected Output:**
-
 ```
 Here is an interesting text with 26 items and 3 more, all in 'an Epic Document'... WHAT DO YOU THINK?
 ```
@@ -615,7 +600,7 @@ This is my ultimate test. If this works, I'm confident my program is correct!
 
    - My guess: Transform all 3 available words (graceful)
 
-3. **Invalid hex like "XYZ (hex)":**
+3. **Invalid inputs like "XYZ (hex)":**
 
    - My guess: Leave it unchanged
 
@@ -632,4 +617,3 @@ This is my ultimate test. If this works, I'm confident my program is correct!
 
 **End of Analysis**
 
-I'm ready to start coding once I understand the problem fully!
