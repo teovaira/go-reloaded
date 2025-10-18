@@ -426,33 +426,29 @@ She said: 'hello, how are you?'
 ```
 
 **Why this is tricky:** 
-
 - Quotes need to be fixed (remove spaces)
 - Punctuation inside quotes also needs fixing
 - Tests if rules work inside quotes
 
 ---
 
-#### Test 6: Article Before 'H'
+#### Test 6: Silent H vs Pronounced H
 
 **Input:**
 ```
-We waited a hour for a bus.
+a honor to meet a hero
 ```
 
-**Expected Output:**
+**Expected Output (following spec literally):**
 ```
-We waited an hour for an bus.
-```
-OR (if the spec is smart about it)
-```
-We waited an hour for a bus.
+an honor to meet an hero
 ```
 
 **Why this is tricky:**
-- The spec says 'h' → an
-- But "a bus" is correct English (b is consonant)
-- Need to check: does spec mean ALL 'h' or just silent 'h'?
+- "honor" has silent 'h' - "an honor" is correct English ✓
+- "hero" has pronounced 'h' - "a hero" is correct English
+- But spec says ALL 'h' → "an"
+- So spec would produce "an hero" (wrong in English, but follows spec)
 
 ---
 
