@@ -367,7 +367,12 @@ There are some things I'm not 100% sure about yet. These questions apply no matt
    - Groups like `...`, `!!`, `??`, `!?`, `?!` should be treated as one unit
    - But what if someone writes `. . .` with spaces? That's probably three separate periods
 
-These are things I'll figure out as I go. For now, I have a clear plan!
+8. **Is there a maximum number for commands like (cap, N)?**
+   - The spec doesn't say a limit... someone could write `(cap, 100)` or even `(cap, 1000)`
+   - Do I need to keep ALL previous words? That could use a lot of memory for long texts
+   - Or should I set a reasonable maximum (like 100) and document it as a limitation?
+   - Or maybe just handle whatever number they give and use graceful degradation if there aren't enough words?
+   - I need to think about this - it affects both memory usage and correctness
 
 ---
 
