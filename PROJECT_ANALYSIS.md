@@ -1,9 +1,9 @@
 # Go-Reloaded: My Analysis Document (Pipeline Model)
 
-**Student:** Theodore Vairaktaris
-**Project:** go-reloaded (Pipeline Implementation)
-**Date:** October 18, 2025  
-**Week 1 Assignment** - Problem Analysis (No Coding!)
+### **Student:** Theodore Vairaktaris
+### **Project:** go-reloaded (Pipeline Implementation)
+### **Date:** October 18, 2025  
+### **Week 1 Assignment** - Problem Analysis (No Coding!)
 
 ---
 
