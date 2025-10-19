@@ -413,7 +413,7 @@ It was the best of times, it was the worst of TIMES, it was the age of wisdom, I
 ### Category B: Tricky Cases (My Own Test Cases)
 
 
-#### Test 5: Quote with Multiple Words and Punctuation
+#### Test 5: Quotes with Multiple Words and Punctuation
 
 **Input:**
 ```
