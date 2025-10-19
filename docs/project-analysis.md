@@ -1,4 +1,4 @@
-# Go-Reloaded: My Analysis Document (Pipeline Model)
+# Go-Reloaded: Project Analysis (Pipeline Model)
 
 ### **Student:** Theodore Vairaktaris
 ### **Project:** go-reloaded (Pipeline Implementation)
@@ -7,9 +7,10 @@
 
 ---
 
-## What is this project about? 
+## Part 1: Problem Description
 
 ### The Problem
+
 I need to build a command-line tool in Go that reads a text file, applies some commands and transformation rules to it, and writes the modified result to another file.
 
 **How it works:**
@@ -21,10 +22,9 @@ The program reads `input.txt`, transforms the text according to rules, and saves
 
 ---
 
-## The Transformation Rules
+## Part 2: Transformation Rules
 
-Bellow are all the rules my program needs to follow. 
-
+Below are all the rules my program needs to follow. 
 
 ### Rule 1: Hexadecimal to Decimal
 
@@ -37,7 +37,6 @@ Output: "30 files"
 ```
 
 **Why:** 1E in hex = 30 in decimal.
-
 
 **Another example:**
 ```
@@ -89,7 +88,7 @@ Output: "ready, set, GO!"
 **With a number:**
 ```
 Input:  "this is exciting (up, 2)"
-Output: "this is SO EXCITING"
+Output: "this IS EXCITING"
 ```
 
 **Matters to think about:**
@@ -165,7 +164,6 @@ Output: "an hour passed"
 ```
 
 **Matters to think about:**
-
 - What about capital 'A'? (should become "An")
 - What if "a" is at the end with no word after? (leave it as "a")
 - Edge case: "a university" according to english grammar rules is correct, but the spec says all vowels and 'h', so maybe it becomes "an"? Need to verify!
@@ -186,8 +184,7 @@ Output: "Hello, world!"
 
 When there are groups like `...` or `!?` they stay together.
 
-
-**Example**
+**Example:**
 ```
 Input:  "Wait ... really ?"
 Output: "Wait... really?"
@@ -260,8 +257,8 @@ Output Text
 
 **Good things:**
 - ✅ **Simple to understand** - each function does ONE thing
-- ✅ **Easy to test** - i can test each step separately
-- ✅ **Easy to debug** - if something breaks, i know which step
+- ✅ **Easy to test** - I can test each step separately
+- ✅ **Easy to debug** - if something breaks, I know which step
 - ✅ **Easy to change** - want to add a new rule? Just add a new step
 - ✅ **Good for learning** - clear and organized
 
@@ -286,7 +283,6 @@ Output: List of words with conversions done
 Read the text character by character, and the program is in different "states". Depending on what I see, I change state and do actions.
 
 **States might be:**
-
 - Reading a word
 - Reading a command like (hex)
 - Reading punctuation
@@ -297,7 +293,6 @@ Read the text character by character, and the program is in different "states". 
 - ✅ **Fast** - only reads through text once
 - ✅ **Memory efficient** - doesn't need to store everything
 - ✅ **Professional** - this is how real parsers work
-
 
 **Not so good things:**
 - ❌ **Complex** - harder to understand
@@ -317,14 +312,11 @@ Read the text character by character, and the program is in different "states". 
 4. **Good enough** - The project files won't be huge, so speed isn't critical
 5. **Team-friendly** - If I work with someone, we can each do different steps
 
-
 **My plan:**
-
 - Split text into pieces (tokens)
 - Apply each rule one by one
 - Put text back together
 - Each rule is a separate function
-
 
 **Trade-off I'm accepting:**
 
@@ -332,284 +324,34 @@ My solution won't be the fastest possible, but it will be correct and easy to un
 
 ---
 
-## Part 4: Golden Test Set (Success Test Cases)
+## Things I'm Still Figuring Out
 
-These are the tests I'll use to know if my program works correctly.
+There are some things I'm not 100% sure about yet. I'll need to figure these out when I start coding:
 
+1. **What order should I apply the rules?**
+   - My thinking: probably hex/bin first (since they remove the markers), then do case changes (up/low/cap), then fix articles (a/an), then punctuation, and finally quotes. But I might need to adjust this if things don't work right.
 
-### Category A: Official Audit Examples (from the project spec)
+2. **What if someone asks for more words than exist?**
+   - Like `(up, 10)` but there are only 3 words before it
+   - My plan: just transform all the available words and don't crash
+   - Seems like the safest approach
 
+3. **What if the hex/bin conversion gets invalid input?**
+   - Like "XYZ (hex)" where XYZ isn't valid hex
+   - My plan: probably just leave it as-is and don't convert
+   - Better to skip it than to crash
 
-#### Test 1: Hex and Binary Conversion
+4. **What if there are an odd number of quotes?**
+   - Like 3 quotes total in the file
+   - I'm not sure yet... maybe treat the last one as a regular character? Or maybe it's an error?
+   - Need to test this edge case
 
-**Input:**
-```
-Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
-```
-
-**Expected Output:**
-```
-Simply add 66 and 2 and you will see the result is 68.
-```
-
-**Why this matters:** Tests both hex and binary conversion in one sentence.
-
----
-
-#### Test 2: Article Correction
-
-**Input:**
-```
-There is no greater agony than bearing a untold story inside you.
-```
-
-**Expected Output:**
-```
-There is no greater agony than bearing an untold story inside you.
-```
-
-**Why this matters:** Tests the a→an rule with vowels.
+5. **The 'h' rule for articles - should I follow it exactly?**
+   - The spec says all words starting with 'h' get "an" 
+   - But in real English, "a hero" is correct (pronounced h) while "an honor" is correct (silent h)
+   - I think I'll follow the spec strictly and make ALL 'h' words use "an", even if it sounds weird
+   - Rules are rules!
 
 ---
 
-#### Test 3: Punctuation Spacing
-
-**Input:**
-```
-Punctuation tests are ... kinda boring ,what do you think ?
-```
-
-**Expected Output:**
-```
-Punctuation tests are... kinda boring, what do you think?
-```
-
-**Why this matters:** Tests punctuation spacing AND the group `...` staying together.
-
----
-
-#### Test 4: Multiple Rules Combined 
-
-**Input:**
-```
-it (cap) was the best of times, it was the worst of times (up) , it was the age of wisdom, it was the age of foolishness (cap, 6) , it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, IT WAS THE (low, 3) winter of despair.
-```
-
-**Expected Output:**
-```
-It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
-```
-
-**Why this matters:** This is the ultimate test! It has:
-- `(cap)` - capitalize one word
-- `(up)` - uppercase one word
-- `(cap, 6)` - capitalize 6 words
-- `(low, 3)` - lowercase 3 words
-- Punctuation spacing
-- All rules working together!
-
----
-
-### Category B: Tricky Cases (My Own Test Cases)
-
-
-#### Test 5: Quotes with Multiple Words and Punctuation
-
-**Input:**
-```
-She said: ' hello , how are you ? '
-```
-
-**Expected Output:**
-```
-She said: 'hello, how are you?'
-```
-
-**Why this is tricky:** 
-- Quotes need to be fixed (remove spaces)
-- Punctuation inside quotes also needs fixing
-- Tests if rules work inside quotes
-
----
-
-#### Test 6: Silent H vs Pronounced H
-
-**Input:**
-```
-a honor to meet a hero
-```
-
-**Expected Output (following spec literally):**
-```
-an honor to meet an hero
-```
-
-**Why this is tricky:**
-- "honor" has silent 'h' - "an honor" is correct English ✓
-- "hero" has pronounced 'h' - "a hero" is correct English
-- But spec says ALL 'h' → "an"
-- So spec would produce "an hero" (wrong in English, but follows spec)
-
----
-
-#### Test 7: Count Exceeds Available Words
-
-
-**Input:**
-```
-only two words (up, 10)
-```
-
-**Expected Output:** (Need to test what happens!)
-```
-ONLY TWO WORDS
-```
-OR maybe error?
-
-**Why this is tricky:**
-- I asked for 10 words but only 3 exist
-- What should happen? Transform all 3? Error? Need to test!
-
----
-
-#### Test 8: Multiple Hex in One Line
-
-
-**Input:**
-```
-Values: 1E (hex) and FF (hex) and A (hex)
-```
-
-**Expected Output:**
-```
-Values: 30 and 255 and 10
-```
-
-**Why this is tricky:**
-
-- Multiple conversions in one line
-- Tests if my program handles multiple markers
-
----
-
-#### Test 9: Uppercase After Already Uppercase
-
-
-**Input:**
-```
-THIS WORD (up) again
-```
-
-**Expected Output:**
-```
-THIS WORD again
-```
-
-**Why this is tricky:**
-- Word is already uppercase
-- Should stay uppercase (idempotent)
-
----
-
-#### Test 10: Empty or Edge Cases
-
-
-**Input 10a (empty file):**
-```
-[empty file]
-```
-**Expected:** Program runs without crashing, creates empty output
-
-
-**Input 10b (only spaces):**
-```
-     
-```
-**Expected:** Program handles it gracefully
-
-**Input 10c (marker at beginning):**
-```
-(hex) word
-```
-**Expected:** Probably leaves it unchanged (no word before)
-
-**Why this is tricky:**
-- Edge cases that could break my program
-- Need graceful handling
-
-### Test 11: Invalid commands
-
-**Input:**
-```
-(hex) word and (low, -1)
-```
-**Output:**
-```
-(hex) word and (low, -1)
-```
-**Why this is tricky:**
-- The program should handle such cases gracefully without crashing.
-
----
-
-### Category C: The Big Complex Test
-
-
-#### Test 12: Everything at Once
-
-**Input:**
-```
-here (cap) is a interesting text with 1A (hex) items and 11 (bin) more , all in ' a epic document (cap, 2) ' ... what do you think (up, 4) ?
-```
-
-**Expected Output:**
-```
-Here is an interesting text with 26 items and 3 more, all in 'an Epic Document'... WHAT DO YOU THINK?
-```
-
-**What's being tested:**
-
-1. `(cap)` - capitalize "here"
-2. `a` → `an` before "interesting"
-3. `1A (hex)` → `26`
-4. `11 (bin)` → `3`
-5. Punctuation spacing (comma, ellipsis, question mark)
-6. Quotes with multiple words
-7. `(cap, 2)` inside quotes
-8. `a` → `an` before "epic" inside quotes
-9. `(up, 4)` - uppercase 4 words at end
-10. All rules working together!
-
-**Why this matters:**
-
-This is my ultimate test. If this works, I'm confident my program is correct!
-
----
-
-## My Questions / Things I'm Unsure About
-
-1. **Order of operations:** If I have hex conversion and article correction, which happens first?
-
-   - My guess: Probably hex/bin first (they remove markers), then case changes, then articles, then punctuation, then quotes
-
-2. **What if (up, 10) but only 3 words exist?**
-
-   - My guess: Transform all 3 available words (graceful)
-
-3. **Invalid inputs like "XYZ (hex)":**
-
-   - My guess: Leave it unchanged
-
-4. **Odd number of quotes (3 quotes total):**
-
-   - My guess: This is an error, but need to check what to do
-
-5. **Article + h rule:**
-
-   - Spec says all 'h' → an, but "a university" is correct English
-   - Need to clarify: strict spec or smart about pronunciation?
-
----
-
-**End of Analysis**
-
+**End of Project Analysis**
