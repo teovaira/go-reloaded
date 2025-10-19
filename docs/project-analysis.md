@@ -326,31 +326,48 @@ My solution won't be the fastest possible, but it will be correct and easy to un
 
 ## Things I'm Still Figuring Out
 
-There are some things I'm not 100% sure about yet. I'll need to figure these out when I start coding:
+There are some things I'm not 100% sure about yet. These questions apply no matter which architecture I choose - they're about the problem itself, not how I implement it.
 
-1. **What order should I apply the rules?**
-   - My thinking: probably hex/bin first (since they remove the markers), then do case changes (up/low/cap), then fix articles (a/an), then punctuation, and finally quotes. But I might need to adjust this if things don't work right.
-
-2. **What if someone asks for more words than exist?**
+1. **What if someone asks for more words than exist?**
    - Like `(up, 10)` but there are only 3 words before it
-   - My plan: just transform all the available words and don't crash
+   - My plan: just transform all the available words (graceful degradation - when you can't do exactly what was asked, do what you can instead of crashing)
    - Seems like the safest approach
 
-3. **What if the hex/bin conversion gets invalid input?**
-   - Like "XYZ (hex)" where XYZ isn't valid hex
+2. **What if the hex/bin conversion gets invalid input?**
+   - Like "XYZ (hex)" where XYZ isn't valid hex (has letters other than A-F)
    - My plan: probably just leave it as-is and don't convert
    - Better to skip it than to crash
 
-4. **What if there are an odd number of quotes?**
+3. **What if there are an odd number of quotes?**
    - Like 3 quotes total in the file
    - I'm not sure yet... maybe treat the last one as a regular character? Or maybe it's an error?
    - Need to test this edge case
 
-5. **The 'h' rule for articles - should I follow it exactly?**
+4. **The 'h' rule for articles - should I follow it exactly?**
    - The spec says all words starting with 'h' get "an" 
    - But in real English, "a hero" is correct (pronounced h) while "an honor" is correct (silent h)
    - I think I'll follow the spec strictly and make ALL 'h' words use "an", even if it sounds weird
    - Rules are rules!
+
+5. **What if there's a command inside quotes?**
+   - Like: `' hello (up) world '`
+   - My guess: commands should probably still work inside quotes
+   - The quotes just affect spacing, not whether commands execute
+   - Need to verify this
+
+6. **What if markers are nested or invalid?**
+   - Like: `hello (up (cap) test` or `((hex))`
+   - I'm not sure how to handle this... maybe treat them as regular text?
+   - Or maybe process the first valid one and ignore the rest?
+   - This could be tricky
+
+7. **How do I detect punctuation groups?**
+   - Like `...` should stay together, not become `. . .`
+   - My thinking: when I see multiple punctuation marks in a row, keep them together
+   - Groups like `...`, `!!`, `??`, `!?`, `?!` should be treated as one unit
+   - But what if someone writes `. . .` with spaces? That's probably three separate periods
+
+These are things I'll figure out as I go. For now, I have a clear plan!
 
 ---
 
