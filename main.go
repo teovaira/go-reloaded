@@ -24,7 +24,21 @@ func main() {
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
-	// debug prints
-	fmt.Println("Input file:", inputFile)
-	fmt.Println("Output file:", outputFile)
+	inputText, err := readInputFile(inputFile)
+	if err != nil {
+		fmt.Println("Error in reading input file:", err)
+		return
+	}
+
+	fmt.Println("File content:\n", inputText)
+	_ = outputFile
+}
+
+// readInputFile opens the given file and returns its content as a string
+func readInputFile(path string) (string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil // convert []byte to string and return it
 }
