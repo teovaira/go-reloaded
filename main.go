@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	// validation for correct number of passwords
 	if len(os.Args) != 3 {
 		fmt.Println("Usage: go run . <input.txt> <output.txt>")
 		return
@@ -23,6 +24,7 @@ func main() {
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
+	// debug prints
 	fmt.Println("Input file:", inputFile)
 	fmt.Println("Output file:", outputFile)
 }
