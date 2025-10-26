@@ -1,341 +1,329 @@
-# Sprint 1: Core Transformations
+# Sprint 1: Core Text Transformation Functions
 
-**Goal:** Implement the 5 core transformation commands: (hex), (bin), (up), (low), (cap)  
-**Duration:** 3-4 days  
-**Tasks:** 7  
-**Deliverable:** Basic transformations working, Golden Test Case 1 passes
+**Sprint Goal:** Implement fundamental text processing (tokenization, number conversion, case transformations)
 
----
-
-## 🎯 Sprint Objectives
-
-By end of Sprint 1:
-- ✅ Tokenization system implemented
-- ✅ Hexadecimal conversion working
-- ✅ Binary conversion working
-- ✅ Three case transformations working
-- ✅ Code follows DRY principle
+**Duration:** 3-4 days | **Story Points:** 28
 
 ---
 
-## 🧩 TASK-005: Tokenization
+## Sprint Backlog
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-004
-
-### Learning Objectives
-- String splitting strategies
-- Token-based text processing
-- Slice operations in Go
-
-### What to Build
-Two functions:
-- `tokenize()`: Split text into words/tokens
-- `detokenize()`: Join tokens back into text
-
-### Test Scenarios
-**Tokenize:**
-- Input: `"hello world"` → Output: `["hello", "world"]`
-- Input: `"hello    world"` (multiple spaces) → Output: `["hello", "world"]`
-- Input: `"word (hex) test"` → Output: `["word", "(hex)", "test"]`
-- Input: `""` → Output: `[]` (empty slice)
-
-**Detokenize:**
-- Input: `["hello", "world"]` → Output: `"hello world"`
-- Input: `[]` → Output: `""`
-
-### Architecture Decision
-**Question:** How to handle punctuation?  
-**Options:**
-1. Keep punctuation attached to words: `"hello,"` stays as one token
-2. Separate punctuation: `"hello,"` becomes `["hello", ","]`
-
-**Recommendation:** Option 1 (keep attached) - simpler for now
-
-### Edge Cases
-- Multiple consecutive spaces
-- Leading/trailing spaces
-- Text with only spaces
-
-### Acceptance Criteria
-- [ ] Splits by whitespace correctly
-- [ ] Handles multiple spaces
-- [ ] Round-trip works: `detokenize(tokenize(x)) ≈ x`
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "What's the difference between strings.Split and strings.Fields in Go? Which is better for tokenization?"
+| Task ID | Description | Points |
+|---------|-------------|--------|
+| TASK-006 | Tokenize input text | 3 |
+| TASK-007 | Command detection & parsing | 4 |
+| TASK-008 | Hex to decimal | 3 |
+| TASK-009 | Binary to decimal | 3 |
+| TASK-010 | Uppercase transformation | 3 |
+| TASK-011 | Lowercase transformation | 3 |
+| TASK-012 | Capitalize words | 4 |
+| TASK-013 | Refactor case functions | 3 |
+| TASK-014 | Apply number conversions | 2 |
 
 ---
 
-## 🧩 TASK-006: Hexadecimal Conversion
+## TASK-006: Tokenize Input Text
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-005
+### Functionality Description
+Split input string into processable tokens (words and commands). Handles all whitespace types (space, tab, newline). Preserves punctuation and command markers like `(hex)`, `(cap)`.
 
-### Learning Objectives
-- Number base conversion (base 16 → base 10)
-- Lookahead logic in token processing
-- Error handling for invalid input
+### Test Writing (TDD - Red Phase)
+Write tests that verify:
+- Basic word splitting: `"hello world"` → `["hello", "world"]`
+- Multiple/mixed whitespace preserved as single space
+- Command preservation: `"word (cap)"` → `["word", "(cap)"]`
+- Punctuation as separate tokens: `"hello,"` → `["hello", ","]`
+- Empty input handling
+- Leading/trailing whitespace removal
 
-### What to Build
-Function that processes tokens and replaces `word (hex)` with decimal equivalent.
+### Implementation Goal (TDD - Green Phase)
+Create tokenization function that:
+- Splits text into words, commands, and punctuation
+- Returns slice of tokens in order
+- Preserves command markers like `(hex)`, `(cap, 2)`
+- Uses Go's `strings` package
 
-### Test Scenarios
-**Valid conversions:**
-- `["1E", "(hex)", "files"]` → `["30", "files"]`
-- `["FF", "(hex)", "max"]` → `["255", "max"]`
-- `["ff", "(hex)"]` (lowercase) → `["255"]`
-- `["A", "(hex)"]` → `["10"]`
+### Validation (TDD - Refactor Phase)
+- All tests pass
+- Coverage ≥ 90%
+- Clean code (no duplication)
+- Commit: `feat: add tokenization function`
 
-**Invalid/Edge cases:**
-- `["XYZ", "(hex)"]` (invalid hex) → `["XYZ", "(hex)"]` (unchanged)
-- `["(hex)", "word"]` (no previous word) → `["(hex)", "word"]` (unchanged)
-- `["1E", "(hex)", "and", "FF", "(hex)"]` → `["30", "and", "255"]` (multiple)
+### Learning Resources
+- [Go strings package](https://pkg.go.dev/strings)
+- [strings.Fields documentation](https://pkg.go.dev/strings#Fields)
 
-### Architecture Decision
-**Question:** What to do with invalid hex?  
-**Answer:** Leave unchanged (don't crash, don't remove)
+---
 
-### Acceptance Criteria
-- [ ] Valid hex (0-9, A-F) converts correctly
-- [ ] Case-insensitive (1E and 1e both work)
-- [ ] Invalid hex left unchanged
-- [ ] (hex) marker removed after conversion
-- [ ] All test scenarios pass
+## TASK-007: Command Detection & Parsing
 
-### AI Guidance
-**Ask:** "How do I parse a hexadecimal string in Go? What function converts from base 16 to base 10?"
+### Functionality Description
+Identify and parse command markers in token stream. Detect `(hex)`, `(bin)`, `(up)`, `(low)`, `(cap)`, and count variants like `(up, 3)`. Extract command type and optional count parameter.
 
-### Resources
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Simple commands: `"(hex)"` → type: hex, count: 1
+- Count commands: `"(up, 3)"` → type: up, count: 3
+- Invalid commands: `"(invalid)"`, `"(up, -1)"` → not recognized
+- Edge cases: `"(cap,5)"` (no space), `"( hex )"` (extra spaces)
+- Non-commands: `"hello"` → not a command
+
+### Implementation Goal (TDD - Green Phase)
+Create command parser that:
+- Detects if token is a command (starts with `(` and ends with `)`)
+- Extracts command type (hex, bin, up, low, cap)
+- Extracts optional count parameter
+- Returns command struct or error for invalid commands
+- Handles whitespace variations
+
+### Validation (TDD - Refactor Phase)
+- All tests pass including edge cases
+- Invalid commands handled gracefully
+- Coverage ≥ 90%
+- Commit: `feat: add command detection and parsing`
+
+### Learning Resources
+- [Go strings.Split](https://pkg.go.dev/strings#Split)
+- [Go strconv.Atoi](https://pkg.go.dev/strconv#Atoi)
+- [Go strings.TrimSpace](https://pkg.go.dev/strings#TrimSpace)
+
+---
+
+## TASK-008: Hex to Decimal Conversion
+
+### Functionality Description
+Convert hexadecimal strings to decimal integers. Input: `"1E"`, Output: `30`. Case-insensitive (1E = 1e). No "0x" prefix required.
+
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Valid hex: `"1E"` → `30`, `"FF"` → `255`, `"A"` → `10`
+- Case insensitivity: `"1e"` and `"1E"` both work
+- Invalid input: `"ZZ"`, `"XYZ"`, `""` should return errors
+- Edge cases: `"0"`, `"00A"` (leading zeros)
+
+### Implementation Goal (TDD - Green Phase)
+Create hex conversion function that:
+- Accepts hex string, returns integer and error
+- Uses `strconv.ParseInt` with base 16
+- Returns descriptive errors for invalid input
+- Handles both uppercase and lowercase letters
+
+### Validation (TDD - Refactor Phase)
+- All tests pass including error cases
+- Error messages are clear
+- Coverage ≥ 90%
+- Commit: `feat: add hex to decimal conversion`
+
+### Learning Resources
 - [strconv.ParseInt documentation](https://pkg.go.dev/strconv#ParseInt)
+- [Hexadecimal number system](https://www.mathsisfun.com/hexadecimals.html)
 
 ---
 
-## 🧩 TASK-007: Binary Conversion
+## TASK-009: Binary to Decimal Conversion
 
-**Story Points:** 2/5 (Simple - similar to hex)  
-**Time:** 1 hour  
-**Prerequisites:** TASK-006
+### Functionality Description
+Convert binary strings to decimal integers. Input: `"101"`, Output: `5`. Only accepts '0' and '1' characters. No "0b" prefix required.
 
-### Learning Objectives
-- Binary number system (base 2)
-- Applying similar pattern to hex conversion
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Valid binary: `"10"` → `2`, `"101"` → `5`, `"1010"` → `10`, `"11111111"` → `255`
+- Invalid input: `"102"`, `"abc"`, `"12"` should return errors
+- Edge cases: `"0"`, `"1"`, `"0010"` (leading zeros)
 
-### What to Build
-Function that processes tokens and replaces `word (bin)` with decimal equivalent.
+### Implementation Goal (TDD - Green Phase)
+Create binary conversion function that:
+- Accepts binary string, returns integer and error
+- Uses `strconv.ParseInt` with base 2
+- Validates input contains only 0 and 1
+- Returns descriptive errors for invalid input
 
-### Test Scenarios
-- `["10", "(bin)"]` → `["2"]`
-- `["1010", "(bin)"]` → `["10"]`
-- `["102", "(bin)"]` (invalid - has 2) → `["102", "(bin)"]` (unchanged)
+### Validation (TDD - Refactor Phase)
+- All tests pass including error cases
+- Clear error messages
+- Coverage ≥ 90%
+- Commit: `feat: add binary to decimal conversion`
 
-### Architecture Decision
-**Refactoring logic:** Hex and binary conversion have identical logic, just different base.  
-**Consider:** Generic conversion function that accepts base as parameter.
-
-### Acceptance Criteria
-- [ ] Valid binary (0-1 only) converts correctly
-- [ ] Invalid binary left unchanged
-- [ ] Golden Test Case 1 now passes (has both hex and bin)
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "I have two functions that are almost identical (hex and binary conversion). How do I refactor to avoid duplication?"
+### Learning Resources
+- [strconv.ParseInt with base 2](https://pkg.go.dev/strconv#ParseInt)
+- [Binary number system](https://www.mathsisfun.com/binary-number-system.html)
 
 ---
 
-## 🧩 TASK-008: Uppercase Transformation
+## TASK-010: Uppercase Transformation
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-007
+### Functionality Description
+Convert text to uppercase. Input: `"hello"`, Output: `"HELLO"`. Preserves numbers, punctuation, whitespace. Handles Unicode correctly (café → CAFÉ).
 
-### Learning Objectives
-- Command parsing with parameters: `(up, 3)`
-- Backward transformation (affects previous words)
-- Handling count that exceeds available words
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic: `"hello"` → `"HELLO"`
+- Already upper: `"HELLO"` → `"HELLO"` (idempotent)
+- Mixed case: `"Hello"` → `"HELLO"`
+- With numbers/punctuation: `"hello123!"` → `"HELLO123!"`
+- Unicode: `"café"` → `"CAFÉ"`
+- Empty string handling
 
-### What to Build
-Function that processes `(up)` and `(up, N)` commands.
+### Implementation Goal (TDD - Green Phase)
+Create uppercase function that:
+- Uses Go's `strings.ToUpper()` for Unicode support
+- Preserves non-alphabetic characters
+- Returns new string (immutable)
+- Works on single words
 
-### Test Scenarios
-**Single word:**
-- `["ready", "set", "go", "(up)"]` → `["ready", "set", "GO"]`
+### Validation (TDD - Refactor Phase)
+- All tests pass including Unicode
+- Coverage ≥ 90%
+- Commit: `feat: add uppercase transformation`
 
-**Multiple words:**
-- `["this", "is", "exciting", "(up, 2)"]` → `["this", "IS", "EXCITING"]`
-
-**Count exceeds available:**
-- `["only", "two", "(up, 10)"]` → `["ONLY", "TWO"]` (transforms all available)
-
-**Edge cases:**
-- `["(up)", "word"]` (no previous word) → `["(up)", "word"]` (unchanged)
-- `["LOUD", "(up)"]` (already uppercase) → `["LOUD"]`
-
-### Architecture Decision
-**Question:** How to parse `(up, 3)`?  
-**Answer:** Use regex to extract the number, or manual string parsing
-
-### Acceptance Criteria
-- [ ] `(up)` transforms 1 previous word
-- [ ] `(up, N)` transforms N previous words
-- [ ] Count > available transforms all available
-- [ ] Command marker removed
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "How do I extract a number from a string like '(up, 5)' in Go? Should I use regex or string parsing?"
+### Learning Resources
+- [strings.ToUpper documentation](https://pkg.go.dev/strings#ToUpper)
+- [Unicode in Go](https://go.dev/blog/strings)
 
 ---
 
-## 🧩 TASK-009: Lowercase Transformation
+## TASK-011: Lowercase Transformation
 
-**Story Points:** 2/5 (Simple - similar to uppercase)  
-**Time:** 1 hour  
-**Prerequisites:** TASK-008
+### Functionality Description
+Convert text to lowercase. Input: `"HELLO"`, Output: `"hello"`. Preserves numbers, punctuation, whitespace. Handles Unicode correctly (CAFÉ → café).
 
-### Learning Objectives
-- Applying same pattern as uppercase
-- Recognizing code duplication
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic: `"HELLO"` → `"hello"`
+- Already lower: `"hello"` → `"hello"` (idempotent)
+- Mixed case: `"HeLLo"` → `"hello"`
+- With numbers/punctuation: `"HELLO123!"` → `"hello123!"`
+- Unicode: `"CAFÉ"` → `"café"`
+- Empty string handling
 
-### What to Build
-Function that processes `(low)` and `(low, N)` commands.
+### Implementation Goal (TDD - Green Phase)
+Create lowercase function that:
+- Uses Go's `strings.ToLower()` for Unicode support
+- Preserves non-alphabetic characters
+- Returns new string (immutable)
+- Works on single words
 
-### Test Scenarios
-- `["STOP", "SHOUTING", "(low)"]` → `["STOP", "shouting"]`
-- `["WHY", "ARE", "WE", "YELLING", "(low, 4)"]` → `["why", "are", "we", "yelling"]`
-- `["TWO", "WORDS", "(low, 10)"]` → `["two", "words"]`
+### Validation (TDD - Refactor Phase)
+- All tests pass including Unicode
+- Coverage ≥ 90%
+- Commit: `feat: add lowercase transformation`
 
-### Architecture Decision
-**Observation:** This is almost identical to TASK-008 (uppercase).  
-**Next Sprint:** Refactor to remove duplication.
-
-### Acceptance Criteria
-- [ ] Same behavior as uppercase, but lowercases
-- [ ] All test scenarios pass
-
----
-
-## 🧩 TASK-010: Capitalize Transformation
-
-**Story Points:** 3/5 (Moderate - Unicode handling)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-009
-
-### Learning Objectives
-- Runes vs bytes in Go
-- Unicode-safe string manipulation
-- Title case vs capitalize
-
-### What to Build
-Function that processes `(cap)` and `(cap, N)` commands.  
-**Behavior:** First letter uppercase, rest lowercase.
-
-### Test Scenarios
-- `["welcome", "to", "the", "brooklyn", "bridge", "(cap)"]` → `[...,"Bridge"]`
-- `["the", "new", "york", "times", "(cap, 4)"]` → `["The", "New", "York", "Times"]`
-- `["WORD", "(cap)"]` → `["Word"]` (first up, rest down)
-
-### Architecture Decision
-**Question:** Use `strings.Title` or manual implementation?  
-**Answer:** Manual (strings.Title deprecated and behaves differently)
-
-**Important:** Must handle Unicode correctly!  
-- Bad: `word[0]` (breaks with multi-byte characters)
-- Good: Convert to runes first
-
-### Acceptance Criteria
-- [ ] First letter uppercase, rest lowercase
-- [ ] Works with already-uppercase words
-- [ ] Unicode-safe implementation
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "Why should I use runes instead of byte indexing when capitalizing words in Go?"
-
-### Resources
-- [Go Strings, Bytes, Runes](https://go.dev/blog/strings)
+### Learning Resources
+- [strings.ToLower documentation](https://pkg.go.dev/strings#ToLower)
+- [Unicode case mapping](https://unicode.org/reports/tr21/)
 
 ---
 
-## 🧩 TASK-011: Refactor Case Transformations (DRY)
+## TASK-012: Capitalize Words
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2 hours  
-**Prerequisites:** TASK-010
+### Functionality Description
+Capitalize first letter of each word. Input: `"hello"`, Output: `"Hello"`. Requires manual rune manipulation for Unicode. First letter uppercase, rest lowercase.
 
-### Learning Objectives
-- DRY (Don't Repeat Yourself) principle
-- Generic function design
-- Higher-order functions in Go
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic: `"hello"` → `"Hello"`
+- All caps input: `"HELLO"` → `"Hello"` (first upper, rest lower)
+- All lower: `"hello"` → `"Hello"`
+- Mixed: `"hELLo"` → `"Hello"`
+- Unicode: `"café"` → `"Café"`
+- Empty and single character strings
 
-### What to Build
-Refactor tasks 008, 009, 010 to share common logic.
+### Implementation Goal (TDD - Green Phase)
+Create capitalize function that:
+- Converts string to runes for Unicode support
+- Makes first rune uppercase using `unicode.ToUpper()`
+- Makes remaining runes lowercase using `unicode.ToLower()`
+- Handles multi-byte characters correctly
+- Works on single words
 
-### Refactoring Strategy
-**Observation:** All three case transformations:
-1. Parse command `(cmd)` or `(cmd, N)`
-2. Find previous N words
-3. Apply transformation function
-4. Remove command marker
+### Validation (TDD - Refactor Phase)
+- All tests pass including Unicode
+- Rune manipulation correct
+- Coverage ≥ 90%
+- Commit: `feat: add word capitalization`
 
-**Generic function signature:**
-```
-transformCase(tokens, commandType, transformFunc)
-```
-
-### Test Scenarios
-N/A - **All existing tests must still pass** after refactoring!
-
-### Architecture Decision
-**Trade-off:** DRY vs simplicity  
-- **Pro:** Less code, easier to maintain
-- **Con:** Slightly more complex
-
-**Decision:** Go for it - the pattern is clear.
-
-### Acceptance Criteria
-- [ ] All existing tests pass
-- [ ] Code duplication reduced
-- [ ] Each case transformation uses generic helper
-- [ ] Code is more maintainable
-
-### AI Guidance
-**Ask:** "I have three similar functions. How do I create a generic version that accepts a transformation function as a parameter in Go?"
+### Learning Resources
+- [Go runes and characters](https://go.dev/blog/strings)
+- [unicode.ToUpper documentation](https://pkg.go.dev/unicode#ToUpper)
 
 ---
 
-## ✅ Sprint 1 Completion
+## TASK-013: Refactor Case Functions
 
-Before moving to Sprint 2:
+### Functionality Description
+Eliminate code duplication across uppercase, lowercase, and capitalize functions. Extract common validation and helper functions.
 
-**Functional:**
-- [ ] All 5 transformations work independently
-- [ ] Golden Test Case 1 passes completely:
-  ```
-  Input: "Simply add 42 (hex) and 10 (bin) and you will see the result is 68."
-  Output: "Simply add 66 and 2 and you will see the result is 68."
-  ```
+### Test Writing (TDD - Red Phase)
+No new tests needed - all existing tests must continue passing.
 
-**Technical:**
-- [ ] All tests pass
-- [ ] Code refactored (DRY)
-- [ ] No duplication
+### Implementation Goal (TDD - Green Phase)
+Refactor case transformation functions:
+- Extract shared validation logic (empty string checks)
+- Identify and eliminate code duplication
+- Improve function names and clarity
+- No behavior changes (all existing tests still pass)
 
----
+### Validation (TDD - Refactor Phase)
+- All original tests still pass
+- Code duplication reduced ≥ 50%
+- Coverage maintained at ≥ 90%
+- Commit: `refactor: extract common case transformation logic`
 
-## 🎓 What You Learned
-
-- ✅ Token-based text processing
-- ✅ Number base conversion
-- ✅ String case manipulation
-- ✅ Regular expressions for pattern matching
-- ✅ Unicode handling (runes)
-- ✅ Code refactoring and DRY principle
+### Learning Resources
+- [Go refactoring patterns](https://dave.cheney.net/2019/07/09/clear-is-better-than-clever)
+- [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
 
 ---
 
-**Next:** [`SPRINT-2-ADVANCED-TRANSFORMATIONS.md`](./SPRINT-2-ADVANCED-TRANSFORMATIONS.md) 🚀
+## TASK-014: Apply Number Conversions
+
+### Functionality Description
+Integrate hex and binary conversion with command parsing. Process token stream, detect `(hex)` and `(bin)` commands, apply conversions to previous word, replace with decimal result.
+
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic hex: `["1E", "(hex)", "items"]` → `["30", "items"]`
+- Basic binary: `["10", "(bin)", "years"]` → `["2", "years"]`
+- Multiple conversions: `["A", "(hex)", "and", "11", "(bin)"]` → `["10", "and", "3"]`
+- Invalid input: `["XYZ", "(hex)"]` → unchanged (graceful degradation)
+- No previous word: `["(hex)", "word"]` → unchanged
+
+### Implementation Goal (TDD - Green Phase)
+Create conversion application function that:
+- Iterates through token slice
+- Detects conversion commands using TASK-007 parser
+- Applies conversion to previous token
+- Replaces both word and command with result
+- Handles errors gracefully (skip invalid conversions)
+
+### Validation (TDD - Refactor Phase)
+- All tests pass including error cases
+- Graceful degradation for invalid input
+- Coverage ≥ 90%
+- Commit: `feat: integrate number conversions with command parsing`
+
+### Learning Resources
+- [Go slice manipulation](https://go.dev/blog/slices-intro)
+- [Go error handling patterns](https://go.dev/blog/error-handling-and-go)
+
+---
+
+## Sprint Success Criteria
+
+- ✅ All 9 tasks complete with passing tests
+- ✅ Code coverage ≥ 90%
+- ✅ All functions handle Unicode correctly
+- ✅ Number conversions integrated with pipeline
+- ✅ Clean git history with meaningful commits
+
+---
+
+## Dependencies
+
+- TASK-006 must be done first (tokenization)
+- TASK-007 must be done second (command parsing)
+- TASK-008, 009, 010, 011, 012 can be done in parallel
+- TASK-013 requires TASK-010, 011, 012 complete
+- TASK-014 requires TASK-007, 008, 009 complete
+
+**Next:** Sprint 2 - Advanced text processing (articles, punctuation, quotes)
