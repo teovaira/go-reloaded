@@ -3,23 +3,28 @@
 **Author:** Theodore Vairaktaris  
 **Project:** go-reloaded  
 **Date:** October 2025  
-**Phase:** Planning & Task Decomposition (No Coding Yet!)
+**Phase:** Planning & Task Decomposition (Week 1)
 
 ---
 
 ## 🎯 Purpose
 
-This roadmap breaks down the go-reloaded project into **small, testable tasks** following Agile and TDD principles. Each task describes **WHAT** to build and test, not **HOW** to code it.
+This roadmap breaks down the go-reloaded project into **25 testable tasks** following Agile and TDD principles. Each task describes **WHAT** to build and test, not **HOW** to code it.
+
+This is a **planning document** created during the analysis phase before any code is written.
 
 ---
 
 ## 📚 Foundation Documents
 
 This roadmap references:
-- [`PROJECT-ANALYSIS.md`](./PROJECT-ANALYSIS.md) - Problem breakdown and rules
-- [`GOLDEN-TEST-SET.md`](./GOLDEN-TEST-SET.md) - 12 test scenarios
+- [`PROJECT-ANALYSIS.md`](./PROJECT-ANALYSIS.md) - Problem breakdown and transformation rules
+- [`GOLDEN-TEST-SET.md`](./GOLDEN-TEST-SET.md) - 12 test scenarios with expected outputs
 
-**Flow:** Analysis → Planning → Implementation → Validation
+**Document Flow:**
+```
+Analysis → Planning (you are here) → Implementation → Validation
+```
 
 ---
 
@@ -27,41 +32,46 @@ This roadmap references:
 
 **Pattern:** Pipeline (sequential transformations)  
 **Scope:** ~200-300 lines of Go code  
-**Structure:** Simple (main.go + test files in root)
+**Structure:** Simple (main.go + main_test.go in root)
 
 **Pipeline Flow:**
 ```
-Read File → Tokenize → Transform (7 stages) → Detokenize → Write File
+Read File → Tokenize → Transform (5 stages) → Detokenize → Write File
 ```
 
-**Transformation Order:**
-1. Hex/Binary conversion
-2. Case changes (up, low, cap)
+**Transformation Order (Critical!):**
+1. Number conversions (hex, binary)
+2. Case transformations (up, low, cap)
 3. Article correction (a→an)
 4. Punctuation spacing
 5. Quote formatting
+
+**Why this order?**
+- Case changes must happen BEFORE article correction
+- Article correction must happen BEFORE punctuation
+- Punctuation must happen BEFORE quotes
 
 ---
 
 ## 🗓️ Sprint Breakdown
 
-### Sprint 0: Foundation (1-2 days, 4 tasks)
-**Goal:** Get input/output working, create pipeline skeleton  
-**Deliverable:** Program reads file, passes through (no transformations), writes file
+### Sprint 0: Foundation (1-2 days, 5 tasks)
+**Goal:** Build the skeleton - file I/O and project setup  
+**Deliverable:** Program reads file, passes through unchanged, writes file
 
-### Sprint 1: Core Transformations (3-4 days, 7 tasks)
-**Goal:** Implement (hex), (bin), (up), (low), (cap)  
-**Deliverable:** 5 core transformations working independently
+### Sprint 1: Core Transformations (3-4 days, 9 tasks)
+**Goal:** Implement tokenization, command parsing, number conversions, case transformations  
+**Deliverable:** Core transformations working with command detection
 
 ### Sprint 2: Advanced Rules (3-4 days, 5 tasks)
-**Goal:** Implement (a→an), punctuation, quotes  
-**Deliverable:** All 7 transformation types complete
+**Goal:** Implement case application, articles, punctuation, quotes, pipeline integration  
+**Deliverable:** All transformations complete and integrated
 
 ### Sprint 3: Integration (2-3 days, 6 tasks)
-**Goal:** All 12 golden tests passing, production-ready  
-**Deliverable:** Audit-ready project with full documentation
+**Goal:** End-to-end testing, golden tests passing, documentation complete  
+**Deliverable:** Production-ready project
 
-**Total:** 22 tasks, ~10-12 days
+**Total:** 25 tasks, ~10-12 days
 
 ---
 
@@ -69,20 +79,22 @@ Read File → Tokenize → Transform (7 stages) → Detokenize → Write File
 
 Every task follows this cycle:
 
-### 1️⃣ RED - Write Failing Test
+### 🔴 RED - Write Failing Test
 - Define expected behavior
-- Create test case
-- Run test → FAIL
+- Create test case that describes what SHOULD happen
+- Run test → FAIL (function doesn't exist yet)
 
-### 2️⃣ GREEN - Make It Pass
-- Write minimum code to pass
-- No extra features yet
+### 🟢 GREEN - Make It Pass
+- Write MINIMUM code to pass the test
+- No extra features or optimization yet
 - Run test → PASS
 
-### 3️⃣ REFACTOR - Improve
-- Clean up code
-- Remove duplication
+### ♻️ REFACTOR - Improve Quality
+- Clean up code (remove duplication, improve names)
+- Make it more readable
 - Run test → still PASS
+
+**Mantra:** Red → Green → Refactor → Repeat
 
 ---
 
@@ -92,12 +104,15 @@ Each task in sprint files includes:
 
 | Section | Purpose |
 |---------|---------|
+| **Story Points** | Complexity estimate (1-5) |
 | **Learning Objectives** | What concepts you'll learn |
-| **Test Scenarios** | What cases to test (no code!) |
-| **Implementation Goal** | What to build |
-| **Edge Cases** | What to watch for |
+| **What to Build** | Clear description of functionality |
+| **TDD Cycle** | RED-GREEN-REFACTOR steps |
+| **Test Scenarios** | What cases to test (input → expected output) |
+| **Edge Cases** | Boundary conditions to handle |
+| **Architecture Decisions** | Design choices to make |
 | **Acceptance Criteria** | How to know you're done |
-| **AI Guidance** | What questions to ask AI |
+| **AI Guidance** | Questions to ask AI agents |
 | **Resources** | Links to learn concepts |
 
 ---
@@ -105,22 +120,25 @@ Each task in sprint files includes:
 ## 🎓 Learning Path
 
 ### Week 1: Foundation
-- Go file I/O
-- Command-line args
-- String tokenization
-- Testing basics
+- Go file I/O (`os` package)
+- Command-line arguments (`os.Args`)
+- String tokenization (`strings` package)
+- Testing basics (`testing` package)
+- Error handling patterns
 
 ### Week 2: Transformations
-- Number base conversion
-- String manipulation
-- Pattern matching
-- State management (quotes)
+- Number base conversion (`strconv`)
+- String manipulation (ToUpper, ToLower, runes)
+- Regular expressions (`regexp`)
+- Slice operations
+- Pipeline composition
 
 ### Week 3: Polish
 - Integration testing
-- Error handling
-- Code refactoring
-- Documentation
+- Error handling strategies
+- Code refactoring (DRY principle)
+- Documentation writing
+- Code review practices
 
 ---
 
@@ -128,98 +146,202 @@ Each task in sprint files includes:
 
 Project is complete when:
 - [ ] All 12 golden tests pass
-- [ ] Program handles invalid input gracefully
+- [ ] Program handles invalid input gracefully (no crashes)
 - [ ] Code is ~200-300 lines (concise!)
-- [ ] Tests are comprehensive
+- [ ] Test coverage >85%
 - [ ] Documentation is clear
-- [ ] Ready for peer audit
+- [ ] Code is readable and maintainable
+- [ ] Ready for professional code review
 
 ---
 
 ## 🚀 How to Use This Roadmap
 
+### Step-by-Step Process
+
 1. **Read this overview** (you are here!)
-2. **Review PROJECT-ANALYSIS.md** to understand the problem
+2. **Review PROJECT-ANALYSIS.md** to understand the problem deeply
 3. **Skim GOLDEN-TEST-SET.md** to see expected outcomes
 4. **Open SPRINT-0-INFRASTRUCTURE.md**
 5. **Start with TASK-001**
-6. **Follow TDD cycle** for each task
-7. **Ask AI agents** when stuck (see AI Guidance sections)
-8. **Mark tasks complete** as you finish
+6. **For each task:**
+   - Read all sections carefully
+   - Understand what to build (don't code yet!)
+   - Think about test scenarios
+   - Consider edge cases
+   - Review architecture decisions
+7. **Begin TDD cycle:**
+   - 🔴 Write failing test
+   - 🟢 Make it pass
+   - ♻️ Refactor
+8. **Check acceptance criteria**
+9. **Move to next task**
+
+### When You Get Stuck
+
+1. **Review the task's "Learning Objectives"** - what concept are you missing?
+2. **Check "Resources"** - read the linked documentation
+3. **Use AI Guidance** - ask the suggested questions to AI agents
+4. **Review similar code** - look at previous tasks for patterns
+5. **Take a break** - sometimes stepping away helps!
 
 ---
 
 ## 🗂️ Sprint Files
 
+Detailed task breakdowns:
+
 | Sprint | File | Tasks | Focus |
 |--------|------|-------|-------|
-| 0 | [`SPRINT-0-INFRASTRUCTURE.md`](./sprints/SPRINT-0-INFRASTRUCTURE.md) | 4 | Setup, I/O, skeleton |
-| 1 | [`SPRINT-1-CORE-TRANSFORMATIONS.md`](./sprints/SPRINT-1-CORE-TRANSFORMATIONS.md) | 7 | hex, bin, up, low, cap |
-| 2 | [`SPRINT-2-ADVANCED-TRANSFORMATIONS.md`](./sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md) | 5 | a→an, punctuation, quotes |
-| 3 | [`SPRINT-3-INTEGRATION.md`](./sprints/SPRINT-3-INTEGRATION.md) | 6 | Testing, polish, audit prep |
+| 0 | [`SPRINT-0-INFRASTRUCTURE.md`](./sprints/SPRINT-0-INFRASTRUCTURE.md) | 5 | Setup, I/O, skeleton |
+| 1 | [`SPRINT-1-CORE-TRANSFORMATIONS.md`](./sprints/SPRINT-1-CORE-TRANSFORMATIONS.md) | 9 | Tokenize, parse, hex, bin, case |
+| 2 | [`SPRINT-2-ADVANCED-TRANSFORMATIONS.md`](./sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md) | 5 | Case apply, articles, punctuation, quotes, pipeline |
+| 3 | [`SPRINT-3-INTEGRATION.md`](./sprints/SPRINT-3-INTEGRATION.md) | 6 | End-to-end, golden tests, documentation |
 
 ---
 
 ## 🤖 AI Agent Usage
 
-**When to use AI:**
-- Explain Go concepts (not write code for you!)
-- Review your test design
-- Suggest edge cases to test
-- Help debug when tests fail
-- Explain error messages
+### When to Use AI Agents
 
-**Example questions:**
-- "What's the best way to tokenize a string in Go?"
+**Good uses:**
+- ✅ Explain Go concepts ("How does strconv.ParseInt work?")
+- ✅ Review your test design ("Are these test cases comprehensive?")
+- ✅ Suggest edge cases ("What edge cases should I test?")
+- ✅ Help debug when tests fail ("Why is this test failing?")
+- ✅ Explain error messages ("What does this compiler error mean?")
+- ✅ Review your code ("Is this idiomatic Go?")
+
+**Bad uses:**
+- ❌ Write the full implementation for you
+- ❌ Do the project for you
+- ❌ Skip the TDD process
+- ❌ Generate code you don't understand
+
+### Example Questions
+
+**Concept Learning:**
+- "Explain hexadecimal number system and how to convert to decimal"
+- "What's the difference between bytes and runes in Go?"
+- "How do I tokenize a string by whitespace in Go?"
+
+**Testing:**
+- "How do I write table-driven tests in Go?"
+- "What edge cases should I test for hex conversion?"
 - "How do I test file I/O without actual files?"
-- "What edge cases should I consider for hex conversion?"
 
-**Don't ask AI to:**
-- Write the full implementation
-- Do the project for you
-- Skip the TDD process
+**Debugging:**
+- "My test is failing with this error: [paste error]. What does it mean?"
+- "Why does ParseInt return two values in Go?"
+- "How do I check if a slice index is valid before accessing it?"
+
+**Code Review:**
+- "Is this Go code idiomatic? [paste code]"
+- "How can I simplify this function?"
+- "Is there duplication I should refactor?"
 
 ---
 
 ## 📊 Progress Tracking
 
-| Sprint | Status | Tests Passing |
-|--------|--------|---------------|
-| Sprint 0 | ⏳ | - |
-| Sprint 1 | ⏳ | 0/5 |
-| Sprint 2 | ⏳ | 0/4 |
-| Sprint 3 | ⏳ | 0/12 |
+Mark tasks as you complete them:
+
+| Sprint | Status | Tests Passing | Progress |
+|--------|--------|---------------|----------|
+| Sprint 0 | ⏳ Not Started | - | 0/5 tasks |
+| Sprint 1 | ⏳ Not Started | - | 0/9 tasks |
+| Sprint 2 | ⏳ Not Started | - | 0/5 tasks |
+| Sprint 3 | ⏳ Not Started | 0/12 golden | 0/6 tasks |
+
+**Symbols:** ⏳ Not Started | 🔄 In Progress | ✅ Complete
 
 ---
 
 ## 💡 Key Principles
 
-**Keep It Simple:**
+### Keep It Simple
+- Start with the simplest solution that works
+- Don't over-engineer
 - One function per transformation
-- Clear test names
-- Descriptive variable names
+- Clear naming (no abbreviations)
 
-**Test First:**
-- Write test before code
-- One failing test at a time
-- Tests define behavior
+### Test First, Always
+- Write test before code (RED)
+- Make test pass (GREEN)
+- Then improve (REFACTOR)
+- Never skip TDD cycle
 
-**Iterate:**
+### Iterate and Improve
 - Get it working first
 - Then make it clean
-- Don't over-engineer
+- Then make it fast (if needed)
+- "Make it work, make it right, make it fast" - Kent Beck
+
+### Small Steps
+- One failing test at a time
+- Commit after each task
+- Don't try to do everything at once
 
 ---
 
 ## 🎯 Success Metrics
 
 You'll know you succeeded when:
-- ✅ All golden tests pass
-- ✅ Code is readable and maintainable
-- ✅ You can explain every decision
-- ✅ Audit passes on first try
+- ✅ All 12 golden tests pass
+- ✅ Code is readable and maintainable (~200-300 lines)
+- ✅ You can explain every design decision
+- ✅ Tests give you confidence to refactor
 - ✅ You learned Go and TDD!
+- ✅ Code passes professional review
 
 ---
 
-**Next Step:** Open [`SPRINT-0-INFRASTRUCTURE.md`](./sprints/SPRINT-0-INFRASTRUCTURE.md) 🚀
+## 🔧 Tools & Commands
+
+**Essential Go commands:**
+```bash
+go mod init go-reloaded    # Initialize project
+go build                    # Compile program
+go test                     # Run tests
+go test -v                  # Verbose test output
+go test -cover              # Show coverage
+go fmt                      # Format code
+go vet                      # Find potential bugs
+```
+
+**Recommended workflow:**
+```bash
+# After each task:
+go test -v                  # All tests pass?
+go fmt                      # Format code
+go vet                      # No warnings?
+git add .                   # Stage changes
+git commit -m "TASK-XXX"   # Commit with task number
+```
+
+---
+
+## 📖 Additional Context
+
+### Why This Structure?
+
+**4 Sprints:** Industry-standard sprint length (1-2 weeks each)  
+**25 Tasks:** Small enough to complete in 1-4 hours each  
+**TDD:** Industry best practice, ensures testable code  
+**Pipeline Pattern:** Simple, maintainable architecture
+
+### Real-World Application
+
+These skills transfer directly to professional software development:
+- Sprint planning → Used in every Agile team
+- TDD → Standard practice at major tech companies
+- Code review → Daily activity for professional developers
+- Documentation → Critical for team collaboration
+
+---
+
+**Next Step:** Open [`SPRINT-0-INFRASTRUCTURE.md`](./sprints/SPRINT-0-INFRASTRUCTURE.md) and begin! 🚀
+
+---
+
+*"The journey of a thousand lines begins with a single test."* — Adapted from Lao Tzu
