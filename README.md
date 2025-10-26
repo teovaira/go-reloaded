@@ -1,227 +1,233 @@
 # go-reloaded
 
-A text transformation CLI tool built in Go using Test-Driven Development and Agile methodology.
+A text transformation CLI tool built in Go using Test-Driven Development (TDD) and Agile methodology.
 
 **Student:** Theodore Vairaktaris  
 **Institution:** Zone01 Athens  
-**Project:** First assignment - Text processing pipeline
+**Status:** Planning Phase (Week 1 - No Code Yet!)  
+**License:** MIT
 
 ---
 
-## 📋 Overview
+## 📋 Project Overview
 
-**go-reloaded** processes text files applying transformation rules:
-- Number conversions (hex/binary → decimal)
-- Case changes (uppercase, lowercase, capitalize)
-- Article correction (a → an)
-- Punctuation spacing
-- Quote formatting
+**go-reloaded** processes text files and applies transformation rules:
+- Number conversions: hexadecimal/binary → decimal
+- Case transformations: uppercase, lowercase, capitalize
+- Article correction: a → an (vowels and h)
+- Punctuation spacing fixes
+- Quote pairing with proper marks
 
-**Usage:**
-```bash
-go run . input.txt output.txt
+**Project Scope:** ~200-300 lines of Go code
+
+---
+
+## 🎯 Transformation Examples
+
+**Number Conversions:**
+- `42 (hex)` → `66`
+- `1010 (bin)` → `10`
+
+**Case Transformations:**
+- `hello (up)` → `HELLO`
+- `WORLD (low)` → `world`
+- `title (cap)` → `Title`
+
+**Context-Aware:**
+- `a apple` → `an apple`
+- `a hour` → `an hour`
+- `hello , world !` → `hello, world!`
+- `' hi '` → `'hi'`
+
+---
+
+## 🏗️ Development Approach
+
+### Methodology
+- **Agile:** 4 sprints (Sprint 0-3)
+- **TDD:** Write tests first, then implement
+- **Incremental:** Build feature by feature
+
+### Architecture Pattern
+**Pipeline Model:** Sequential transformations
+
+```
+Input → Tokenize → Transform Pipeline → Detokenize → Output
+                        ↓
+            [hex/bin] → [case] → [article] → [punct] → [quotes]
 ```
 
----
-
-## 🔧 Transformation Rules
-
-### Number Conversions
-- `1E (hex)` → `30`
-- `10 (bin)` → `2`
-
-### Case Transformations
-- `word (up)` → `WORD`
-- `WORD (low)` → `word`
-- `word (cap)` → `Word`
-- `words (up, 3)` → transforms 3 previous words
-
-### Linguistic Rules
-- `a apple` → `an apple`
-- `Hello , world !` → `Hello, world!`
-- `' hello '` → `'hello'`
-
-See [`docs/PROJECT-ANALYSIS.md`](docs/PROJECT-ANALYSIS.md) for complete specifications.
+**Transformation Order Matters:**
+1. Number conversions first
+2. Case transformations second
+3. Article correction (depends on case)
+4. Punctuation spacing
+5. Quote pairing last
 
 ---
 
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 go-reloaded/
-├── main.go                 # Main application (~200-300 lines)
-├── main_test.go            # Test suite
-├── go.mod
-├── README.md
-├── AGENTS.md               # AI agent guidelines
-│
-└── docs/                   # Planning & documentation
-    ├── PROJECT-ANALYSIS.md
-    ├── GOLDEN-TEST-SET.md
-    ├── AGILE-ROADMAP.md
-    └── sprints/
-        ├── SPRINT-0-INFRASTRUCTURE.md
-        ├── SPRINT-1-CORE-TRANSFORMATIONS.md
-        ├── SPRINT-2-ADVANCED-TRANSFORMATIONS.md
-        └── SPRINT-3-INTEGRATION.md
+├── README.md                    # This file
+├── go.mod                       # Go module file
+├── main.go                      # Entry point
+├── docs/
+│   ├── PROJECT-ANALYSIS.md      # Requirements analysis
+│   ├── GOLDEN-TEST-SET.md       # Test cases
+│   ├── AGILE-ROADMAP.md         # Sprint overview
+│   └── sprints/
+│       ├── SPRINT-0-INFRASTRUCTURE.md
+│       ├── SPRINT-1-CORE-TRANSFORMATIONS.md
+│       ├── SPRINT-2-ADVANCED-TRANSFORMATIONS.md
+│       └── SPRINT-3-INTEGRATION.md
+└── tests/
+    └── testdata/                # Golden test files
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started (For Development)
 
-### Build & Run
+### Prerequisites
+- Go 1.21+
+- Basic understanding of Go syntax
+- Git for version control
+
+### Setup Instructions
+
+**1. Clone the repository**
 ```bash
-# Build
-go build
-
-# Run
-./go-reloaded input.txt output.txt
-
-# Or directly
-go run . input.txt output.txt
+git clone <your-repo-url>
+cd go-reloaded
 ```
 
-### Testing
+**2. Initialize Go module**
 ```bash
-# Run all tests
+go mod init go-reloaded
+```
+
+**3. Run tests (once implemented)**
+```bash
+go test -v
+```
+
+**4. Build the program**
+```bash
+go build -o go-reloaded
+```
+
+**5. Run the program**
+```bash
+./go-reloaded input.txt output.txt
+```
+
+---
+
+## 📚 Documentation
+
+- **[PROJECT-ANALYSIS.md](docs/PROJECT-ANALYSIS.md)** - Detailed requirements and architecture
+- **[GOLDEN-TEST-SET.md](docs/GOLDEN-TEST-SET.md)** - Complete test specifications
+- **[AGILE-ROADMAP.md](docs/AGILE-ROADMAP.md)** - Sprint overview and workflow
+- **Sprint Files** - Task breakdowns in `docs/sprints/`
+
+---
+
+## 🧪 Testing Strategy
+
+### Test Types
+1. **Unit Tests:** Individual transformation functions
+2. **Integration Tests:** Full pipeline testing
+3. **Golden Tests:** Expected output files
+4. **Edge Cases:** Unicode, errors, boundaries
+
+### Running Tests
+```bash
+# All tests
 go test -v
 
 # With coverage
 go test -cover
 
 # Specific test
-go test -run TestGoldenCase1
+go test -run TestTokenize
 ```
 
 ---
 
-## 📖 Examples
+## 📖 For Other Students
 
-### Example 1: Number Conversions
-**Input:**
-```
-Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
-```
-**Output:**
-```
-Simply add 66 and 2 and you will see the result is 68.
-```
+### Want to Review or Learn from This Project?
 
-### Example 2: Multiple Rules
-**Input:**
-```
-here (cap) is a interesting text with 1A (hex) items , all in ' a epic document (cap, 2) ' ... what do you think (up, 4) ?
-```
-**Output:**
-```
-Here is an interesting text with 26 items, all in 'an Epic Document'... WHAT DO YOU THINK?
-```
+**To Run Locally:**
+1. Clone this repository
+2. Run `go mod tidy`
+3. Run `go test -v` to see test results
+4. Review the planning docs in `/docs`
 
----
+**Found a Bug or Improvement?**
+- Open an issue describing the problem
+- Submit a pull request with a fix
+- Reference the relevant task from sprint docs
 
-## 🧪 Testing
+**Learning from This Project?**
+- Check the sprint files for incremental learning path
+- Each task follows TDD (test → implement → refactor)
+- Resources included for key Go concepts
 
-**Test Cases:** 12 golden test scenarios  
-**Coverage:** >85% target  
-**Approach:** Test-Driven Development (TDD)
-
-All test scenarios documented in [`docs/GOLDEN-TEST-SET.md`](docs/GOLDEN-TEST-SET.md)
+### For Zone01 Peers
+This project follows the Zone01 Agile methodology:
+- **Week 1:** Planning and analysis (no code written - this is where we are now!)
+- **Weeks 2-3:** Implementation with TDD
+- All decisions documented in `/docs`
 
 ---
 
-## 📚 Development Process
+## 🔄 Development Workflow
 
-This project follows **Agile methodology** with 4 sprints:
+### TDD Cycle
+1. **🔴 RED:** Write failing test
+2. **🟢 GREEN:** Make test pass with minimal code
+3. **♻️ REFACTOR:** Improve code quality
+4. **✅ COMMIT:** Save your progress
 
-| Sprint | Focus | Tasks |
-|--------|-------|-------|
-| 0 | Setup & I/O | 4 |
-| 1 | Core transformations | 7 |
-| 2 | Advanced rules | 5 |
-| 3 | Polish & audit prep | 6 |
-
-See [`docs/AGILE-ROADMAP.md`](docs/AGILE-ROADMAP.md) for complete task breakdown.
+See [AGILE-ROADMAP.md](docs/AGILE-ROADMAP.md) for detailed sprint breakdown.
 
 ---
 
-## 🎯 Key Features
+## ✅ Project Completion Criteria
 
-- ✅ Pipeline architecture (sequential transformations)
-- ✅ Test-driven development
-- ✅ Handles all edge cases gracefully
-- ✅ ~200-300 lines of clean Go code
-- ✅ Zero external dependencies
-- ✅ Comprehensive documentation
-
----
-
-## 🤝 For Auditors
-
-### How to Audit
-
-1. **Clone and build:**
-   ```bash
-   git clone <repo>
-   cd go-reloaded
-   go build
-   ```
-
-2. **Run tests:**
-   ```bash
-   go test -v
-   ```
-   Expected: All tests pass
-
-3. **Test golden cases:**
-   Use test files from `docs/GOLDEN-TEST-SET.md`
-
-4. **Review:**
-   - Code clarity and organization
-   - Test coverage
-   - Error handling
-   - Documentation quality
+The project is complete when:
+- ✅ All 12 golden test cases pass
+- ✅ Code coverage ≥ 90%
+- ✅ All sprint tasks completed
+- ✅ Documentation is complete
+- ✅ Code follows Go best practices
+- ✅ No critical bugs
 
 ---
 
-## 📄 License
+## 📝 License
 
-MIT License - See [LICENSE](LICENSE)
+MIT License - Feel free to use this project for learning purposes.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- Zone01 Athens for project specifications
+- Zone01 Athens for the project specification
 - Go community for excellent documentation
-- Fellow students for peer reviews
+- Peers and mentors for code reviews
 
 ---
 
-## 🎓 Learning Outcomes
-
-**Technical:**
-- Go programming fundamentals
-- Test-Driven Development (TDD)
-- Pipeline architecture pattern
-- String manipulation and parsing
-- Error handling best practices
-
-**Process:**
-- Agile sprint planning
-- Incremental development
-- Code refactoring
-- Documentation standards
-- AI-assisted development
-
----
-
-## 📞 Contact
+## 📧 Contact
 
 **Theodore Vairaktaris**  
-Zone01 Athens  
-go-reloaded project
+Zone01 Athens Student  
+[GitHub Profile] | [Email]
 
 ---
 
-**Built with TDD and Agile methodology** ✅
+**Status:** Planning Phase Complete | Ready for Implementation 🚀
