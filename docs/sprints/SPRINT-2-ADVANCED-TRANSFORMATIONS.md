@@ -1,294 +1,213 @@
-# Sprint 2: Advanced Transformations
+# Sprint 2: Advanced Text Processing
 
-**Goal:** Implement linguistic rules: article correction (a→an), punctuation spacing, and quote formatting  
-**Duration:** 3-4 days  
-**Tasks:** 5  
-**Deliverable:** All 7 transformation types complete, Golden Test Cases 2-4 pass
+**Sprint Goal:** Implement context-aware transformations and pipeline integration
 
----
-
-## 🎯 Sprint Objectives
-
-By end of Sprint 2:
-- ✅ Article correction (a→an) working
-- ✅ Punctuation spacing correct
-- ✅ Quote pairing functional
-- ✅ All golden tests 1-4 passing
+**Duration:** 3-4 days | **Story Points:** 24
 
 ---
 
-## 🧩 TASK-012: Article Correction (a → an)
+## Sprint Backlog
 
-**Story Points:** 4/5 (Complex - lookahead logic)  
-**Time:** 3-4 hours  
-**Prerequisites:** TASK-011
-
-### Learning Objectives
-- Lookahead processing in token streams
-- Case-insensitive string comparison
-- Linguistic rule implementation
-
-### What to Build
-Function that changes "a" to "an" before vowels (a, e, i, o, u) or 'h'.
-
-### Test Scenarios
-**Basic cases:**
-- `["a", "apple"]` → `["an", "apple"]`
-- `["a", "elephant"]` → `["an", "elephant"]`
-- `["a", "hour"]` → `["an", "hour"]`
-
-**Case preservation:**
-- `["A", "amazing"]` → `["An", "amazing"]`
-
-**No change:**
-- `["a", "cat"]` → `["a", "cat"]` (consonant)
-
-**Edge cases:**
-- `["a"]` (no next word) → `["a"]` (unchanged)
-- `["a", "apple", "and", "a", "orange"]` → `["an", "apple", "and", "an", "orange"]`
-
-### Architecture Decision
-**Question:** What about 'university' (starts with vowel but sounds like consonant)?  
-**Answer:** Spec says ALL vowels and 'h' - follow spec literally.
-
-**Implementation note:** This requires lookahead (checking next token).
-
-### Acceptance Criteria
-- [ ] Converts "a" to "an" before a, e, i, o, u, h
-- [ ] Case preserved (A → An)
-- [ ] "a" before consonants unchanged
-- [ ] Golden Test Case 2 passes
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "How do I safely check the next token in a slice without going out of bounds?"
+| Task ID | Description | Points |
+|---------|-------------|--------|
+| TASK-015 | Apply case transformations | 3 |
+| TASK-016 | Article correction (a/an) | 5 |
+| TASK-017 | Punctuation spacing | 6 |
+| TASK-018 | Quote pairing | 5 |
+| TASK-019 | Pipeline integration | 5 |
 
 ---
 
-## 🧩 TASK-013: Punctuation Spacing
+## TASK-015: Apply Case Transformations
 
-**Story Points:** 4/5 (Complex - multiple rules)  
-**Time:** 3-4 hours  
-**Prerequisites:** TASK-012
+### Functionality Description
+Integrate case transformations (up, low, cap) with command parsing. Process token stream, detect case commands with optional counts like `(up, 3)`, apply to previous N words.
 
-### Learning Objectives
-- Context-aware formatting
-- Punctuation grouping rules
-- String reconstruction
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Single word: `["hello", "(up)"]` → `["HELLO"]`
+- With count: `["one", "two", "three", "(up, 2)"]` → `["one", "TWO", "THREE"]`
+- Lowercase: `["HELLO", "WORLD", "(low, 2)"]` → `["hello", "world"]`
+- Capitalize: `["hello", "world", "(cap, 2)"]` → `["Hello", "World"]`
+- Count exceeds words: `["word", "(up, 10)"]` → `["WORD"]` (graceful degradation)
+- No previous word: `["(up)", "word"]` → unchanged
 
-### What to Build
-Function that fixes punctuation spacing:
-- Punctuation (. , ! ? : ;) attaches to previous word
-- Groups like `...` and `!?` stay together
+### Implementation Goal (TDD - Green Phase)
+Create case application function that:
+- Iterates through token slice
+- Detects case commands using TASK-007 parser
+- Applies transformation to previous N tokens (default N=1)
+- Uses TASK-010, 011, 012 transformation functions
+- Handles count > available words gracefully
+- Removes command markers from output
 
-### Test Scenarios
-**Basic spacing:**
-- `["Hello", ",", "world"]` → `["Hello,", "world"]`
-- `["End", "of", "sentence", "."]` → `["End", "of", "sentence."]`
+### Validation (TDD - Refactor Phase)
+- All tests pass including edge cases
+- Graceful degradation working
+- Coverage ≥ 90%
+- Commit: `feat: integrate case transformations with command parsing`
 
-**Punctuation groups:**
-- `["Wait", ".", ".", "."]` → `["Wait..."]`
-- `["What", "!", "?"]` → `["What!?"]`
-
-**Multiple types:**
-- `["Note", ":", "important", ";", "remember"]` → `["Note:", "important;", "remember"]`
-
-### Architecture Decision
-**Question:** What if punctuation is at start of text?  
-**Answer:** Leave it unchanged (edge case, spec doesn't address).
-
-**Strategy:**
-1. Scan tokens
-2. When you find punctuation, collect all consecutive punctuation
-3. Attach the group to previous word
-
-### Acceptance Criteria
-- [ ] Punctuation attached to previous word
-- [ ] No space before punctuation
-- [ ] Groups (`...`, `!?`) stay together
-- [ ] Golden Test Case 3 passes
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "How do I collect consecutive punctuation marks and attach them to the previous token?"
+### Learning Resources
+- [Go slice manipulation](https://go.dev/blog/slices-intro)
+- [Graceful degradation pattern](https://en.wikipedia.org/wiki/Fault_tolerance)
 
 ---
 
-## 🧩 TASK-014: Quote Formatting
+## TASK-016: Article Correction (a/an)
 
-**Story Points:** 5/5 (Very Complex - stateful pairing)  
-**Time:** 4-5 hours  
-**Prerequisites:** TASK-013
+### Functionality Description
+Replace "a" with "an" before words starting with vowels (a, e, i, o, u) or 'h'. Case-insensitive detection. Handles both "a" and "A".
 
-### Learning Objectives
-- Pairing/matching algorithms
-- State machines
-- Handling unpaired elements
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Vowel sounds: `["a", "apple"]` → `["an", "apple"]`
+- Consonants: `["a", "cat"]` → `["a", "cat"]` (unchanged)
+- Letter h: `["a", "hour"]` → `["an", "hour"]`, `["a", "hero"]` → `["an", "hero"]`
+- Capital A: `["A", "apple"]` → `["An", "apple"]`
+- End of text: `["word", "a"]` → `["word", "a"]` (unchanged)
+- Multiple: `["a", "apple", "and", "a", "banana"]` → `["an", "apple", "and", "a", "banana"]`
 
-### What to Build
-Function that pairs single quotes `'...'` and formats content between them.
+### Implementation Goal (TDD - Green Phase)
+Create article correction function that:
+- Iterates through token slice
+- Detects "a" or "A" tokens
+- Checks if next token starts with vowel or 'h'
+- Replaces with "an" or "An" (preserves case)
+- Handles end of slice gracefully
 
-### Test Scenarios
-**Single word:**
-- `["say", "'", "hello", "'"]` → `["say", "'hello'"]`
+### Validation (TDD - Refactor Phase)
+- All tests pass including edge cases
+- Case preservation working
+- Coverage ≥ 90%
+- Commit: `feat: add article correction with vowel and h detection`
 
-**Multiple words:**
-- `["he", "said", ":", "'", "hello", "world", "'"]` → `["he", "said:", "'hello", "world'"]`
-
-**Spacing rules:**
-- Opening quote attaches to first word: `'hello`
-- Closing quote attaches to last word: `world'`
-- Spaces between words preserved
-
-**Edge cases:**
-- `["'", "word", "'", "and", "'", "another", "'"]` (multiple pairs)
-- `["test", "'", "word"]` (unpaired) → Leave unchanged
-
-### Architecture Decision
-**Question:** What about nested quotes?  
-**Answer:** Spec doesn't require it - keep simple, just pair first available quotes.
-
-**Strategy:**
-1. Find opening quote `'`
-2. Scan forward for closing quote `'`
-3. If found, group content between them
-4. If not found, leave opening quote unchanged
-
-### Acceptance Criteria
-- [ ] Paired quotes combined correctly
-- [ ] Single word: `'word'`
-- [ ] Multiple words: `'first middle last'`
-- [ ] Multiple pairs work independently
-- [ ] Unpaired quotes left unchanged
-- [ ] Golden Test Case 4 fully passes
-- [ ] All test scenarios pass
-
-### AI Guidance
-**Ask:** "What's a good algorithm for finding matching pairs in a sequence? Should I use a stack?"
+### Learning Resources
+- [Go strings.HasPrefix](https://pkg.go.dev/strings#HasPrefix)
+- [Go unicode.ToLower](https://pkg.go.dev/unicode#ToLower)
 
 ---
 
-## 🧩 TASK-015: Integration Testing
+## TASK-017: Punctuation Spacing
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-014
+### Functionality Description
+Fix spacing around punctuation per English typography rules. Attach punctuation to previous word, add space after. Handles: . , ! ? ; : and groups like ... !?
 
-### Learning Objectives
-- Integration testing vs unit testing
-- Test coverage measurement
-- End-to-end verification
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic: `["hello", ",", "world"]` → `["hello,", "world"]`
+- Multiple marks: `["hello", ".", ".", "."]` → `["hello..."]`
+- Question/exclamation: `["what", "?"]` → `["what?"]`
+- Consecutive: `["word", "!", "?"]` → `["word!?"]`
+- At start: `[".", "word"]` → `[".", "word"]` (unchanged)
+- Mixed: `["test", ",", "wait", ".", ".", ".", "really", "?"]` → `["test,", "wait...", "really?"]`
 
-### What to Build
-Comprehensive tests for all golden test cases (1-4) and complex combinations.
+### Implementation Goal (TDD - Green Phase)
+Create punctuation fixing function that:
+- Identifies punctuation tokens (. , ! ? ; :)
+- Attaches to previous word token
+- Merges consecutive punctuation into groups
+- Handles start of text gracefully
+- Returns modified token slice
 
-### Test Scenarios
-**Golden Test Cases:**
-- Test Case 1: Hex and binary conversions
-- Test Case 2: Article correction
-- Test Case 3: Punctuation spacing
-- Test Case 4: All rules combined
+### Validation (TDD - Refactor Phase)
+- All tests pass
+- All punctuation types handled
+- Coverage ≥ 90%
+- Commit: `feat: add punctuation spacing correction`
 
-**Complex integration:**
-```
-Input: "here (cap) is a interesting text with 1A (hex) items and 11 (bin) more , all in ' a epic document (cap, 2) ' ... what do you think (up, 4) ?"
-Expected: "Here is an interesting text with 26 items and 3 more, all in 'an Epic Document'... WHAT DO YOU THINK?"
-```
-
-### Architecture Decision
-**Question:** What's the pipeline order?  
-**Answer:** (Must be documented!)
-1. Number conversions (hex, bin)
-2. Case transformations (up, low, cap)
-3. Article correction (a→an)
-4. Punctuation spacing
-5. Quote formatting
-
-**Rationale:** Case changes must happen before article correction (affects case of 'A').
-
-### Acceptance Criteria
-- [ ] All 4 golden tests pass
-- [ ] Complex integration test passes
-- [ ] Test coverage >80%
-- [ ] All transformation orders correct
-
-### AI Guidance
-**Ask:** "How do I measure test coverage in Go? What does >80% coverage mean?"
+### Learning Resources
+- [English punctuation rules](https://en.wikipedia.org/wiki/Sentence_spacing)
+- [Go strings.Contains](https://pkg.go.dev/strings#Contains)
 
 ---
 
-## 🧩 TASK-016: Code Review & Cleanup
+## TASK-018: Quote Pairing
 
-**Story Points:** 1/5 (Trivial)  
-**Time:** 1 hour  
-**Prerequisites:** TASK-015
+### Functionality Description
+Replace single quotes with proper pairing. Uses state tracking: first `'` opens, second `'` closes, third `'` opens new pair. Attach quotes to adjacent words.
 
-### Learning Objectives
-- Code quality standards
-- Self-review process
-- Go style conventions
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic pair: `["'", "hello", "'"]` → `["'hello'"]`
+- Two pairs: `["'", "a", "'", "and", "'", "b", "'"]` → `["'a'", "and", "'b'"]`
+- Multi-word: `["'", "hello", "world", "'"]` → `["'hello", "world'"]`
+- Odd number: `["'", "word"]` → `["'word"]` (opening only)
+- No quotes: `["hello", "world"]` → unchanged
+- Mid-sentence: `["he", "said", "'", "hi", "'"]` → `["he", "said", "'hi'"]`
 
-### What to Build
-N/A - This is cleanup/review, not new features.
+### Implementation Goal (TDD - Green Phase)
+Create quote pairing function that:
+- Uses boolean toggle or state variable (open/closed)
+- Alternates between opening and closing quotes
+- Attaches opening quote to next word
+- Attaches closing quote to previous word
+- Handles odd number gracefully (leave last as opening)
+- Returns modified token slice
 
-### Review Checklist
-**Code Quality:**
-- [ ] Function names are clear
-- [ ] No magic numbers or strings
-- [ ] Comments explain "why" not "what"
-- [ ] Consistent naming conventions
+### Validation (TDD - Refactor Phase)
+- All tests pass
+- State machine correct
+- Coverage ≥ 90%
+- Commit: `feat: add quote pairing with state tracking`
 
-**Testing:**
-- [ ] All tests pass
-- [ ] Test names describe what they test
-- [ ] Edge cases covered
-
-**Go Standards:**
-- [ ] Run `go fmt` (auto-formats code)
-- [ ] Run `go vet` (finds potential bugs)
-- [ ] No compiler warnings
-
-### Acceptance Criteria
-- [ ] Code is clean and readable
-- [ ] All tools (fmt, vet) pass
-- [ ] Ready for Sprint 3 (final polish)
-
-### AI Guidance
-**Ask:** "Review my code structure - are my function names clear? Is there duplication I missed?"
+### Learning Resources
+- [State machines](https://en.wikipedia.org/wiki/Finite-state_machine)
+- [Go boolean toggle pattern](https://gobyexample.com/variables)
 
 ---
 
-## ✅ Sprint 2 Completion
+## TASK-019: Pipeline Integration
 
-Before moving to Sprint 3:
+### Functionality Description
+Connect all transformations in correct order. Create main processing pipeline that applies transformations sequentially: numbers → case → articles → punctuation → quotes.
 
-**Functional:**
-- [ ] All 7 transformation types complete
-- [ ] Golden Test Cases 1, 2, 3, 4 pass
-- [ ] Complex integration test passes
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Full pipeline: `["1E", "(hex)", "is", "a", "example", "(cap)"]` → `["30", "is", "an", "Example"]`
+- Multiple rules: `["it", "(cap)", "was", "a", "apple", ",", "really", "!"]` → `["It", "was", "an", "apple,", "really!"]`
+- All transformations: Test from GOLDEN-TEST-SET.md Test 12
+- Order matters: Verify case before articles, articles before punctuation
+- Empty input: `[]` → `[]`
 
-**Technical:**
-- [ ] All tests pass
-- [ ] Code formatted (`go fmt`)
-- [ ] No vet warnings
-- [ ] Test coverage >80%
+### Implementation Goal (TDD - Green Phase)
+Create pipeline orchestration function that:
+- Takes token slice as input
+- Applies transformations in order:
+  1. Number conversions (TASK-014)
+  2. Case transformations (TASK-015)
+  3. Article correction (TASK-016)
+  4. Punctuation spacing (TASK-017)
+  5. Quote pairing (TASK-018)
+- Returns final transformed token slice
+- Each stage receives output of previous stage
 
-**Manual Verification:**
-```
-Test each golden case manually to ensure outputs match exactly!
-```
+### Validation (TDD - Refactor Phase)
+- All tests pass
+- Transformation order correct
+- Integration with all previous tasks working
+- Coverage ≥ 90%
+- Commit: `feat: implement transformation pipeline orchestration`
+
+### Learning Resources
+- [Pipeline pattern](https://go.dev/blog/pipelines)
+- [Function composition in Go](https://dave.cheney.net/2016/01/18/codereviews)
 
 ---
 
-## 🎓 What You Learned
+## Sprint Success Criteria
 
-- ✅ Lookahead logic (article correction)
-- ✅ Stateful processing (quote pairing)
-- ✅ Complex string manipulation
-- ✅ Integration testing strategies
-- ✅ Pipeline ordering importance
-- ✅ Code review skills
+- ✅ All 5 tasks complete with passing tests
+- ✅ Context-aware processing working
+- ✅ Code coverage ≥ 90%
+- ✅ Pipeline integration complete
+- ✅ All transformations working together correctly
 
 ---
 
-**Next:** [`SPRINT-3-INTEGRATION.md`](./SPRINT-3-INTEGRATION.md) - Final polish! 🚀
+## Dependencies
+
+- TASK-015 requires TASK-007, 010, 011, 012 complete
+- TASK-016, 017, 018 can be done in parallel
+- TASK-019 requires all previous tasks (014, 015, 016, 017, 018) complete
+
+**Next:** Sprint 3 - Integration testing, documentation, final polish
