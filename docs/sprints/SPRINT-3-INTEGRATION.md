@@ -1,416 +1,259 @@
-# Sprint 3: Integration & Production Polish
+# Sprint 3: Testing, Documentation & Final Polish
 
-**Goal:** Complete all remaining golden tests, add error handling, write documentation, prepare for audit  
-**Duration:** 2-3 days  
-**Tasks:** 6  
-**Deliverable:** Production-ready, audit-ready project with all 12 golden tests passing
+**Sprint Goal:** Achieve production-ready code with comprehensive testing and documentation
 
----
-
-## 🎯 Sprint Objectives
-
-By end of Sprint 3:
-- ✅ All 12 golden tests passing
-- ✅ Robust error handling
-- ✅ Complete documentation
-- ✅ Audit-ready codebase
+**Duration:** 2-3 days | **Story Points:** 21
 
 ---
 
-## 🧩 TASK-017: Complete Golden Test Coverage
+## Sprint Backlog
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-016
-
-### Learning Objectives
-- Comprehensive test coverage
-- Edge case validation
-- Specification compliance
-
-### What to Build
-Tests for remaining golden cases (5-12) from GOLDEN-TEST-SET.md.
-
-### Test Scenarios by Category
-
-**Category B: Tricky Cases**
-- Test 5: Quotes with punctuation inside
-- Test 6: Article correction with 'h'
-- Test 7: Count exceeds available words
-- Test 8: Multiple conversions in one line
-- Test 9: Already-transformed text
-- Test 10: Empty/edge cases
-- Test 11: Invalid commands
-
-**Category C: Ultimate Integration**
-- Test 12: Everything combined
-
-### Architecture Decision
-**Question:** How to handle invalid commands?  
-**Answer:** Leave them unchanged (fail gracefully, don't crash).
-
-### Acceptance Criteria
-- [ ] All 12 golden tests pass
-- [ ] Test coverage >85%
-- [ ] No test failures
-
-### AI Guidance
-**Ask:** "How do I organize 12+ test cases in Go? Should I use subtests or separate functions?"
+| Task ID | Description | Points |
+|---------|-------------|--------|
+| TASK-020 | Detokenization | 3 |
+| TASK-021 | End-to-end integration | 4 |
+| TASK-022 | Golden file testing | 5 |
+| TASK-023 | Error handling standardization | 3 |
+| TASK-024 | Technical documentation | 3 |
+| TASK-025 | Final quality checks | 3 |
 
 ---
 
-## 🧩 TASK-018: Error Handling
+## TASK-020: Detokenization
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-017
+### Functionality Description
+Convert token slice back to string. Join tokens with single spaces. Handle special cases where tokens are already attached (like punctuation).
 
-### Learning Objectives
-- Defensive programming
-- Graceful error recovery
-- User-friendly error messages
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Basic: `["hello", "world"]` → `"hello world"`
+- With punctuation: `["hello,", "world!"]` → `"hello, world!"`
+- With quotes: `["'hello'", "world"]` → `"'hello' world"`
+- Single token: `["hello"]` → `"hello"`
+- Empty: `[]` → `""`
 
-### What to Build
-Robust error handling for all edge cases.
+### Implementation Goal (TDD - Green Phase)
+Create detokenization function that:
+- Joins tokens with single space
+- Handles empty slice
+- Returns final string ready for output
+- No special logic needed (transformations already applied)
 
-### Scenarios to Handle
+### Validation (TDD - Refactor Phase)
+- All tests pass
+- Coverage ≥ 90%
+- Commit: `feat: add detokenization function`
 
-**File errors:**
-- Input file doesn't exist → Clear error message
-- Output directory not writable → Clear error message
-- Permission denied → Clear error message
-
-**Invalid input:**
-- Empty file → Handle gracefully (output empty file)
-- File with only spaces → Handle gracefully
-- Very large files → Should work (Go handles this)
-
-**Invalid commands:**
-- `(hex)` with no previous word → Ignore
-- `(up, -5)` negative count → Ignore
-- `test (hex)` where "test" isn't hex → Ignore
-
-### Architecture Decision
-**Philosophy:** Never crash. Invalid input = ignore gracefully.
-
-**Error messages should:**
-- Be clear and actionable
-- Include filename/context
-- Not expose technical details to user
-
-### Acceptance Criteria
-- [ ] Program never panics
-- [ ] All file errors handled with messages
-- [ ] Invalid commands ignored (not errors)
-- [ ] Exit codes correct (0=success, 1=error)
-
-### AI Guidance
-**Ask:** "What's the Go idiomatic way to handle errors? Should I use panic or return errors?"
+### Learning Resources
+- [Go strings.Join](https://pkg.go.dev/strings#Join)
 
 ---
 
-## 🧩 TASK-019: Documentation
+## TASK-021: End-to-End Integration
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-018
+### Functionality Description
+Connect all components: CLI → read file → tokenize → pipeline → detokenize → write file. Complete the main function with full workflow.
 
-### Learning Objectives
-- Technical writing
-- Go documentation conventions
-- README best practices
+### Test Writing (TDD - Red Phase)
+Write integration tests:
+- Create test input files in `testdata/input/`
+- Test full workflow: read → process → write
+- Verify output file contents match expected
+- Test error cases: missing input file, write permissions
+- Test with actual golden test cases
 
-### What to Build
-Complete project documentation.
+### Implementation Goal (TDD - Green Phase)
+Complete main function that:
+- Uses TASK-005 CLI skeleton
+- Calls TASK-006 tokenization
+- Calls TASK-019 pipeline
+- Calls TASK-020 detokenization
+- Writes result to output file
+- Handles all errors gracefully
 
-### Documents to Create/Update
+### Validation (TDD - Refactor Phase)
+- All integration tests pass
+- End-to-end workflow complete
+- Error handling robust
+- Coverage ≥ 85%
+- Commit: `feat: complete end-to-end integration`
 
-**README.md:**
-- Project overview
-- Installation instructions
-- Usage examples
-- All transformation rules explained
-- Contributing guidelines (for auditors)
-
-**Code comments:**
-- Package-level comment
-- Function documentation
-- Complex algorithm explanations
-
-**DEVELOPMENT.md** (optional):
-- How to run tests
-- How to add new transformations
-- Architecture explanation
-
-### Documentation Standards
-Follow Go documentation conventions:
-- Package comment at top of main file
-- Function comments start with function name
-- Examples show expected behavior
-
-### Acceptance Criteria
-- [ ] README is comprehensive and clear
-- [ ] All public functions documented
-- [ ] Complex logic has comments explaining "why"
-- [ ] Usage examples are accurate
-
-### AI Guidance
-**Ask:** "What should I include in a README for a CLI tool? Show me an example structure."
+### Learning Resources
+- [Integration testing in Go](https://go.dev/doc/tutorial/add-a-test)
+- [Table-driven tests](https://dave.cheney.net/2019/05/07/prefer-table-driven-tests)
 
 ---
 
-## 🧩 TASK-020: Final Code Review
+## TASK-022: Golden File Testing
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1 hour  
-**Prerequisites:** TASK-019
+### Functionality Description
+Implement all 12 test cases from GOLDEN-TEST-SET.md. Create input/expected file pairs. Verify program output matches expected output exactly.
 
-### Learning Objectives
-- Code quality assessment
-- Refactoring identification
-- Standards compliance
+### Test Writing (TDD - Red Phase)
+Create golden test files in `testdata/`:
+- Test 1-4: Official audit examples
+- Test 5-11: Tricky edge cases
+- Test 12: Complex integration test
+- Each test has `input_N.txt` and `expected_N.txt`
 
-### What to Build
-N/A - This is review and polish.
+Write test function that:
+- Reads each input file
+- Processes through pipeline
+- Compares output to expected file
+- Reports differences clearly
 
-### Review Areas
+### Implementation Goal (TDD - Green Phase)
+Implement golden file test runner:
+- Iterate through all test file pairs
+- Run program on each input
+- Compare actual vs expected output
+- Generate diff on mismatch
+- All 12 tests must pass
 
-**Code Organization:**
-- [ ] Functions have single responsibility
-- [ ] Related code is grouped together
-- [ ] File structure is logical
+### Validation (TDD - Refactor Phase)
+- All 12 golden tests pass
+- Test files version controlled
+- Clear failure messages
+- Commit: `test: add all 12 golden file tests`
 
-**Naming:**
-- [ ] Variables have descriptive names
-- [ ] Functions describe what they do
-- [ ] No abbreviations unless obvious
-
-**Testing:**
-- [ ] Every function has tests
-- [ ] Test names are descriptive
-- [ ] Edge cases covered
-
-**Go Standards:**
-- [ ] `go fmt` applied
-- [ ] `go vet` passes
-- [ ] No unused variables/imports
-
-### Potential Refactorings
-- Extract magic strings to constants
-- Combine similar functions
-- Simplify complex conditions
-
-### Acceptance Criteria
-- [ ] Code is clean and maintainable
-- [ ] No code smells
-- [ ] Ready for peer review
-
-### AI Guidance
-**Ask:** "Review my code for common Go anti-patterns and suggest improvements."
+### Learning Resources
+- [Go testdata conventions](https://pkg.go.dev/cmd/go#hdr-Test_packages)
+- [File comparison in tests](https://pkg.go.dev/os#ReadFile)
 
 ---
 
-## 🧩 TASK-021: Manual Testing & Validation
+## TASK-023: Error Handling Standardization
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-020
+### Functionality Description
+Review and improve all error messages. Add context to errors (position, value, operation). Ensure consistent error handling patterns throughout codebase.
 
-### Learning Objectives
-- Manual testing strategies
-- Output verification
-- Test case creation
+### Test Writing (TDD - Red Phase)
+Write tests for error scenarios:
+- Error messages contain context
+- Errors include relevant values
+- All error paths tested
+- No generic "error" messages
 
-### What to Build
-Comprehensive manual test suite.
+### Implementation Goal (TDD - Green Phase)
+Improve error handling:
+- Add context to all errors (what failed, why, where)
+- Use descriptive error messages
+- Ensure errors are actionable
+- Review all error returns in codebase
 
-### Testing Process
+### Validation (TDD - Refactor Phase)
+- All error paths tested
+- Error messages descriptive and helpful
+- No generic error messages remain
+- Coverage includes error cases
+- Commit: `refactor: improve error messages with context`
 
-**1. Golden Test Verification**
-For each of the 12 golden tests:
-- Create input file with exact test content
-- Run program
-- Compare output byte-by-byte with expected
-
-**2. Edge Case Testing**
-- Empty file
-- File with only whitespace
-- Very long lines
-- Special characters
-- Mixed transformations
-
-**3. Error Testing**
-- Nonexistent input file
-- No write permission on output
-- Invalid command-line arguments
-
-### Test Documentation
-Create `testdata/` folder with:
-- Input files: `test_01_input.txt`
-- Expected outputs: `test_01_expected.txt`
-- README explaining each test
-
-### Acceptance Criteria
-- [ ] All 12 golden tests verified manually
-- [ ] Edge cases tested
-- [ ] Error cases tested
-- [ ] Test files documented
-
-### AI Guidance
-**Ask:** "How do I compare two files for exact equality in terminal? What command should I use?"
+### Learning Resources
+- [Go error handling](https://go.dev/blog/error-handling-and-go)
+- [Error wrapping in Go](https://go.dev/blog/go1.13-errors)
 
 ---
 
-## 🧩 TASK-022: Audit Preparation
+## TASK-024: Technical Documentation
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-021
+### Functionality Description
+Complete project documentation: README with usage instructions, architecture overview, function documentation with godoc comments.
 
-### Learning Objectives
-- Peer review preparation
-- Project presentation
-- Professional delivery standards
+### Test Writing (TDD - Red Phase)
+Not applicable - documentation task.
 
-### What to Build
-Final audit-ready package.
+### Implementation Goal (TDD - Green Phase)
+Create comprehensive documentation:
+- Update README with:
+  - Installation instructions
+  - Usage examples
+  - Feature list
+  - Testing instructions
+- Add godoc comments to all exported functions
+- Document transformation order and why it matters
+- Add architecture diagram or explanation
+- Verify all examples work
 
-### Audit Checklist
+### Validation (TDD - Refactor Phase)
+- README complete and accurate
+- All public functions documented
+- Examples tested and working
+- Documentation clear for other students
+- Commit: `docs: add comprehensive project documentation`
 
-**Repository Structure:**
-- [ ] Clean git history (meaningful commits)
-- [ ] No unnecessary files committed
-- [ ] .gitignore properly configured
-
-**Code Quality:**
-- [ ] Passes `go build`
-- [ ] Passes `go test`
-- [ ] Passes `go vet`
-- [ ] Formatted with `go fmt`
-
-**Documentation:**
-- [ ] README explains everything clearly
-- [ ] Usage examples work
-- [ ] Installation steps are correct
-
-**Testing:**
-- [ ] All tests pass
-- [ ] Test coverage documented
-- [ ] Edge cases covered
-
-### Final Deliverables
-1. Working executable
-2. Complete source code
-3. Comprehensive tests
-4. Clear documentation
-5. Test data files
-
-### Mock Audit Questions
-Prepare answers for:
-- "How does your pipeline work?"
-- "Why did you choose this transformation order?"
-- "How do you handle invalid input?"
-- "What's your test coverage?"
-
-### Acceptance Criteria
-- [ ] Project is audit-ready
-- [ ] Another student can run and understand it
-- [ ] All requirements met
-- [ ] Documentation is clear
-
-### AI Guidance
-**Ask:** "What should I prepare for a code audit? What questions should I expect?"
+### Learning Resources
+- [Effective Go documentation](https://go.dev/doc/effective_go)
+- [Godoc best practices](https://go.dev/blog/godoc)
 
 ---
 
-## ✅ Sprint 3 Completion - PROJECT DONE!
+## TASK-025: Final Quality Checks
 
-**Final Verification:**
+### Functionality Description
+Comprehensive final review before project delivery. Run all quality tools, verify all requirements met, ensure code is production-ready.
 
-**Functional:**
-- [ ] All 12 golden tests pass
-- [ ] Program handles all edge cases
-- [ ] Error handling is robust
-- [ ] Output matches specification exactly
+### Test Writing (TDD - Red Phase)
+Not applicable - verification task.
 
-**Technical:**
-- [ ] Code is ~200-300 lines (concise!)
-- [ ] Tests are comprehensive
-- [ ] Documentation is complete
-- [ ] No warnings or errors
+### Implementation Goal (TDD - Green Phase)
+Complete final checklist:
+- Run `go fmt ./...` - all code formatted
+- Run `go vet ./...` - no warnings
+- Run `go test -v` - all tests pass
+- Run `go test -cover` - coverage ≥ 90%
+- Verify all 12 golden tests pass
+- Check git history is clean
+- Verify README accurate
+- Test program manually with various inputs
+- Ensure ~200-300 lines of code (concise)
 
-**Professional:**
-- [ ] README is clear
-- [ ] Git history is clean
-- [ ] Code is readable
-- [ ] Ready for peer audit
+### Validation (TDD - Refactor Phase)
+- All automated checks pass
+- Coverage ≥ 90%
+- All golden tests pass
+- Code is concise and readable
+- Project delivery-ready
+- Commit: `chore: final quality checks and polish`
 
----
-
-## 🎓 What You Learned
-
-Through this entire project:
-
-**Technical Skills:**
-- ✅ Go programming language
-- ✅ Test-Driven Development
-- ✅ File I/O operations
-- ✅ String manipulation
-- ✅ Algorithm design
-- ✅ Error handling
-- ✅ Testing strategies
-
-**Software Engineering:**
-- ✅ Agile methodology
-- ✅ Sprint planning
-- ✅ Code refactoring
-- ✅ Documentation writing
-- ✅ Code review processes
-- ✅ Quality assurance
-
-**Problem Solving:**
-- ✅ Breaking problems into small tasks
-- ✅ Handling edge cases
-- ✅ Test-driven thinking
-- ✅ Debugging systematically
+### Learning Resources
+- [Go code quality checklist](https://go.dev/wiki/CodeReviewComments)
+- [Go best practices](https://peter.bourgon.org/go-best-practices-2016/)
 
 ---
 
-## 🎉 Congratulations!
+## Sprint Success Criteria
 
-You've completed go-reloaded following professional Agile and TDD practices!
-
-**Next Steps:**
-1. Submit for peer audit
-2. Help audit others' projects
-3. Reflect on what you learned
-4. Apply these skills to next project
-
----
-
-## 📊 Project Statistics
-
-**Development:**
-- Tasks completed: 22
-- Sprints: 4
-- Development time: ~10-12 days
-
-**Code:**
-- Lines of code: ~200-300
-- Test coverage: >85%
-- Golden tests: 12/12 passing ✅
-
-**Skills:**
-- New Go concepts learned: 20+
-- Testing practices mastered: TDD
-- Software engineering skills: Agile, refactoring, documentation
+- ✅ All 6 tasks complete
+- ✅ All 12 golden tests pass
+- ✅ Code coverage ≥ 90%
+- ✅ Documentation complete
+- ✅ Code is ~200-300 lines
+- ✅ Project production-ready
 
 ---
 
-**You did it!** 🚀🎉
+## Dependencies
+
+- TASK-020 requires TASK-019 complete
+- TASK-021 requires TASK-005, 006, 019, 020 complete
+- TASK-022 requires TASK-021 complete
+- TASK-023, 024 can be done in parallel
+- TASK-025 should be done last
 
 ---
 
-*"The secret to getting ahead is getting started."* — Mark Twain
+## Sprint Notes
 
-**End of Sprint 3 - End of Project**
+**Common Mistakes:**
+- Skipping error handling tests
+- Not testing with actual files
+- Forgetting to update documentation
+- Not running quality tools before submission
+
+**Success Indicators:**
+- All tests green
+- Code is readable and maintainable
+- Other students can understand your code
+- You can explain every design decision
+
+**Project Complete!** 🎉
