@@ -1,232 +1,215 @@
-# Sprint 0: Infrastructure & Foundation
+# Sprint 0: Infrastructure & Project Setup
 
-**Goal:** Set up project structure and implement basic file I/O with CLI handling.  
-**Duration:** 1-2 days  
-**Tasks:** 4  
-**Deliverable:** Program reads input file and writes output file (no transformations yet)
+**Sprint Goal:** Establish project foundation, development environment, and testing infrastructure
 
----
-
-## 🎯 Sprint Objectives
-
-By end of Sprint 0:
-- ✅ Go module initialized
-- ✅ CLI arguments validated
-- ✅ File reading works
-- ✅ File writing works
-- ✅ Simple test exists
+**Duration:** 1-2 days | **Story Points:** 13
 
 ---
 
-## 🧩 TASK-001: Project Initialization
+## Sprint Backlog
 
-**Story Points:** 1/5 (Trivial)  
-**Time:** 30 minutes
-
-### Learning Objectives
-- Go module system (`go.mod`)
-- Project structure for small Go projects
-- `.gitignore` for Go
-
-### What to Build
-Initialize Go project with:
-- `go.mod` file
-- `main.go` (empty `main()` function)
-- `main_test.go` (empty test file)
-- `.gitignore` (Go patterns)
-
-### Test Scenarios
-N/A - Infrastructure setup
-
-### Acceptance Criteria
-- [ ] `go build` runs without errors
-- [ ] `go test` shows "no tests to run"
-- [ ] `.gitignore` prevents committing binaries
-
-### AI Guidance
-**Ask:** "What should I include in .gitignore for a Go CLI project?"
-
-### Resources
-- [How to Write Go Code](https://go.dev/doc/code)
-- [Go Modules Reference](https://go.dev/ref/mod)
+| Task ID | Description | Points |
+|---------|-------------|--------|
+| TASK-001 | Project initialization | 3 |
+| TASK-002 | Git repository setup | 2 |
+| TASK-003 | Testing framework | 4 |
+| TASK-004 | Development tools | 3 |
+| TASK-005 | CLI skeleton | 3 |
 
 ---
 
-## 🧩 TASK-002: CLI Argument Validation
+## TASK-001: Project Initialization
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-001
+### Functionality Description
+Create Go module and project directory structure. Establish folder organization for source code, tests, and documentation.
 
-### Learning Objectives
-- `os.Args` for command-line parsing
-- Input validation patterns
-- Exit codes (0=success, 1=error)
+### Test Writing (TDD - Red Phase)
+Infrastructure task - manual verification:
+- Verify `go.mod` exists and is valid
+- Check all required directories created
+- Confirm project builds without errors
 
-### What to Build
-Function that validates exactly 2 arguments (input file, output file).
+### Implementation Goal (TDD - Green Phase)
+Initialize project structure:
+- Run `go mod init go-reloaded`
+- Create directories: `tests/` and `testdata/`
+- Create empty `main.go` with package declaration
+- Verify `go build` succeeds
 
-### Test Scenarios
-**Test 1:** Valid arguments  
-- Input: `["program", "in.txt", "out.txt"]`
-- Expected: No error
+### Validation (TDD - Refactor Phase)
+- `go.mod` file present with correct module name
+- All directories created
+- `go build` runs without errors
+- Project structure matches plan
+- Commit: `chore: initialize Go module and project structure`
 
-**Test 2:** Missing output file  
-- Input: `["program", "in.txt"]`
-- Expected: Error with usage message
-
-**Test 3:** No arguments  
-- Input: `["program"]`
-- Expected: Error with usage message
-
-**Test 4:** Too many arguments  
-- Input: `["program", "a.txt", "b.txt", "c.txt"]`
-- Expected: Error with usage message
-
-### Edge Cases
-- Empty filename strings
-- Very long filenames
-
-### Acceptance Criteria
-- [ ] Exactly 2 arguments required
-- [ ] Usage message shown on error
-- [ ] All 4 test cases pass
-
-### AI Guidance
-**Ask:** "In Go, why is os.Args[0] the program name and how do I validate argument count?"
-
-### Resources
-- [Go by Example: Command-Line Arguments](https://gobyexample.com/command-line-arguments)
+### Learning Resources
+- [Go modules tutorial](https://go.dev/doc/tutorial/create-module)
+- [Go project layout](https://github.com/golang-standards/project-layout)
 
 ---
 
-## 🧩 TASK-003: File Reading
+## TASK-002: Git Repository Setup
 
-**Story Points:** 2/5 (Simple)  
-**Time:** 1-2 hours  
-**Prerequisites:** TASK-002
+### Functionality Description
+Initialize Git repository with proper configuration. Create `.gitignore` for Go projects. Set up branch structure and initial commit.
 
-### Learning Objectives
-- `os.ReadFile` for reading files
-- Error handling patterns
-- Test fixtures with `testdata/` directory
+### Test Writing (TDD - Red Phase)
+Manual verification:
+- Git repository initialized
+- `.gitignore` excludes build artifacts
+- Initial commit contains base structure
+- Remote repository connected (if applicable)
 
-### What to Build
-Function that reads file contents into a string.
+### Implementation Goal (TDD - Green Phase)
+Setup version control:
+- Run `git init`
+- Create `.gitignore` with Go-specific exclusions (binaries, test coverage, IDE files, OS files)
+- Create initial commit with existing docs
+- Connect to remote repository if applicable
 
-### Test Scenarios
-**Test 1:** Read existing file  
-- Create `testdata/sample.txt` with "Hello, World!"
-- Expected: Function returns "Hello, World!"
+### Validation (TDD - Refactor Phase)
+- `.git` directory exists
+- `.gitignore` configured correctly
+- Initial commit made
+- Clean git status
+- Commit: `chore: setup git repository with gitignore`
 
-**Test 2:** Non-existent file  
-- Filename: `testdata/nonexistent.txt`
-- Expected: Error returned
-
-**Test 3:** Empty filename  
-- Input: `""`
-- Expected: Error returned
-
-### Edge Cases
-- Empty files (valid - return empty string)
-- Very large files (>1MB)
-- Files without read permissions
-
-### Acceptance Criteria
-- [ ] Successfully reads text files
-- [ ] Returns error for missing files
-- [ ] All 3 test cases pass
-
-### AI Guidance
-**Ask:** "What's the difference between os.ReadFile and os.Open in Go? Which is simpler for reading entire files?"
-
-### Resources
-- [Go by Example: Reading Files](https://gobyexample.com/reading-files)
-- [testdata convention in Go](https://dave.cheney.net/2016/05/10/test-fixtures-in-go)
+### Learning Resources
+- [Git basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
+- [Go .gitignore templates](https://github.com/github/gitignore/blob/main/Go.gitignore)
 
 ---
 
-## 🧩 TASK-004: File Writing & Pipeline Skeleton
+## TASK-003: Testing Framework Setup
 
-**Story Points:** 3/5 (Moderate)  
-**Time:** 2-3 hours  
-**Prerequisites:** TASK-003
+### Functionality Description
+Configure Go testing environment. Create test file structure. Set up golden test directory. Prepare for TDD workflow.
 
-### Learning Objectives
-- `os.WriteFile` for writing files
-- Function composition (pipeline pattern)
-- Integration testing
+### Test Writing (TDD - Red Phase)
+Create sample test file to verify setup:
+- Create `main_test.go` with placeholder test function
+- Test should log "Testing framework is ready"
+- Run `go test -v` - should pass
 
-### What to Build
-1. Function that writes string to file
-2. `processText()` function (currently just returns input unchanged)
-3. `main()` that connects: read → process → write
+### Implementation Goal (TDD - Green Phase)
+Setup testing infrastructure:
+- Create `main_test.go` with sample test
+- Create `testdata/` subdirectories: `input/` and `expected/`
+- Verify test discovery works
+- Run sample test successfully
 
-### Test Scenarios
-**Test 1:** Write content to file  
-- Input: "Test output"
-- Expected: File created with exact content
+### Validation (TDD - Refactor Phase)
+- `go test -v` runs successfully
+- Test file discovered automatically
+- Test output is readable
+- Golden test directories ready
+- Commit: `test: setup testing framework and directories`
 
-**Test 2:** Overwrite existing file  
-- Create file, write new content
-- Expected: File replaced with new content
-
-**Test 3:** End-to-end pipeline  
-- Create input.txt: "Hello"
-- Run: `main` with input.txt and output.txt
-- Expected: output.txt contains "Hello" (unchanged for now)
-
-### Edge Cases
-- Writing to protected directory (permission denied)
-- Very long file paths
-- Empty string content (valid)
-
-### Acceptance Criteria
-- [ ] File writing works correctly
-- [ ] `processText()` passes through input unchanged (stub)
-- [ ] Full pipeline works: read → process → write
-- [ ] All 3 test cases pass
-
-### AI Guidance
-**Ask:** "What file permissions should I use with os.WriteFile for a text file? What does 0644 mean?"
-
-### Resources
-- [Go by Example: Writing Files](https://gobyexample.com/writing-files)
-- [Unix File Permissions](https://chmod-calculator.com/)
+### Learning Resources
+- [Go testing package](https://pkg.go.dev/testing)
+- [Writing tests in Go](https://go.dev/doc/tutorial/add-a-test)
+- [Table-driven tests](https://dave.cheney.net/2019/05/07/prefer-table-driven-tests)
 
 ---
 
-## ✅ Sprint 0 Completion
+## TASK-004: Development Tools Configuration
 
-Before moving to Sprint 1:
+### Functionality Description
+Install and configure essential Go development tools: formatter, linter, static analyzer. Set up pre-commit checks.
 
-**Functional:**
-- [ ] Program reads input file
-- [ ] Program writes output file
-- [ ] CLI validation works
+### Test Writing (TDD - Red Phase)
+Manual verification:
+- `go fmt` formats code
+- `go vet` detects issues
+- Optional: `golangci-lint` runs
 
-**Technical:**
-- [ ] All tests pass
-- [ ] `go build` succeeds
-- [ ] No compiler warnings
+### Implementation Goal (TDD - Green Phase)
+Configure development tools:
+- Verify `go fmt` works on project
+- Verify `go vet` works on project
+- Optional: Install and configure `golangci-lint`
+- Optional: Create Makefile with common commands (test, fmt, vet)
 
-**Manual Test:**
-```
-echo "Test" > input.txt
-go run . input.txt output.txt
-cat output.txt  # Should show: Test
-```
+### Validation (TDD - Refactor Phase)
+- `go fmt` runs without errors
+- `go vet` produces no warnings
+- Linter configured (optional)
+- Tools documented in README
+- Commit: `chore: configure development tools and linters`
+
+### Learning Resources
+- [go fmt command](https://pkg.go.dev/cmd/gofmt)
+- [go vet overview](https://pkg.go.dev/cmd/vet)
+- [golangci-lint](https://golangci-lint.run/)
 
 ---
 
-## 🎓 What You Learned
+## TASK-005: CLI Skeleton Implementation
 
-- ✅ Go project setup
-- ✅ Command-line argument parsing
-- ✅ File I/O operations
-- ✅ Basic testing in Go
-- ✅ Pipeline architecture concept
+### Functionality Description
+Create basic CLI that reads command-line arguments (input/output file paths). Validate arguments. Handle file I/O errors gracefully. No transformations yet.
+
+### Test Writing (TDD - Red Phase)
+Write tests in `main_test.go`:
+- Test argument parsing (expect exactly 2 args)
+- Test file reading (use testdata files)
+- Test file writing (verify output created)
+- Test error handling (missing file, wrong arg count)
+
+### Implementation Goal (TDD - Green Phase)
+Implement CLI skeleton in `main.go`:
+- Parse command-line arguments (expect 2: input path, output path)
+- Read input file content to string
+- Write string to output file (no transformation yet - just copy)
+- Return clear error messages for all failure cases
+
+### Validation (TDD - Refactor Phase)
+- All CLI tests pass
+- Program runs: `go run . input.txt output.txt`
+- Copies file correctly (no transformation)
+- Error messages are clear
+- Coverage ≥ 80% for CLI code
+- Commit: `feat: add CLI skeleton with file I/O`
+
+### Learning Resources
+- [Go CLI applications](https://go.dev/doc/tutorial/getting-started)
+- [os package for file I/O](https://pkg.go.dev/os)
+- [Error handling in Go](https://go.dev/blog/error-handling-and-go)
 
 ---
 
-**Next:** [`SPRINT-1-CORE-TRANSFORMATIONS.md`](./SPRINT-1-CORE-TRANSFORMATIONS.md) 🚀
+## Sprint Success Criteria
+
+- ✅ All 5 tasks complete
+- ✅ Project structure established
+- ✅ Git repository configured
+- ✅ Testing framework working
+- ✅ Development tools installed
+- ✅ CLI skeleton functional (copies files)
+- ✅ Ready to start Sprint 1
+
+---
+
+## Dependencies
+
+- All tasks should be done in order (001 → 002 → 003 → 004 → 005)
+- TASK-005 depends on TASK-003 (testing framework)
+
+---
+
+## Sprint Notes
+
+**Why Sprint 0?**
+- Establishes foundation before feature development
+- Prevents rework and technical debt
+- Ensures consistent development environment
+- Standard practice in Agile methodology
+
+**Common Mistakes:**
+- Skipping .gitignore (bloats repository)
+- Not testing the testing setup
+- Forgetting to commit regularly
+- Trying to add features in Sprint 0 (resist!)
+
+**Next:** Sprint 1 - Core transformation functions (tokenize, hex/bin, case)
