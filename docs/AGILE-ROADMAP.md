@@ -3,7 +3,7 @@
 **Author:** Theodore Vairaktaris  
 **Project:** go-reloaded  
 **Date:** October 2025  
-**Phase:** Planning & Task Decomposition (Week 1)
+**Phase:** Planning & Task Decomposition (Week 2)
 
 ---
 
@@ -31,7 +31,7 @@ Analysis → Planning (you are here) → Implementation → Validation
 ## 🏗️ Architecture Overview
 
 **Pattern:** Pipeline (sequential transformations)  
-**Scope:** ~200-300 lines of Go code  
+**Estimated Scope:** ~200-300 lines of Go code (rough guideline, not a requirement)  
 **Structure:** Simple (main.go + main_test.go in root)
 
 **Pipeline Flow:**
@@ -63,7 +63,7 @@ Read File → Tokenize → Transform (5 stages) → Detokenize → Write File
 **Goal:** Implement tokenization, command parsing, number conversions, case transformations  
 **Deliverable:** Core transformations working with command detection
 
-### Sprint 2: Advanced Rules (3-4 days, 5 tasks)
+### Sprint 2: Advanced Transformations (3-4 days, 5 tasks)
 **Goal:** Implement case application, articles, punctuation, quotes, pipeline integration  
 **Deliverable:** All transformations complete and integrated
 
@@ -119,26 +119,29 @@ Each task in sprint files includes:
 
 ## 🎓 Learning Path
 
-### Week 1: Foundation
+### Sprint 0-1: Foundation & Core
 - Go file I/O (`os` package)
 - Command-line arguments (`os.Args`)
 - String tokenization (`strings` package)
 - Testing basics (`testing` package)
 - Error handling patterns
-
-### Week 2: Transformations
 - Number base conversion (`strconv`)
 - String manipulation (ToUpper, ToLower, runes)
+
+### Sprint 2: Advanced Transformations
 - Regular expressions (`regexp`)
 - Slice operations
 - Pipeline composition
+- Complex string processing
 
-### Week 3: Polish
-- Integration testing
+### Sprint 3: Integration & Polish
+- End-to-end testing (testing the complete program flow from input file to output file)
 - Error handling strategies
 - Code refactoring (DRY principle)
 - Documentation writing
 - Code review practices
+
+**Timeline:** Flexible - typically 2-3 weeks depending on your pace and experience
 
 ---
 
@@ -147,7 +150,6 @@ Each task in sprint files includes:
 Project is complete when:
 - [ ] All 12 golden tests pass
 - [ ] Program handles invalid input gracefully (no crashes)
-- [ ] Code is ~200-300 lines (concise!)
 - [ ] Test coverage >85%
 - [ ] Documentation is clear
 - [ ] Code is readable and maintainable
@@ -161,7 +163,7 @@ Project is complete when:
 
 1. **Read this overview** (you are here!)
 2. **Review PROJECT-ANALYSIS.md** to understand the problem deeply
-3. **Skim GOLDEN-TEST-SET.md** to see expected outcomes
+3. **Skim GOLDEN-TEST-SET.md** (read quickly to get overview) to see expected outcomes
 4. **Open SPRINT-0-INFRASTRUCTURE.md**
 5. **Start with TASK-001**
 6. **For each task:**
@@ -174,7 +176,7 @@ Project is complete when:
    - 🔴 Write failing test
    - 🟢 Make it pass
    - ♻️ Refactor
-8. **Check acceptance criteria**
+8. **Validate against acceptance criteria** (run tests to confirm they pass)
 9. **Move to next task**
 
 ### When You Get Stuck
@@ -288,7 +290,7 @@ Mark tasks as you complete them:
 
 You'll know you succeeded when:
 - ✅ All 12 golden tests pass
-- ✅ Code is readable and maintainable (~200-300 lines)
+- ✅ Code is concise, readable, and maintainable
 - ✅ You can explain every design decision
 - ✅ Tests give you confidence to refactor
 - ✅ You learned Go and TDD!
