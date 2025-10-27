@@ -210,6 +210,6 @@ Implement CLI skeleton in `main.go`:
 - Skipping .gitignore (bloats repository)
 - Not testing the testing setup
 - Forgetting to commit regularly
-- Trying to add features in Sprint 0 (resist!)
+- Trying to add features in Sprint 0 
 
 **Next:** Sprint 1 - Core transformation functions (tokenize, hex/bin, case)
