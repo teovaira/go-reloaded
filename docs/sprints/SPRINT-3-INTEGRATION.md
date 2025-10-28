@@ -1,6 +1,6 @@
-# Sprint 3: Testing, Documentation & Final Polish
+# Sprint 3: End-to-End Testing & Documentation
 
-**Sprint Goal:** Achieve production-ready code with comprehensive testing and documentation
+**Sprint Goal:** Validate complete system with golden tests and finalize documentation
 
 **Duration:** 2-3 days | **Story Points:** 21
 
@@ -112,7 +112,7 @@ Implement golden file test runner:
 
 ### Validation (TDD - Refactor Phase)
 - All 12 golden tests pass
-- Test files version controlled
+- Test data files committed to Git (in testdata/ directory)
 - Clear failure messages
 - Commit: `test: add all 12 golden file tests`
 

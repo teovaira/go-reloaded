@@ -1,8 +1,8 @@
-# Sprint 2: Advanced Text Processing
+# Sprint 2: Advanced Transformations & Pipeline Integration
 
-**Sprint Goal:** Implement context-aware transformations and pipeline integration
+**Sprint Goal:** Implement advanced transformations and connect all transformations into complete pipeline
 
-**Duration:** 3-4 days | **Story Points:** 24
+**Duration:** 3-4 days | **Story Points:** 21
 
 ---
 
@@ -10,46 +10,10 @@
 
 | Task ID | Description | Points |
 |---------|-------------|--------|
-| TASK-015 | Apply case transformations | 3 |
 | TASK-016 | Article correction (a/an) | 5 |
 | TASK-017 | Punctuation spacing | 6 |
 | TASK-018 | Quote pairing | 5 |
 | TASK-019 | Pipeline integration | 5 |
-
----
-
-## TASK-015: Apply Case Transformations
-
-### Functionality Description
-Integrate case transformations (up, low, cap) with command parsing. Process token stream, detect case commands with optional counts like `(up, 3)`, apply to previous N words.
-
-### Test Writing (TDD - Red Phase)
-Write tests for:
-- Single word: `["hello", "(up)"]` → `["HELLO"]`
-- With count: `["one", "two", "three", "(up, 2)"]` → `["one", "TWO", "THREE"]`
-- Lowercase: `["HELLO", "WORLD", "(low, 2)"]` → `["hello", "world"]`
-- Capitalize: `["hello", "world", "(cap, 2)"]` → `["Hello", "World"]`
-- Count exceeds words: `["word", "(up, 10)"]` → `["WORD"]` (graceful degradation)
-- No previous word: `["(up)", "word"]` → unchanged
-
-### Implementation Goal (TDD - Green Phase)
-Create case application function that:
-- Iterates through token slice
-- Detects case commands using TASK-007 parser
-- Applies transformation to previous N tokens (default N=1)
-- Uses TASK-010, 011, 012 transformation functions
-- Handles count > available words gracefully
-- Removes command markers from output
-
-### Validation (TDD - Refactor Phase)
-- All tests pass including edge cases
-- Graceful degradation working
-- Coverage ≥ 90%
-- Commit: `feat: integrate case transformations with command parsing`
-
-### Learning Resources
-- [Go slice manipulation](https://go.dev/blog/slices-intro)
-- [Graceful degradation pattern](https://en.wikipedia.org/wiki/Fault_tolerance)
 
 ---
 
@@ -159,14 +123,14 @@ Create quote pairing function that:
 ## TASK-019: Pipeline Integration
 
 ### Functionality Description
-Connect all transformations in correct order. Create main processing pipeline that applies transformations sequentially: numbers → case → articles → punctuation → quotes.
+Connect all transformations in correct order. Create main processing pipeline that applies transformations sequentially: numbers → articles → case → punctuation → quotes.
 
 ### Test Writing (TDD - Red Phase)
 Write tests for:
 - Full pipeline: `["1E", "(hex)", "is", "a", "example", "(cap)"]` → `["30", "is", "an", "Example"]`
 - Multiple rules: `["it", "(cap)", "was", "a", "apple", ",", "really", "!"]` → `["It", "was", "an", "apple,", "really!"]`
 - All transformations: Test from GOLDEN-TEST-SET.md Test 12
-- Order matters: Verify case before articles, articles before punctuation
+- Order matters: Verify articles before case, case before punctuation
 - Empty input: `[]` → `[]`
 
 ### Implementation Goal (TDD - Green Phase)
@@ -174,8 +138,8 @@ Create pipeline orchestration function that:
 - Takes token slice as input
 - Applies transformations in order:
   1. Number conversions (TASK-014)
-  2. Case transformations (TASK-015)
-  3. Article correction (TASK-016)
+  2. Article correction (TASK-016)
+  3. Case transformations (TASK-015)
   4. Punctuation spacing (TASK-017)
   5. Quote pairing (TASK-018)
 - Returns final transformed token slice
@@ -196,7 +160,7 @@ Create pipeline orchestration function that:
 
 ## Sprint Success Criteria
 
-- ✅ All 5 tasks complete with passing tests
+- ✅ All 4 tasks complete with passing tests
 - ✅ Context-aware processing working
 - ✅ Code coverage ≥ 90%
 - ✅ Pipeline integration complete
@@ -206,8 +170,7 @@ Create pipeline orchestration function that:
 
 ## Dependencies
 
-- TASK-015 requires TASK-007, 010, 011, 012 complete
 - TASK-016, 017, 018 can be done in parallel
 - TASK-019 requires all previous tasks (014, 015, 016, 017, 018) complete
 
-**Next:** Sprint 3 - Integration testing, documentation, final polish
+**Next:** Sprint 3 - End-to-end testing and documentation

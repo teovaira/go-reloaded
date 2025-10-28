@@ -41,14 +41,14 @@ Read File → Tokenize → Transform (5 stages) → Detokenize → Write File
 
 **Transformation Order (Critical!):**
 1. Number conversions (hex, binary)
-2. Case transformations (up, low, cap)
-3. Article correction (a→an)
+2. Article correction (a→an)
+3. Case transformations (up, low, cap)
 4. Punctuation spacing
 5. Quote formatting
 
 **Why this order?**
-- Case changes must happen BEFORE article correction
-- Article correction must happen BEFORE punctuation
+- Article correction must happen BEFORE case transformations (so "a amazing (up, 3)" becomes "AN AMAZING" not "An AMAZING")
+- Case transformations must happen BEFORE punctuation
 - Punctuation must happen BEFORE quotes
 
 ---
@@ -59,17 +59,17 @@ Read File → Tokenize → Transform (5 stages) → Detokenize → Write File
 **Goal:** Build the skeleton - file I/O and project setup  
 **Deliverable:** Program reads file, passes through unchanged, writes file
 
-### Sprint 1: Core Transformations (3-4 days, 9 tasks)
-**Goal:** Implement tokenization, command parsing, number conversions, case transformations  
-**Deliverable:** Core transformations working with command detection
+### Sprint 1: Core Transformations (4-5 days, 10 tasks)
+**Goal:** Implement tokenization, command parsing, number conversions, case transformations with integration  
+**Deliverable:** Core transformations working and integrated with command detection
 
-### Sprint 2: Advanced Transformations (3-4 days, 5 tasks)
-**Goal:** Implement case application, articles, punctuation, quotes, pipeline integration  
-**Deliverable:** All transformations complete and integrated
+### Sprint 2: Advanced Transformations & Pipeline Integration (3-4 days, 4 tasks)
+**Goal:** Implement articles, punctuation, quotes, and connect all transformations into complete pipeline  
+**Deliverable:** All transformations complete and integrated into working pipeline
 
-### Sprint 3: Integration (2-3 days, 6 tasks)
-**Goal:** End-to-end testing, golden tests passing, documentation complete  
-**Deliverable:** Production-ready project
+### Sprint 3: End-to-End Testing & Documentation (2-3 days, 6 tasks)
+**Goal:** Validate complete system with golden tests and finalize documentation  
+**Deliverable:** Production-ready project with comprehensive testing
 
 **Total:** 25 tasks, ~10-12 days
 
@@ -196,9 +196,9 @@ Detailed task breakdowns:
 | Sprint | File | Tasks | Focus |
 |--------|------|-------|-------|
 | 0 | [`SPRINT-0-INFRASTRUCTURE.md`](./sprints/SPRINT-0-INFRASTRUCTURE.md) | 5 | Setup, I/O, skeleton |
-| 1 | [`SPRINT-1-CORE-TRANSFORMATIONS.md`](./sprints/SPRINT-1-CORE-TRANSFORMATIONS.md) | 9 | Tokenize, parse, hex, bin, case |
-| 2 | [`SPRINT-2-ADVANCED-TRANSFORMATIONS.md`](./sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md) | 5 | Case apply, articles, punctuation, quotes, pipeline |
-| 3 | [`SPRINT-3-INTEGRATION.md`](./sprints/SPRINT-3-INTEGRATION.md) | 6 | End-to-end, golden tests, documentation |
+| 1 | [`SPRINT-1-CORE-TRANSFORMATIONS.md`](./sprints/SPRINT-1-CORE-TRANSFORMATIONS.md) | 10 | Tokenize, parse, hex, bin, case + integration |
+| 2 | [`SPRINT-2-ADVANCED-TRANSFORMATIONS.md`](./sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md) | 4 | Articles, punctuation, quotes, full pipeline |
+| 3 | [`SPRINT-3-INTEGRATION.md`](./sprints/SPRINT-3-INTEGRATION.md) | 6 | System testing, golden tests, documentation |
 
 ---
 
@@ -251,8 +251,8 @@ Mark tasks as you complete them:
 | Sprint | Status | Tests Passing | Progress |
 |--------|--------|---------------|----------|
 | Sprint 0 | ⏳ Not Started | - | 0/5 tasks |
-| Sprint 1 | ⏳ Not Started | - | 0/9 tasks |
-| Sprint 2 | ⏳ Not Started | - | 0/5 tasks |
+| Sprint 1 | ⏳ Not Started | - | 0/10 tasks |
+| Sprint 2 | ⏳ Not Started | - | 0/4 tasks |
 | Sprint 3 | ⏳ Not Started | 0/12 golden | 0/6 tasks |
 
 **Symbols:** ⏳ Not Started | 🔄 In Progress | ✅ Complete

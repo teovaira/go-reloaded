@@ -1,8 +1,8 @@
 # Sprint 1: Core Text Transformation Functions
 
-**Sprint Goal:** Implement fundamental text processing (tokenization, number conversion, case transformations)
+**Sprint Goal:** Implement fundamental text processing with integration (tokenization, number conversion, case transformations)
 
-**Duration:** 3-4 days | **Story Points:** 28
+**Duration:** 4-5 days | **Story Points:** 31
 
 ---
 
@@ -19,6 +19,7 @@
 | TASK-012 | Capitalize words | 4 |
 | TASK-013 | Refactor case functions | 3 |
 | TASK-014 | Apply number conversions | 2 |
+| TASK-015 | Apply case transformations | 3 |
 
 ---
 
@@ -308,12 +309,47 @@ Create conversion application function that:
 
 ---
 
+## TASK-015: Apply Case Transformations
+
+### Functionality Description
+Integrate case transformations (up, low, cap) with command parsing. Process token stream, detect case commands with optional counts like `(up, 3)`, apply to previous N words.
+
+### Test Writing (TDD - Red Phase)
+Write tests for:
+- Single word: `["hello", "(up)"]` → `["HELLO"]`
+- With count: `["one", "two", "three", "(up, 2)"]` → `["one", "TWO", "THREE"]`
+- Lowercase: `["HELLO", "WORLD", "(low, 2)"]` → `["hello", "world"]`
+- Capitalize: `["hello", "world", "(cap, 2)"]` → `["Hello", "World"]`
+- Count exceeds words: `["word", "(up, 10)"]` → `["WORD"]` (graceful degradation)
+- No previous word: `["(up)", "word"]` → unchanged
+
+### Implementation Goal (TDD - Green Phase)
+Create case application function that:
+- Iterates through token slice
+- Detects case commands using TASK-007 parser
+- Applies transformation to previous N tokens (default N=1)
+- Uses TASK-010, 011, 012 transformation functions
+- Handles count > available words gracefully
+- Removes command markers from output
+
+### Validation (TDD - Refactor Phase)
+- All tests pass including edge cases
+- Graceful degradation working
+- Coverage ≥ 90%
+- Commit: `feat: integrate case transformations with command parsing`
+
+### Learning Resources
+- [Go slice manipulation](https://go.dev/blog/slices-intro)
+- [Graceful degradation pattern](https://en.wikipedia.org/wiki/Fault_tolerance)
+
+---
+
 ## Sprint Success Criteria
 
-- ✅ All 9 tasks complete with passing tests
+- ✅ All 10 tasks complete with passing tests
 - ✅ Code coverage ≥ 90%
 - ✅ All functions handle Unicode correctly
-- ✅ Number conversions integrated with pipeline
+- ✅ Number and case conversions integrated with pipeline
 - ✅ Clean git history with meaningful commits
 
 ---
@@ -325,5 +361,6 @@ Create conversion application function that:
 - TASK-008, 009, 010, 011, 012 can be done in parallel
 - TASK-013 requires TASK-010, 011, 012 complete
 - TASK-014 requires TASK-007, 008, 009 complete
+- TASK-015 requires TASK-007, 010, 011, 012 complete
 
-**Next:** Sprint 2 - Advanced text processing (articles, punctuation, quotes)
+**Next:** Sprint 2 - Advanced transformations and pipeline integration

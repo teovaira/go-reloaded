@@ -54,13 +54,13 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 ```
 Input → Tokenize → Transform Pipeline → Detokenize → Output
                         ↓
-            [hex/bin] → [case] → [article] → [punct] → [quotes]
+            [hex/bin] → [article] → [case] → [punct] → [quotes]
 ```
 
 **Transformation Order Matters:**
 1. Number conversions first
-2. Case transformations second
-3. Article correction (depends on case)
+2. Article correction second
+3. Case transformations (applied to corrected articles)
 4. Punctuation spacing
 5. Quote pairing last
 

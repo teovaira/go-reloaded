@@ -207,9 +207,9 @@ Input Text
    ↓
 [Convert hex/bin numbers]
    ↓
-[Apply uppercase/lowercase/capitalize]
-   ↓
 [Fix a/an articles]
+   ↓
+[Apply uppercase/lowercase/capitalize]
    ↓
 [Fix punctuation spacing]
    ↓
