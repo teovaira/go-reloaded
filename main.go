@@ -12,6 +12,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -29,6 +31,8 @@ func main() {
 		fmt.Println("Error in reading the input file:", err)
 		os.Exit(1)
 	}
+
+	processText(inputText)
 
 	err = writeOutputFile(outputFile, inputText)
 	if err != nil {
@@ -54,3 +58,20 @@ func writeOutputFile(path, content string) error {
 	}
 	return nil
 }
+
+//processText is the main text-processing pipeline
+func processText(text string) string {
+	 
+	words := strings.Fields(text)
+
+	fmt.Print("DEBUG tokens: ", words)
+
+	return text
+}
+
+// convertHexAndBin looks for "(hex)" or "(bin)" 
+// patterns and replaces the word before them with its
+// decimal value
+// func convertHexAndBin(words [string]) [string {
+
+// }]
