@@ -72,6 +72,32 @@ func processText(text string) string {
 // convertHexAndBin looks for "(hex)" or "(bin)" 
 // patterns and replaces the word before them with its
 // decimal value
-// func convertHexAndBin(words [string]) [string {
+func convertHexAndBin(words []string) []string {
+	var result []string
+	
+	for i:= 0; i < len(words); i++ {
+		word:= words[i]
 
-// }]
+		if word == "(hex)" && i > 0 {
+			prev:= words[i-1]
+
+			value, err := strconv.ParseInt(prev, 16, 64)
+			if err == nil {
+				result[len(result)-1] = fmt.Sprint(value)
+			}
+			continue
+		}
+
+		if word == "(bin)" && i> 0 {
+			prev:= words[i-1]
+
+			value, err := strconv.ParseInt(prev, 2, 64)
+			if err == nil {
+				result[len(result)-1] = fmt.Sprint(value)
+			}
+			continue
+		}
+		result = append(result, word)
+	}
+	return result
+}
