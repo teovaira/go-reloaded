@@ -64,9 +64,11 @@ func processText(text string) string {
 	 
 	words := strings.Fields(text)
 
-	fmt.Print("DEBUG tokens: ", words)
+	words = convertHexAndBin(words)
 
-	return text
+	fmt.Println("DEBUG tokens: ", words)
+
+	return strings.Join(words, " ")
 }
 
 // convertHexAndBin looks for "(hex)" or "(bin)" 
