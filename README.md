@@ -226,7 +226,7 @@ MIT License - Feel free to use this project for learning purposes.
 
 **Theodore Vairaktaris**  
 Zone01 Athens Student  
-[GitHub Profile] | [Email]
+[GitHub Profile](https://github.com/teovaira) | [Email](mailto:t.vairaktaris@gmail.com)
 
 ---
 
