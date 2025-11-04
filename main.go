@@ -73,9 +73,11 @@ func processText(text string) string {
 
 	words = applyCaseRules(words)
 
+	formatted := applyPunctuationRules(words)
+
 	fmt.Println("DEBUG tokens: ", words)
 
-	return strings.Join(words, " ")
+	return formatted
 
 }
 
@@ -267,21 +269,62 @@ func tokenize(text string) []string {
 	return tokens
 }
 
-// 
+// applyPunctuationRules builds the final formatted text from tokens.
+// It guarantees: no space before punctuation, exactly one between words
+// and it skips visual test separators like '---'
 func applyPunctuationRules(words []string) string {
-	var result []string
+// 	var result []string
 
-	for _, word := range words {
+// 	for _, word := range words {
 
-		if strings.ContainsRune(".!?;,:", rune(word[0])) && len(word) == 1 {
-			if len(result) > 0 {
-				result[len(result)-1] += word
-			} else {
-				result = append(result, word)
-			}
-		} else {
-			result = append(result, word)
+// 		if strings.ContainsRune(".!?;,:", rune(word[0])) && len(word) == 1 {
+// 			if len(result) > 0 {
+// 				result[len(result)-1] += word
+// 			} else {
+// 				result = append(result, word)
+// 			}
+// 		} else {
+// 			result = append(result, word)
+// 		}
+// 	}
+// 	return strings.Join(result, " ")
+
+	// Helper closure: small function defined inside another function.
+	// It tells us if a token is a single-char punctuation mark we must
+	// attach to the previous word without any space
+	isPunct := func(w string) bool {
+		if len(w) != 1 {
+			return false
 		}
+
+		switch w[0] {
+		case '.', ',', '!', '?', ';', ':':
+			return true
+		}
+		return false
 	}
-	return strings.Join(result, " ")
+
+	var b strings.Builder
+	wroteAny := false // tracks if something has been written
+
+	for _, w := range words {
+		if w == "---" {
+			continue
+		}
+
+		if isPunct(w) {
+			b.WriteString(w) // attach to previous word punctuation without space
+			wroteAny = true
+			continue
+		}
+
+		// Normal word: if its not the first token, insert exactly one space first.
+		if wroteAny {      
+			b.WriteByte(' ')
+			wroteAny = true
+		}
+		b.WriteString(w)   // write the word itself
+		wroteAny = true
+	}
+	return b.String()
 }
