@@ -137,50 +137,54 @@ func fixArticles(words []string) []string {
 // applyCaseRules detects (up), (low) and (cap) markers 
 // and applies the appropriate transformation to the 
 // previous one or multiple words. Markers are removed from the final output
-func applyCaseRules( words []string) []string {
+func applyCaseRules(words []string) []string {
 	var result []string
 
 	for i := 0; i < len(words); i++ {
 		word := words[i]
+		cleanWord := strings.Trim(word, ".,!?;:")
 
-		//handle (up, n)
-		if strings.HasPrefix(word, "(up,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+		// Handle (up, n)
+		if strings.HasPrefix(cleanWord, "(up,") && strings.HasSuffix(cleanWord, ")") {
+			n := extractNumber(cleanWord)
 			for j := 1; j <= n && len(result)-j >=0; j++ {
 				result[len(result)-j] = strings.ToUpper(result[len(result)-j])
 			}
 			continue
 		}
 
-		// handle (low, n)
-		if strings.HasPrefix(word, "(low,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+		// Handle (low, n)
+		if strings.HasPrefix(cleanWord, "(low,") && strings.HasSuffix(cleanWord, ")") {
+			n := extractNumber(cleanWord)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
 				result[len(result)-j] = strings.ToLower(result[len(result)-j])
 			}
 			continue
 		}
 
-		// handle (cap, n)
-		if strings.HasPrefix(word, "(cap,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+		// Handle (cap, n)
+		if strings.HasPrefix(cleanWord, "(cap,") && strings.HasSuffix(cleanWord, ")") {
+			n := extractNumber(cleanWord)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
 				result[len(result)-j] = capitalize(result[len(result)-j])
 			}
 			continue
 		}
 
-		if word == "(up)" && len(result) > 0 {
+		// Handle (up)
+		if cleanWord == "(up)" && len(result) > 0 {
 			result[len(result)-1] = strings.ToUpper(result[len(result)-1])
 			continue
 		}
 
-		if word == "(low)" && len(result) > 0 {
+		// Handle (low)
+		if cleanWord == "(low)" && len(result) > 0 {
 			result[len(result)-1] = strings.ToLower(result[len(result)-1])
 			continue
 		}
 
-		if word == "(cap)" && len(result) > 0 {
+		// Handle (cap)
+		if cleanWord == "(cap)" && len(result) > 0 {
 			result[len(result)-1] = capitalize(result[len(result)-1])
 			continue
 		}
