@@ -136,7 +136,7 @@ func fixArticles(words []string) []string {
 
 // applyCaseRules detects (up), (low) and (cap) markers 
 // and applies the appropriate transformation to the 
-// previous one or multiple words. Markers are removed afterwards 
+// previous one or multiple words. Markers are removed from the final output
 func applyCaseRules( words []string) []string {
 	var result []string
 
@@ -176,7 +176,7 @@ func applyCaseRules( words []string) []string {
 		}
 
 		if word == "(low)" && len(result) > 0 {
-			result[len(result)-1] = strings.ToUpper(result[len(result)-1])
+			result[len(result)-1] = strings.ToLower(result[len(result)-1])
 			continue
 		}
 
@@ -192,7 +192,7 @@ func applyCaseRules( words []string) []string {
 
 // extractNumber extracts the number from markers like (up, 3)
 func extractNumber(token string) int {
-	token = strings.TrimSuffix(strings.TrimPrefix(token, ")"), ")")
+	token = strings.TrimSuffix(strings.TrimPrefix(token, "("), ")")
 	parts := strings.Split(token, ",")
 	if len(parts) < 2 {
 		return 1
