@@ -66,6 +66,8 @@ func processText(text string) string {
 
 	words = convertHexAndBin(words)
 
+	words = fixArticles(words)
+
 	fmt.Println("DEBUG tokens: ", words)
 
 	return strings.Join(words, " ")
@@ -102,4 +104,23 @@ func convertHexAndBin(words []string) []string {
 		result = append(result, word)
 	}
 	return result
+
+}
+
+
+func fixArticles(words []string) []string {
+	for i := 0; i < len(words); i++ {
+		if words[i] == "a" {
+			next := words[i+1]
+			if strings.HasPrefix(next, "a") ||
+			 strings.HasPrefix(next, "e") ||
+			 strings.HasPrefix(next, "i") ||
+			 strings.HasPrefix(next, "o") ||
+			 strings.HasPrefix(next, "u") ||
+			 strings.HasPrefix(next, "h") {
+			 words[i] = "an"
+			}
+		}
+	}
+	return words
 }
