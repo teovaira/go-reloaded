@@ -65,7 +65,7 @@ func processText(text string) string {
 	
 	words := tokenize(text)
 
-	fmt.Printf("debug raw tokens: %#v", words)
+	// fmt.Printf("debug raw tokens: %#v", words)
 
 	words = convertHexAndBin(words)
 
@@ -76,6 +76,7 @@ func processText(text string) string {
 	fmt.Println("DEBUG tokens: ", words)
 
 	return strings.Join(words, " ")
+
 }
 
 // convertHexAndBin looks for "(hex)" or "(bin)" 

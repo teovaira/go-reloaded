@@ -1,5 +1,57 @@
 Simply add 1E (hex) and 10 (bin) to see the result!
+---
 There is a apple and a hut.
+---
 There is a apple and a
+---
 There is a apple and a Hut.
-Ready set go (up)! I should stop SHOUTING (low). This is so exciting (up, 2). Welcome to the brooklyn bridge (cap, 3).
+---
+A orange fell on a elephant.
+---
+A honest man told a ugly truth.
+---
+We are learning go (up) today!
+---
+This should become lowercase (low).
+---
+please capitalize this (cap).
+---
+please capitalize these three words (cap, 3) quickly.
+---
+this will go up two words (up, 2) in a row.
+---
+I am so excited (up, 2) about this project.
+---
+He shouted stop (up)!
+---
+The sky is BLUE (low) now.
+---
+my name is teo (cap).
+---
+welcome to the brooklyn bridge (cap, 3).
+---
+1A (hex) is equal to 26.
+---
+101 (bin) is equal to 5.
+---
+the result of 1111 (bin) should be 15 (hex) (hex).
+---
+I will shout loudly (up) then whisper (low).
+---
+There is a house and a owl next to a elephant.
+---
+My dog (cap) is happy!
+---
+I should stop SHOUTING (low)!
+---
+the test is almost over (cap, 2).
+---
+a happy cat jumped over a angry dog.
+---
+please convert 100 (bin) and 64 (hex).
+---
+look (up, 3) this line should be impressive.
+---
+an honest apple and a honest ant.
+---
+i will do it (up, 4)!
