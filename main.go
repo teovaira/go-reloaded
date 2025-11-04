@@ -32,9 +32,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	processText(inputText)
+	outputText := processText(inputText)
 
-	err = writeOutputFile(outputFile, inputText)
+	err = writeOutputFile(outputFile, outputText)
 	if err != nil {
 		fmt.Println("Error in writing the output file:", err)
 		os.Exit(1)
