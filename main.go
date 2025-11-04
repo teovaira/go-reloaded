@@ -63,7 +63,7 @@ func writeOutputFile(path, content string) error {
 // it sequentially applies all transformation stages
 func processText(text string) string {
 	
-	words := strings.Fields(text)
+	words := tokenize(text)
 
 	fmt.Printf("debug raw tokens: %#v", words)
 
@@ -144,11 +144,10 @@ func applyCaseRules(words []string) []string {
 
 	for i := 0; i < len(words); i++ {
 		word := words[i]
-		cleanWord := strings.Trim(word, ".,!?;:")
 
 		// Handle (up, n)
-		if strings.HasPrefix(cleanWord, "(up,") && strings.HasSuffix(cleanWord, ")") {
-			n := extractNumber(cleanWord)
+		if strings.HasPrefix(word, "(up,") && strings.HasSuffix(word, ")") {
+			n := extractNumber(word)
 			for j := 1; j <= n && len(result)-j >=0; j++ {
 				result[len(result)-j] = strings.ToUpper(result[len(result)-j])
 			}
@@ -156,8 +155,8 @@ func applyCaseRules(words []string) []string {
 		}
 
 		// Handle (low, n)
-		if strings.HasPrefix(cleanWord, "(low,") && strings.HasSuffix(cleanWord, ")") {
-			n := extractNumber(cleanWord)
+		if strings.HasPrefix(word, "(low,") && strings.HasSuffix(word, ")") {
+			n := extractNumber(word)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
 				result[len(result)-j] = strings.ToLower(result[len(result)-j])
 			}
@@ -165,8 +164,8 @@ func applyCaseRules(words []string) []string {
 		}
 
 		// Handle (cap, n)
-		if strings.HasPrefix(cleanWord, "(cap,") && strings.HasSuffix(cleanWord, ")") {
-			n := extractNumber(cleanWord)
+		if strings.HasPrefix(word, "(cap,") && strings.HasSuffix(word, ")") {
+			n := extractNumber(word)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
 				result[len(result)-j] = capitalize(result[len(result)-j])
 			}
@@ -174,19 +173,19 @@ func applyCaseRules(words []string) []string {
 		}
 
 		// Handle (up)
-		if cleanWord == "(up)" && len(result) > 0 {
+		if word == "(up)" && len(result) > 0 {
 			result[len(result)-1] = strings.ToUpper(result[len(result)-1])
 			continue
 		}
 
 		// Handle (low)
-		if cleanWord == "(low)" && len(result) > 0 {
+		if word == "(low)" && len(result) > 0 {
 			result[len(result)-1] = strings.ToLower(result[len(result)-1])
 			continue
 		}
 
 		// Handle (cap)
-		if cleanWord == "(cap)" && len(result) > 0 {
+		if word == "(cap)" && len(result) > 0 {
 			result[len(result)-1] = capitalize(result[len(result)-1])
 			continue
 		}
@@ -222,28 +221,47 @@ func capitalize(word string) string {
 // tokenize splits the text into words while keeping punctuation
 // as separate tokens and preserving markers like (up, 2).
 func tokenize(text string) []string {
-	var tokens[]string
+	var tokens []string
 	current := ""
+	inParentheses := false // new flag to check if we are inside commands
+
 	for _, r := range text {
 		ch := string(r)
+
 		switch {
-		case strings.ContainsRune(" \n\t", r):
+		case r == '(':
 			if current != "" {
 				tokens = append(tokens, current)
 				current = ""
 			}
-		case strings.ContainsRune(".,!?;:", r):
+			inParentheses = true
+			current += ch
+
+		case r == ')':
+			current += ch
+			inParentheses = false
+			tokens = append(tokens, current)
+			current = ""
+
+		case strings.ContainsRune(" \n\t", r) && !inParentheses:
+			if current != "" {
+				tokens = append(tokens, current)
+				current = ""
+			}
+
+		case strings.ContainsRune(".,!?;:", r) && !inParentheses:
 			if current != "" {
 				tokens = append(tokens, current)
 				current = ""
 			}
 			tokens = append(tokens, ch)
+
 		default:
 			current += ch
 		}
-		if current != "" {
+	}
+	if current != "" {
 			tokens = append(tokens, current)
-		}
 	}
 	return tokens
 }
