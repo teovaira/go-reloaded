@@ -62,8 +62,10 @@ func writeOutputFile(path, content string) error {
 // processText is the main text-processing pipeline
 // it sequentially applies all transformation stages
 func processText(text string) string {
-	 
+	
 	words := strings.Fields(text)
+
+	fmt.Printf("debug raw tokens: %#v", words)
 
 	words = convertHexAndBin(words)
 
@@ -215,4 +217,33 @@ func capitalize(word string) string {
 		return word
 	}
 	return strings.ToUpper(string(word[0])) + strings.ToLower(string(word[1:]))
+}
+
+// tokenize splits the text into words while keeping punctuation
+// as separate tokens and preserving markers like (up, 2).
+func tokenize(text string) []string {
+	var tokens[]string
+	current := ""
+	for _, r := range text {
+		ch := string(r)
+		switch {
+		case strings.ContainsRune(" \n\t", r):
+			if current != "" {
+				tokens = append(tokens, current)
+				current = ""
+			}
+		case strings.ContainsRune(".,!?;:", r):
+			if current != "" {
+				tokens = append(tokens, current)
+				current = ""
+			}
+			tokens = append(tokens, ch)
+		default:
+			current += ch
+		}
+		if current != "" {
+			tokens = append(tokens, current)
+		}
+	}
+	return tokens
 }
