@@ -266,3 +266,22 @@ func tokenize(text string) []string {
 	}
 	return tokens
 }
+
+// 
+func applyPunctuationRules(words []string) string {
+	var result []string
+
+	for _, word := range words {
+
+		if strings.ContainsRune(".!?;,:", rune(word[0])) && len(word) == 1 {
+			if len(result) > 0 {
+				result[len(result)-1] += word
+			} else {
+				result = append(result, word)
+			}
+		} else {
+			result = append(result, word)
+		}
+	}
+	return strings.Join(result, " ")
+}
