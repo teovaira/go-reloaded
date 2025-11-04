@@ -1,3 +1,4 @@
 Simply add 1E (hex) and 10 (bin) to see the result!
 There is a apple and a hut.
 There is a apple and a
+There is a apple and a Hut.

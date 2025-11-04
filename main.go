@@ -109,10 +109,12 @@ func convertHexAndBin(words []string) []string {
 
 
 func fixArticles(words []string) []string {
-	for i := 0; i < len(words)-1; i++ {
+	for i := 0; i < len(words)-1; i++ { //stop before the last word
+		current := strings.ToLower(words[i])
+		next := strings.ToLower(words[i+1])
 
-		if words[i] == "a" {
-			next := words[i+1]
+		if current == "a" {
+			
 			if strings.HasPrefix(next, "a") ||
 			 strings.HasPrefix(next, "e") ||
 			 strings.HasPrefix(next, "i") ||

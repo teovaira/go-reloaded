@@ -1,7 +1,4 @@
 Simply add 1E (hex) and 10 (bin) to see the result!
 There is a apple and a hut.
-<<<<<<< HEAD
 There is a apple and a
-=======
-There is a apple and a
->>>>>>> 225fa48d4a1fa502b3eafc041d51d76362c413cb
+There is a apple and a Hut.
