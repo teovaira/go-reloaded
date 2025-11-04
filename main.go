@@ -131,3 +131,27 @@ func fixArticles(words []string) []string {
 	}
 	return words
 }
+
+
+func applyCaseRules( words []string) []string {
+	for i := 0; i < len(words); i++ {
+		word := words[i]
+
+		if word == "(up)" && i > 0 {
+			words[i-1] = strings.ToUpper(words[i-1])
+			continue
+		}
+
+		if word == "(low)" && i > 0 {
+			words[i-1] = strings.ToUpper(words[i-1])
+			continue
+		}
+
+		if word == "(cap)" && i > 0 {
+			words[i-1] = strings.Title(words[i-1])
+			continue
+		}
+	}
+	return words
+	
+}
