@@ -75,7 +75,7 @@ func processText(text string) string {
 
 	formattedText := applyPunctuationRules(words)
 
-	fmt.Println("DEBUG tokens: ", words)
+	fmt.Println("DEBUG tokens: ", formattedText)
 
 	return formattedText
 
@@ -321,10 +321,10 @@ func applyPunctuationRules(words []string) string {
 		// Normal word: if its not the first token, insert exactly one space first.
 		if wroteAny {      
 			b.WriteByte(' ')
-			wroteAny = true
+			
 		}
 		b.WriteString(w)   // write the word itself
 		wroteAny = true
 	}
-	return b.String()
+	return strings.TrimSpace(b.String())
 }

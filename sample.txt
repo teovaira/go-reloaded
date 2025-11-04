@@ -55,3 +55,7 @@ look (up, 3) this line should be impressive.
 an honest apple and a honest ant.
 ---
 i will do it (up, 4)!
+---
+Hello ,world !This  is  amazing .
+Do  you  like  Go ?Yes ,I  do .
+Let's  test ,shall  we ?
