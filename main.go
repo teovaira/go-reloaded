@@ -73,11 +73,11 @@ func processText(text string) string {
 
 	words = applyCaseRules(words)
 
-	formatted := applyPunctuationRules(words)
+	formattedText := applyPunctuationRules(words)
 
 	fmt.Println("DEBUG tokens: ", words)
 
-	return formatted
+	return formattedText
 
 }
 
