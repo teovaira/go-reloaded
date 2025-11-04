@@ -50,7 +50,7 @@ func readInputFile(path string) (string, error) {
 	return string(data), nil // convert []byte to string and return it
 }
 
-// writeOutputFile writes the given content after all transformation rules applied into a file at the given path
+// writeOutputFile writes the transformed content after all transformation rules applied into a file at the given path
 func writeOutputFile(path, content string) error {
 	err := os.WriteFile(path, []byte(content), 0o644)
 	if err != nil {
@@ -59,7 +59,8 @@ func writeOutputFile(path, content string) error {
 	return nil
 }
 
-//processText is the main text-processing pipeline
+// processText is the main text-processing pipeline
+// it sequentially applies all transformation stages
 func processText(text string) string {
 	 
 	words := strings.Fields(text)
@@ -107,7 +108,10 @@ func convertHexAndBin(words []string) []string {
 
 }
 
-
+// fixArticles checks every occurrence of "a" in the text and changes it
+// to "an" if the next word starts with a vowel (a, e, i, o, u) or 'h'.
+// The comparison is case-insensitive, and the loop stops before the last
+// word to prevent out-of-range errors.
 func fixArticles(words []string) []string {
 	for i := 0; i < len(words)-1; i++ { //stop before the last word
 		current := strings.ToLower(words[i])
