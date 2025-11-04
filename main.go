@@ -69,6 +69,8 @@ func processText(text string) string {
 
 	words = fixArticles(words)
 
+	words = applyCaseRules(words)
+
 	fmt.Println("DEBUG tokens: ", words)
 
 	return strings.Join(words, " ")
@@ -184,7 +186,7 @@ func applyCaseRules( words []string) []string {
 		}
 		result = append(result, word)
 	}
-	return words
+	return result
 	
 }
 
