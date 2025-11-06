@@ -59,3 +59,54 @@ i will do it (up, 4)!
 Hello ,world !This  is  amazing .
 Do  you  like  Go ?Yes ,I  do .
 Let's  test ,shall  we ?
+---
+" Hello "
+---
+He said , " Hello " .
+---
+She said "Hi"and left.
+---
+' Hello '
+---
+It's John's "book" .
+---
+"Hi" , she said .
+---
+Hello" world
+---
+He said, ' Hi there ' !
+---
+"Quote"next
+---
+""
+---
+hello, " world "
+---
+"It's  fine"
+---
+"hi"there
+---
+"hi",she said.
+---
+' test '
+---
+'hi'there
+---
+He said, " Hello " .
+---
+She asked: "why?"(whisper)
+---
+"wow",amazing
+---
+" hello " world
+---
+It's John's "book".
+---
+don’t " worry "
+---
+''
+---
+"He"llo
+---
+Hello, " world " This is " fine ".
+---

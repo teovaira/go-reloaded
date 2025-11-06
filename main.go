@@ -75,9 +75,11 @@ func processText(text string) string {
 
 	formattedText := applyPunctuationRules(words)
 
-	fmt.Println("DEBUG tokens: ", formattedText)
+	finalText := fixQuotes(formattedText)
 
-	return formattedText
+	fmt.Println("DEBUG tokens: ", finalText)
+
+	return finalText
 
 }
 
@@ -363,7 +365,7 @@ func fixQuotes(text string) string {
 				continue
 			}
 
-			// Case 2: closng quote
+			// Case 2: closing quote
 			if inQuotes {
 				// Remove spaces before the closing quote
 				for b.Len() > 0 && b.String()[b.Len()-1] == ' ' {
@@ -374,7 +376,7 @@ func fixQuotes(text string) string {
 				b.WriteRune(ch)
 				inQuotes = false
 				// Add one space after closing quote if next is a letter
-				if i+1 < len(runes) && runes[i+1] != '.' && runes[i+1] != ',' {
+				if i+1 < len(runes) && runes[i+1] != '.' && runes[i+1] != ',' && runes[i+1] != ' ' {
 					b.WriteRune(' ')
 				}
 				continue
