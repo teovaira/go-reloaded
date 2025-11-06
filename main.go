@@ -328,3 +328,62 @@ func applyPunctuationRules(words []string) string {
 	}
 	return strings.TrimSpace(b.String())
 }
+
+//fixQuotes cleans spacing around quotation marks
+// It ensures proper placement and spacing for opening and closing quotes
+func fixQuotes(text string) string {
+	var b strings.Builder
+	inQuotes := false
+	runes := []rune(text)
+
+	for i := 0; i < len(runes); i++ {
+		ch := runes[i]
+
+		// Case 1: it's a quotation mark
+		if ch == '"' {
+			// Trim any space before opening quote
+			if !inQuotes {
+				// If last written char was a space, remove it
+				if b.Len() > 0 {
+					last := b.String()[b.Len()-1]
+					if last == ' ' {
+						// Overwrite last space (we 'll rebuild the string)
+						temp := b.String()[:b.Len()-1]
+						b.Reset()
+						b.WriteString(temp)
+					}
+				}
+				// Add the opening quote
+				b.WriteRune(ch)
+				inQuotes = true
+				// Skip any spaces immediately after the quote
+				for i+1 < len(runes) && runes[i+1] == ' ' {
+					i++
+				}
+				continue
+			}
+
+			// Case 2: closng quote
+			if inQuotes {
+				// Remove spaces before the closing quote
+				for b.Len() > 0 && b.String()[b.Len()-1] == ' ' {
+					temp := b.String()[:b.Len()-1]
+					b.Reset()
+					b.WriteString(temp)
+				}
+				b.WriteRune(ch)
+				inQuotes = false
+				// Add one space after closing quote if next is a letter
+				if i+1 < len(runes) && runes[i+1] != '.' && runes[i+1] != ',' {
+					b.WriteRune(' ')
+				}
+				continue
+			}
+		}
+		// Default: copy character, copy as is
+		b.WriteRune(ch)
+	}
+
+	// Final cleanup: remove extra spaces at ends
+	return strings.TrimSpace(b.String())
+}
