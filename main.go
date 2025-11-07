@@ -12,7 +12,7 @@ package main
 import (
 	"fmt"
 	"os"
-	)
+)
 
 func main() {
 	// validation for correct number arguments
@@ -38,21 +38,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

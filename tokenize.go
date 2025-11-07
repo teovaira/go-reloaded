@@ -45,7 +45,7 @@ func Tokenize(text string) []string {
 		}
 	}
 	if current != "" {
-			tokens = append(tokens, current)
+		tokens = append(tokens, current)
 	}
 	return tokens
 }
