@@ -4,30 +4,9 @@ import (
 	"strings"
 )
 
-// processText is the main text-processing pipeline
-// it sequentially applies all transformation stages
-// func processText(text string) string {
-
-// 	words := tokenize(text)
-
-// 	fmt.Printf("debug raw tokens: %#v", words)
-
-// 	words = convertHexAndBin(words)
-
-// 	words = fixArticles(words)
-
-// 	words = applyCaseRules(words)
-
-// 	formattedText := applyPunctuationRules(words)
-
-// 	finalText := fixQuotes(formattedText)
-
-// 	fmt.Println("DEBUG tokens: ", finalText)
-
-// 	return finalText
-
-// }
-
+// ProcessText is the main text-processing pipeline.
+// It processes text line-by-line to preserve newlines while applying
+// all transformation stages in the correct order.
 func ProcessText(text string) string {
 	// Preserve newlines by processing line-by-line
 	lines := strings.Split(text, "\n")
