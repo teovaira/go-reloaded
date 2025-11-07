@@ -39,7 +39,7 @@ func ProcessText(text string) string {
     fmt.Printf("debug raw tokens: %#v", words)
 
     // 3️⃣ Transformations
-    words = convertHexAndBin(words)
+    words = ConvertHexAndBin(words)
     words = fixArticles(words)
     words = applyCaseRules(words)
 
