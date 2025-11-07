@@ -3,7 +3,7 @@
 **Author:** Theodore Vairaktaris  
 **Project:** go-reloaded  
 **Date:** October 2025  
-**Phase:** Planning & Task Decomposition (Week 2)
+**Phase:** Implementation & Refinement
 
 ---
 
@@ -34,22 +34,23 @@ Analysis → Planning (you are here) → Implementation → Validation
 **Estimated Scope:** ~200-300 lines of Go code (rough guideline, not a requirement)  
 **Structure:** Simple (main.go + main_test.go in root)
 
-**Pipeline Flow:**
+**Pipeline Flow (per line):**
 ```
-Read File → Tokenize → Transform (5 stages) → Detokenize → Write File
+Read File → split by lines → Tokenize → Transform (hex/bin → articles → case) → Join → Punctuation → Quotes → rejoin lines → Write File
 ```
 
-**Transformation Order (Critical!):**
+**Transformation Order (final, critical):**
 1. Number conversions (hex, binary)
 2. Article correction (a→an)
 3. Case transformations (up, low, cap)
-4. Punctuation spacing
-5. Quote formatting
+4. Punctuation spacing (no space before; one after)
+5. Quote formatting (trim inside; pair quotes)
 
 **Why this order?**
-- Article correction must happen BEFORE case transformations (so "a amazing (up, 3)" becomes "AN AMAZING" not "An AMAZING")
-- Case transformations must happen BEFORE punctuation
-- Punctuation must happen BEFORE quotes
+- Article correction must happen BEFORE case transformations (so "a amazing (up, 3)" becomes "AN AMAZING" not "An AMAZING").
+- Token-based transforms must happen BEFORE spacing.
+- Punctuation and quotes MUST run LAST to avoid reintroducing spaces when tokens are joined.
+- The pipeline runs per line to preserve newlines.
 
 ---
 
@@ -154,6 +155,7 @@ Project is complete when:
 - [ ] Documentation is clear
 - [ ] Code is readable and maintainable
 - [ ] Ready for professional code review
+ - [ ] Newlines preserved; spaces normalized within lines
 
 ---
 
