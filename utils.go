@@ -1,8 +1,9 @@
 package main
 
 import (
-	"strconv"
-	"strings"
+    "strconv"
+    "strings"
+    "unicode"
 )
 
 // extractNumber extracts the number from markers like (up, 3)
@@ -23,8 +24,13 @@ func ExtractNumber(token string) int {
 
 // capitalize turns the first letter uppercase and the rest lowercase
 func Capitalize(word string) string {
-	if len(word) == 0 {
-		return word
-	}
-	return strings.ToUpper(string(word[0])) + strings.ToLower(string(word[1:]))
+    if word == "" {
+        return word
+    }
+    runes := []rune(word)
+    runes[0] = unicode.ToUpper(runes[0])
+    for i := 1; i < len(runes); i++ {
+        runes[i] = unicode.ToLower(runes[i])
+    }
+    return string(runes)
 }
