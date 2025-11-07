@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "strings"
 )
 
@@ -32,7 +31,6 @@ import (
 func ProcessText(text string) string {
     // Tokenize first
     words := Tokenize(text)
-    fmt.Printf("debug raw tokens: %#v", words)
 
     // Core transformations on tokens
     words = ConvertHexAndBin(words)
@@ -45,7 +43,5 @@ func ProcessText(text string) string {
     // Final formatting passes (spacing, quotes) last
     rebuilt = ApplyPunctuationRules(rebuilt)
     finalText := FixQuotes(rebuilt)
-
-    fmt.Println("DEBUG tokens:", finalText)
     return finalText
 }
