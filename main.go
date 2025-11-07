@@ -35,7 +35,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	outputText := processText(inputText)
+	outputText := ProcessText(inputText)
 
 	err = writeOutputFile(outputFile, outputText)
 	if err != nil {
