@@ -64,48 +64,48 @@ func writeOutputFile(path, content string) error {
 
 // processText is the main text-processing pipeline
 // it sequentially applies all transformation stages
-func processText(text string) string {
-	
-	words := tokenize(text)
-
-	fmt.Printf("debug raw tokens: %#v", words)
-
-	words = convertHexAndBin(words)
-
-	words = fixArticles(words)
-
-	words = applyCaseRules(words)
-
-	formattedText := applyPunctuationRules(words)
-
-	finalText := fixQuotes(formattedText)
-
-	fmt.Println("DEBUG tokens: ", finalText)
-
-	return finalText
-
-}
-
 // func processText(text string) string {
-//     // 1️⃣ Pre-cleaning
-//     prepped := fixQuotes(text)
-//     prepped = applyPunctuationRules(prepped)
+	
+// 	words := tokenize(text)
 
-//     // 2️⃣ Tokenization
-//     words := tokenize(prepped)
-//     fmt.Printf("debug raw tokens: %#v", words)
+// 	fmt.Printf("debug raw tokens: %#v", words)
 
-//     // 3️⃣ Transformations
-//     words = convertHexAndBin(words)
-//     words = fixArticles(words)
-//     words = applyCaseRules(words)
+// 	words = convertHexAndBin(words)
 
-//     // 4️⃣ Rebuild text
-//     finalText := strings.Join(words, " ")
+// 	words = fixArticles(words)
 
-//     fmt.Println("DEBUG tokens:", finalText)
-//     return finalText
+// 	words = applyCaseRules(words)
+
+// 	formattedText := applyPunctuationRules(words)
+
+// 	finalText := fixQuotes(formattedText)
+
+// 	fmt.Println("DEBUG tokens: ", finalText)
+
+// 	return finalText
+
 // }
+
+func processText(text string) string {
+    // 1️⃣ Pre-cleaning
+    prepped := fixQuotes(text)
+    prepped = applyPunctuationRules(prepped)
+
+    // 2️⃣ Tokenization
+    words := tokenize(prepped)
+    fmt.Printf("debug raw tokens: %#v", words)
+
+    // 3️⃣ Transformations
+    words = convertHexAndBin(words)
+    words = fixArticles(words)
+    words = applyCaseRules(words)
+
+    // 4️⃣ Rebuild text
+    finalText := strings.Join(words, " ")
+
+    fmt.Println("DEBUG tokens:", finalText)
+    return finalText
+}
 
 
 // convertHexAndBin looks for "(hex)" or "(bin)" 
@@ -299,7 +299,7 @@ func tokenize(text string) []string {
 // applyPunctuationRules builds the final formatted text from tokens.
 // It guarantees: no space before punctuation, exactly one between words
 // and it skips visual test separators like '---'
-func applyPunctuationRules(words []string) string {
+// func applyPunctuationRules(words []string) string {
 // 	var result []string
 
 // 	for _, word := range words {
@@ -319,42 +319,75 @@ func applyPunctuationRules(words []string) string {
 	// Helper closure: small function defined inside another function.
 	// It tells us if a token is a single-char punctuation mark we must
 	// attach to the previous word without any space
-	isPunct := func(w string) bool {
-		if len(w) != 1 {
-			return false
-		}
+// 	
 
-		switch w[0] {
-		case '.', ',', '!', '?', ';', ':':
-			return true
-		}
-		return false
-	}
 
+// applyPunctuationRules fixes spacing around punctuation marks in a text.
+//
+// Rules implemented:
+// 1) Remove spaces before punctuation (. , ! ? ; :)
+// 2) Ensure exactly one space after punctuation if followed by a letter, digit, or opening quote
+// 3) Never add spaces before closing quotes or parentheses
+// 4) Unicode-safe (works rune by rune)
+//
+// Example:
+// Input:  "Hello ,world!How are you?I'm fine ,thanks."
+// Output: "Hello, world! How are you? I'm fine, thanks."
+// applyPunctuationRules fixes spacing for . , ! ? : ; according to the spec.
+//
+// Rules implemented:
+// 1) Remove spaces before punctuation (. , ! ? : ;)
+// 2) Add one space after punctuation if next is a letter, digit, quote, or '('
+// 3) Treat multi-punctuation groups (..., !!, !?, etc.) as one unit
+// 4) Never add or remove spaces around parentheses except when '(' follows punctuation
+//
+// Example:
+// Input:  "I was sitting over there ,and then BAMM !!"
+// Output: "I was sitting over there, and then BAMM!!"
+func applyPunctuationRules(text string) string {
 	var b strings.Builder
-	wroteAny := false // tracks if something has been written
+	runes := []rune(text)
+	length := len(runes)
 
-	for _, w := range words {
-		if w == "---" {
-			continue
+	for i := 0; i < length; i++ {
+		r := runes[i]
+
+		// --- Rule 1: remove spaces before punctuation
+		if unicode.IsSpace(r) && i+1 < length {
+			next := runes[i+1]
+			if strings.ContainsRune(".,!?;:", next) {
+				continue // skip writing this space
+			}
 		}
 
-		if isPunct(w) {
-			b.WriteString(w) // attach to previous word punctuation without space
-			wroteAny = true
-			continue
-		}
+		// --- Write current rune
+		b.WriteRune(r)
 
-		// Normal word: if its not the first token, insert exactly one space first.
-		if wroteAny {      
-			b.WriteByte(' ')
-			
+		// --- Rule 3: detect punctuation groups (like ... or !?)
+		if strings.ContainsRune(".,!?;:", r) {
+			// Peek ahead to see if next is punctuation too
+			if i+1 < length && strings.ContainsRune(".,!?;:", runes[i+1]) {
+				// Don't insert space yet — still inside group
+				continue
+			}
+
+			// --- Rule 2: add a space after punctuation if next is word, quote, or '('
+			if i+1 < length {
+				next := runes[i+1]
+				if unicode.IsLetter(next) || unicode.IsDigit(next) || next == '"' || next == '\'' || next == '(' {
+					b.WriteRune(' ')
+				}
+			}
 		}
-		b.WriteString(w)   // write the word itself
-		wroteAny = true
 	}
-	return strings.TrimSpace(b.String())
+
+	out := strings.Join(strings.Fields(b.String()), " ")
+	return strings.TrimSpace(out)
 }
+
+
+
+
 
 //fixQuotes cleans spacing around quotation marks
 // It ensures proper placement and spacing for opening and closing quotes
