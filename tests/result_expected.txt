@@ -1,0 +1,232 @@
+# ──────────────────────────────
+# 1. Number conversions (bin / hex)
+# ──────────────────────────────
+Simply add 30 and 2 to see the result!
+---
+26 is equal to 26.
+---
+5 is equal to 5.
+---
+the result of 15 should be 21 (hex).
+---
+please convert 4 and 100.
+---
+5, 31!
+---
+
+# ──────────────────────────────
+# 2. Grammar correction (a/an)
+# ──────────────────────────────
+There is an apple and an hut.
+---
+There is an apple and a
+---
+There is an apple and an Hut.
+---
+an orange fell on an elephant.
+---
+an honest man told an ugly truth.
+---
+an apple fell from the tree.
+---
+"A apple" fell from the tree.
+---
+There is an house and an owl next to an elephant.
+---
+an honest apple and an honest ant.
+---
+A 15 orange.
+---
+A 42 banana and a 15 orange.
+---
+
+# ──────────────────────────────
+# 3. Case transformations (up, low, cap)
+# ──────────────────────────────
+We are learning GO today!
+---
+This should become lowercase.
+---
+please capitalize This.
+---
+please capitalize These Three Words quickly.
+---
+this will go up TWO WORDS in a row.
+---
+I am SO EXCITED about this project.
+---
+He shouted STOP!
+---
+The sky is blue now.
+---
+my name is Teo.
+---
+welcome to The Brooklyn Bridge.
+---
+I will shout LOUDLY then whisper.
+---
+My Dog is happy!
+---
+I should stop shouting!
+---
+the test is Almost Over.
+---
+an happy cat jumped over an angry dog.
+---
+LOOK this line should be impressive.
+---
+I WILL DO IT!
+---
+hello
+---
+Test
+---
+HELLO there
+---
+this is (up, ) nonsense
+---
+
+# ──────────────────────────────
+# 4. Combined punctuation, spacing & normalization
+# ──────────────────────────────
+Hello, world! This is amazing.
+Do you like Go? Yes, I do.
+Let's test, shall we?
+---
+It was the best of times, IT was the age of wisdom.
+---
+It was cold, "she said," but bright. "
+---
+
+# ──────────────────────────────
+# 5. Quote handling and punctuation inside/outside quotes
+# ──────────────────────────────
+"Hello"
+---
+He said, "Hello".
+---
+She said "Hi" and left.
+---
+'Hello'
+---
+It's John's "book".
+---
+"Hi", she said.
+---
+Hello"world
+---
+He said, 'Hi there'!
+---
+"Quote" next
+---
+"" # empty quotes
+---
+'' # empty single quotes
+---
+hello, "world"
+---
+"It's fine"
+---
+"hi" there
+---
+"hi", she said.
+---
+'test'
+---
+'hi'there
+---
+He said, "Hello".
+---
+She asked: "why?" (whisper)
+---
+"wow", amazing
+---
+"hello" world
+---
+It's John's "book".
+---
+don’t "worry"
+---
+"He" llo
+---
+Hello, "world" This is "fine".
+---
+"open quote only
+---
+'an unclosed one
+---
+He said, 'hello.'
+---
+"Hi!"
+---
+"αλφα" and "βητα" should work too.
+---
+"Αλφα, βητα!" shouted the TEACHER.
+---
+
+# ──────────────────────────────
+# 6. Advanced linguistic and logic edge cases
+# ──────────────────────────────
+It was the best of times, IT WAS the worst of times
+---
+It was the best OF TIMES, IT WAS the worst of times
+---
+one 2 THREE
+---
+ONE 2 THREE
+---
+this is (up, ) wrong
+---
+"HI" THERE now becomes interesting when followed by 2 and 26.
+---
+"Hello", she said, "and then left."
+---
+Please convert 15, add 30, and then shout "RESULT" immediately!
+---
+The Quick Brown Fox jumped over "a angry dog", then yelled "wow, WHAT A DAY!" and ran.
+---
+an House on AN HILL stood beside "another An Apple" and SHOUTED!
+---
+It was cold, "she said," but Bright. "
+---
+Wait... what?! This should be fixed!
+---
+Go!
+---
+Go!
+---
+Wow!!!
+---
+He shouted!
+---
+She whispered?!
+---
+Please convert 15, add 30, then say "DONE"!
+---
+"1E!" shouted the STUDENT.
+---
+The code printed 5, which equals "5"!
+---
+"Go!" she said, then added "Wait?!".
+---
+He yelled: "Stop!"
+---
+"Wait..." she said, "this code works!"
+---
+
+# ──────────────────────────────
+# 7. Final paragraph stress test
+# ──────────────────────────────
+Once upon a time, "a honest Apple" fell from an ugly tree near an elephant.
+The Owl watching from ABOVE SHOUTED: "look out, below!"
+Then the cat whispered "it's fine, we will fix It".
+In the distance, someone murmured, "1A plus 5 EQUALS MAGIC".
+Suddenly, a storm began; "the sky was blue" and the wind shouted, "STOP"!
+Meanwhile, the old man said, 'this is (up, ) nonsense', and wrote It Down.
+When all was calm, the apple smiled, saying, "don’t worry, Everything’s fine."
+At that exact moment, 15 transformed into 21, proving that even code can tell a story.
+---
+Then the professor said, "It works... Amazing!" while students shouted "yes!!!".
+Moments later, Go! appeared on the screen, followed by 15, 30, and "done!".
+Even punctuation like "Wait?!" was now handled gracefully, proving that and logic worked under stress.
+---
