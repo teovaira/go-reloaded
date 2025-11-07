@@ -29,19 +29,27 @@ import (
 // }
 
 func ProcessText(text string) string {
-    // Tokenize first
-    words := Tokenize(text)
+    // Preserve newlines by processing line-by-line
+    lines := strings.Split(text, "\n")
+    out := make([]string, 0, len(lines))
 
-    // Core transformations on tokens
-    words = ConvertHexAndBin(words)
-    words = FixArticles(words)
-    words = ApplyCaseRules(words)
+    for _, line := range lines {
+        if line == "" {
+            out = append(out, "")
+            continue
+        }
+        // Tokenize and apply token-level transforms
+        words := Tokenize(line)
+        words = ConvertHexAndBin(words)
+        words = FixArticles(words)
+        words = ApplyCaseRules(words)
 
-    // Rebuild text from tokens
-    rebuilt := strings.Join(words, " ")
-
-    // Final formatting passes (spacing, quotes) last
-    rebuilt = ApplyPunctuationRules(rebuilt)
-    finalText := FixQuotes(rebuilt)
-    return finalText
+        // Rebuild the line
+        rebuilt := strings.Join(words, " ")
+        // Final spacing and quotes per line
+        rebuilt = ApplyPunctuationRules(rebuilt)
+        rebuilt = FixQuotes(rebuilt)
+        out = append(out, rebuilt)
+    }
+    return strings.Join(out, "\n")
 }
