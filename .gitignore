@@ -1,6 +1,7 @@
 *.exe
 .amazonq/
 *.out
+.claude
 
 # Go build cache
 .gocache/
