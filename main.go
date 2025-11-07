@@ -10,6 +10,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strconv"
@@ -406,7 +407,7 @@ func applyPunctuationRules(words []string) string {
 // 4) Handles both " and ' quotes, and only closes with the same quote type opened
 // 5) Unicode safe: uses utf8.DecodeLastRuneInString + Builder. for in-place trimming.
 func fixQuotes(text string) string {
-	var b strings.Builder
+	var b bytes.Buffer
 	inQuotes := false
 	var quoteType rune
 
@@ -419,8 +420,8 @@ func fixQuotes(text string) string {
 			if !inQuotes {
 				if b.Len() > 0 {
 					trailingSpaces := 0
-					for {
-						r, size := utf8.DecodeLastRuneInString(b.String())
+					for b.Len() > 0{
+						r, size := utf8.DecodeLastRune(b.Bytes())
 						if size == 0 || r != ' ' {
 							break
 						}
@@ -445,7 +446,7 @@ func fixQuotes(text string) string {
 			if inQuotes && ch == quoteType {
 
 				for b.Len() > 0 {
-					r, size := utf8.DecodeLastRuneInString(b.String())
+					r, size := utf8.DecodeLastRune(b.Bytes())
 					if size == 0 ||  r != ' ' {
 						break
 					}
