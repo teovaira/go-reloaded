@@ -32,7 +32,7 @@ import (
 func ProcessText(text string) string {
     // 1️⃣ Pre-cleaning
     prepped := fixQuotes(text)
-    prepped = applyPunctuationRules(prepped)
+    prepped = ApplyPunctuationRules(prepped)
 
     // 2️⃣ Tokenization
     words := tokenize(prepped)
