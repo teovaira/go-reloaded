@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strconv"
+	
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func ApplyCaseRules(words []string) []string {
 
 		// Handle (up, n)
 		if strings.HasPrefix(word, "(up,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+			n := ExtractNumber(word)
 			for j := 1; j <= n && len(result)-j >=0; j++ {
 				result[len(result)-j] = strings.ToUpper(result[len(result)-j])
 			}
@@ -25,7 +25,7 @@ func ApplyCaseRules(words []string) []string {
 
 		// Handle (low, n)
 		if strings.HasPrefix(word, "(low,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+			n := ExtractNumber(word)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
 				result[len(result)-j] = strings.ToLower(result[len(result)-j])
 			}
@@ -34,9 +34,9 @@ func ApplyCaseRules(words []string) []string {
 
 		// Handle (cap, n)
 		if strings.HasPrefix(word, "(cap,") && strings.HasSuffix(word, ")") {
-			n := extractNumber(word)
+			n := ExtractNumber(word)
 			for j := 1; j <= n && len(result)-j >= 0; j++ {
-				result[len(result)-j] = capitalize(result[len(result)-j])
+				result[len(result)-j] = Capitalize(result[len(result)-j])
 			}
 			continue
 		}
@@ -55,7 +55,7 @@ func ApplyCaseRules(words []string) []string {
 
 		// Handle (cap)
 		if word == "(cap)" && len(result) > 0 {
-			result[len(result)-1] = capitalize(result[len(result)-1])
+			result[len(result)-1] = Capitalize(result[len(result)-1])
 			continue
 		}
 		result = append(result, word)
@@ -64,25 +64,5 @@ func ApplyCaseRules(words []string) []string {
 	
 }
 
-// extractNumber extracts the number from markers like (up, 3)
-func extractNumber(token string) int {
-	token = strings.TrimSuffix(strings.TrimPrefix(token, "("), ")")
-	parts := strings.Split(token, ",")
-	if len(parts) < 2 {
-		return 1
-	}
-	numStr:= strings.TrimSpace(parts[1])
-	n, err := strconv.Atoi(numStr)
-	if err != nil {
-		return 1
-	}
-	return n
-}
 
-// capitalize turns the first letter uppercase and the rest lowercase
-func capitalize(word string) string {
-	if len(word) == 0 {
-		return word
-	}
-	return strings.ToUpper(string(word[0])) + strings.ToLower(string(word[1:]))
-}
+
