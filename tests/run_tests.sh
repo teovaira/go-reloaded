@@ -1,8 +1,8 @@
 #!/bin/bash
 # 🧪 go-reloaded test runner
 
-INPUT="../sample.txt"
-OUTPUT="../result.txt"
+INPUT="sample.txt"
+OUTPUT="result.txt"
 EXPECTED="result_expected.txt"
 
 echo "🔹 Running go-reloaded on sample.txt..."
