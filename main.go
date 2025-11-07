@@ -12,6 +12,9 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"go-reloaded/internal/fileio"
+	"go-reloaded/internal/pipeline"
 )
 
 func main() {
@@ -24,15 +27,15 @@ func main() {
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
-	inputText, err := ReadInputFile(inputFile)
+	inputText, err := fileio.ReadInputFile(inputFile)
 	if err != nil {
 		fmt.Println("Error in reading the input file:", err)
 		os.Exit(1)
 	}
 
-	outputText := ProcessText(inputText)
+	outputText := pipeline.ProcessText(inputText)
 
-	err = WriteOutputFile(outputFile, outputText)
+	err = fileio.WriteOutputFile(outputFile, outputText)
 	if err != nil {
 		fmt.Println("Error in writing the output file:", err)
 		os.Exit(1)
