@@ -1,5 +1,22 @@
+# ──────────────────────────────
+# 1. Number conversions (bin / hex)
+# ──────────────────────────────
 Simply add 1E (hex) and 10 (bin) to see the result!
 ---
+1A (hex) is equal to 26.
+---
+101 (bin) is equal to 5.
+---
+the result of 1111 (bin) should be 15 (hex) (hex).
+---
+please convert 100 (bin) and 64 (hex).
+---
+101(bin), 1F(hex)!
+---
+
+# ──────────────────────────────
+# 2. Grammar correction (a/an)
+# ──────────────────────────────
 There is a apple and a hut.
 ---
 There is a apple and a
@@ -10,6 +27,18 @@ A orange fell on a elephant.
 ---
 A honest man told a ugly truth.
 ---
+A apple fell from the tree.
+---
+"A apple" fell from the tree.
+---
+There is a house and a owl next to a elephant.
+---
+an honest apple and a honest ant.
+---
+
+# ──────────────────────────────
+# 3. Case transformations (up, low, cap)
+# ──────────────────────────────
 We are learning go (up) today!
 ---
 This should become lowercase (low).
@@ -30,15 +59,7 @@ my name is teo (cap).
 ---
 welcome to the brooklyn bridge (cap, 3).
 ---
-1A (hex) is equal to 26.
----
-101 (bin) is equal to 5.
----
-the result of 1111 (bin) should be 15 (hex) (hex).
----
 I will shout loudly (up) then whisper (low).
----
-There is a house and a owl next to a elephant.
 ---
 My dog (cap) is happy!
 ---
@@ -48,18 +69,30 @@ the test is almost over (cap, 2).
 ---
 a happy cat jumped over a angry dog.
 ---
-please convert 100 (bin) and 64 (hex).
----
 look (up, 3) this line should be impressive.
----
-an honest apple and a honest ant.
 ---
 i will do it (up, 4)!
 ---
+hello(up)(low)
+---
+test(low,2)(cap)
+---
+hello(up, 3)there
+---
+this is (up,(low)) nonsense
+---
+
+# ──────────────────────────────
+# 4. Combined punctuation, spacing & normalization
+# ──────────────────────────────
 Hello ,world !This  is  amazing .
 Do  you  like  Go ?Yes ,I  do .
 Let's  test ,shall  we ?
 ---
+
+# ──────────────────────────────
+# 5. Quote handling and punctuation inside/outside quotes
+# ──────────────────────────────
 " Hello "
 ---
 He said , " Hello " .
@@ -78,7 +111,9 @@ He said, ' Hi there ' !
 ---
 "Quote"next
 ---
-""
+""             # empty quotes
+---
+''             # empty single quotes
 ---
 hello, " world "
 ---
@@ -104,9 +139,56 @@ It's John's "book".
 ---
 don’t " worry "
 ---
-''
----
 "He"llo
 ---
 Hello, " world " This is " fine ".
+---
+"open quote only
+---
+'an unclosed one
+---
+He said, 'hello.'
+---
+"Hi!"(cap)
+---
+"Αλφα (low)" and "ΒΗΤΑ (low)" should work too.
+---
+
+# ──────────────────────────────
+# 6. Integration / mixed complex scenarios
+# ──────────────────────────────
+# Mixes everything: modifiers, quotes, punctuation, grammar, and conversions.
+
+He shouted "stop (up,2) right there" and then whispered 'i am sorry (low)' before leaving (cap).
+---
+"101 (bin)" should give 5 and "1E (hex)" should give 30 (low), right?
+---
+An honest owl said, "a ugly apple fell on a elephant (cap,3)!" before laughing (low).
+---
+"This sentence (up, 2) will test spacing ,quotes ,and punctuation !"she said, "let's see what happens" (low,2).
+---
+A house (cap) on a hill (up, 2) stood beside "another a apple" (cap,2) and shouted (up)!
+---
+"hi"there (up,3) now becomes interesting (low) when followed by 10 (bin) and 1A (hex).
+---
+The quick brown fox (cap,4) jumped over " a angry dog (low) ", then yelled "wow , what a day (up,3) !"and ran (low).
+---
+Please convert 1111 (bin), add 1E (hex), and then shout "result (up)" immediately!
+---
+"Hello ,world !This  is  amazing ." she said (cap), "Do  you  like  Go ?Yes ,I  do ." (low)
+---
+"It's John's "book" ." said the man (up), "and a ugly truth (cap,3) was told (low)." 
+---
+
+# ──────────────────────────────
+# 7. Final paragraph stress test
+# ──────────────────────────────
+Once upon a time, "a honest apple (cap)" fell from a ugly tree near a elephant (low). 
+The owl (cap) watching from above shouted (up,2): "look out ,below !" 
+Then the cat whispered (low,2) "it's fine ,we  will fix it (cap)". 
+In the distance, someone murmured, "1A (hex) plus 101 (bin) equals magic (up,3)". 
+Suddenly, a storm began; "the  sky (low) was BLUE (low)" and the wind shouted, "stop (up)"! 
+Meanwhile, the old man said, 'this is (up,(low)) nonsense', and wrote it down (cap,2). 
+When all was calm, the apple smiled, saying, "don’t worry (low), everything’s (cap,2) fine." 
+At that exact moment, 1111 (bin) transformed into 15 (hex), proving that even code can tell a story.
 ---

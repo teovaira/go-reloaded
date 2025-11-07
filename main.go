@@ -393,6 +393,9 @@ func applyPunctuationRules(words []string) string {
 // 	return strings.TrimSpace(b.String())
 // }
 
+
+
+
 // fixQuotes cleans spacing around both "double" and "single" quotation marks
 //
 // Rules implemented:
@@ -407,9 +410,9 @@ func applyPunctuationRules(words []string) string {
 // 4) Handles both " and ' quotes, and only closes with the same quote type opened
 // 5) Unicode safe: uses utf8.DecodeLastRuneInString + Builder. for in-place trimming.
 func fixQuotes(text string) string {
-	var b bytes.Buffer
+	var b bytes.Buffer // Efficient builder for UTF-8 bytes
 	inQuotes := false
-	var quoteType rune
+	var quoteType rune // Stores the opening quote (" or ')
 
 	runes := []rune(text)
 
@@ -422,14 +425,14 @@ func fixQuotes(text string) string {
 					trailingSpaces := 0
 					for b.Len() > 0{
 						r, size := utf8.DecodeLastRune(b.Bytes())
-						if size == 0 || r != ' ' {
+						if size == 0 || !unicode.IsSpace(r) {
 							break
 						}
 						trailingSpaces++
 						b.Truncate(b.Len()-size)
 					}
 					if trailingSpaces > 0 {
-						b.WriteByte(' ')
+						b.WriteRune(' ')
 					}
 				}
 
@@ -447,7 +450,7 @@ func fixQuotes(text string) string {
 
 				for b.Len() > 0 {
 					r, size := utf8.DecodeLastRune(b.Bytes())
-					if size == 0 ||  r != ' ' {
+					if size == 0 ||  !unicode.IsSpace(r) {
 						break
 					}
 					b.Truncate(b.Len() -size)
@@ -459,7 +462,7 @@ func fixQuotes(text string) string {
 				if i+1 < len(runes) {
 					next := runes[i+1]
 					if unicode.IsLetter(next) || unicode.IsDigit(next) ||  next == '(' {
-						b.WriteByte(' ')
+						b.WriteRune(' ')
 					}
 				}
 				continue
