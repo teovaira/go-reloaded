@@ -68,7 +68,7 @@ func processText(text string) string {
 	
 	words := tokenize(text)
 
-	// fmt.Printf("debug raw tokens: %#v", words)
+	fmt.Printf("debug raw tokens: %#v", words)
 
 	words = convertHexAndBin(words)
 
@@ -85,6 +85,28 @@ func processText(text string) string {
 	return finalText
 
 }
+
+// func processText(text string) string {
+//     // 1️⃣ Pre-cleaning
+//     prepped := fixQuotes(text)
+//     prepped = applyPunctuationRules(prepped)
+
+//     // 2️⃣ Tokenization
+//     words := tokenize(prepped)
+//     fmt.Printf("debug raw tokens: %#v", words)
+
+//     // 3️⃣ Transformations
+//     words = convertHexAndBin(words)
+//     words = fixArticles(words)
+//     words = applyCaseRules(words)
+
+//     // 4️⃣ Rebuild text
+//     finalText := strings.Join(words, " ")
+
+//     fmt.Println("DEBUG tokens:", finalText)
+//     return finalText
+// }
+
 
 // convertHexAndBin looks for "(hex)" or "(bin)" 
 // patterns and replaces the word before them with its
