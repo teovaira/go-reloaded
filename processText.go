@@ -40,7 +40,7 @@ func ProcessText(text string) string {
 
     // 3️⃣ Transformations
     words = ConvertHexAndBin(words)
-    words = fixArticles(words)
+    words = FixArticles(words)
     words = applyCaseRules(words)
 
     // 4️⃣ Rebuild text
