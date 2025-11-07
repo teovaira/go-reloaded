@@ -1,3 +1,14 @@
 *.exe
 .amazonq/
 *.out
+
+# Go build cache
+.gocache/
+tests/.gocache/
+
+# Build artifacts/binaries
+go-reloaded
+
+# Generated outputs
+result.txt
+output.txt
