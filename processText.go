@@ -35,7 +35,7 @@ func ProcessText(text string) string {
     prepped = ApplyPunctuationRules(prepped)
 
     // 2️⃣ Tokenization
-    words := tokenize(prepped)
+    words := Tokenize(prepped)
     fmt.Printf("debug raw tokens: %#v", words)
 
     // 3️⃣ Transformations
