@@ -277,11 +277,13 @@ Read the text character by character, and the program is in different "states". 
 4. **Good enough** - The project files won't be huge, so speed isn't critical
 5. **Team-friendly** - If I work with someone, we can each do different steps
 
-**My plan:**
-- Split text into pieces (tokens)
-- Apply each rule one by one
-- Put text back together
-- Each rule is a separate function
+**My plan (finalized):**
+- Process text per line to preserve newlines.
+- Split each line into tokens (words, numbers; punctuation as separate tokens).
+- Apply rules in this order: number conversions → articles → case.
+- Join tokens with single spaces.
+- Run punctuation spacing and quote formatting last.
+- Each rule is a separate, testable function.
 
 **Trade-off I'm accepting:**
 
@@ -289,7 +291,7 @@ My solution won't be the fastest possible, but it will be correct and easy to un
 
 ---
 
-## Edge Cases & Open Questions
+## Edge Cases & Open Questions (resolved)
 
 Below are things I'm still figuring out. These questions apply no matter which architecture I choose - they're about the problem itself, not how I implement it.
 
@@ -394,6 +396,7 @@ Output: "He said 'hello WORLD'"
 The `(up)` still works, and the quotes still get fixed. Both rules apply!
 
 **Status:** Need to verify this with testing, but it seems logical.
+— Confirmed. Commands inside quotes are processed. Quotes are formatted last to fix inner spacing.
 
 ---
 
@@ -410,6 +413,7 @@ Output: "word ((hex))"  (treat as invalid, leave unchanged)
 ```
 
 Or maybe I try to find the first valid pattern and ignore the broken ones? This could be tricky. I'll need to think about this more when I'm implementing the command parser.
+— Decision: Invalid or non‑positive counts are ignored (no transformation) and markers are kept literal.
 
 ---
 
@@ -479,6 +483,15 @@ Output: "Hello"
 ```
 
 This makes sense - capitalize is a specific format, not just "make first letter uppercase". It's: first letter UP, everything else DOWN.
+
+---
+
+## Clarifications from Implementation
+
+- Definition of "word": words include alphabetic tokens and decimal numbers; punctuation is tokenized separately.
+- Newline policy: Newlines are preserved; spaces are normalized within each line.
+- Unicode handling: Capitalization is rune-aware; non‑ASCII letters are handled correctly.
+- Spacing order: Punctuation and quotes run last to avoid reintroducing spaces after joining tokens.
 
 ---
 
