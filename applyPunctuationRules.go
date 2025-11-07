@@ -53,9 +53,9 @@ import (
 // Input:  "I was sitting over there ,and then BAMM !!"
 // Output: "I was sitting over there, and then BAMM!!"
 func ApplyPunctuationRules(text string) string {
-	var b strings.Builder
-	runes := []rune(text)
-	length := len(runes)
+    var b strings.Builder
+    runes := []rune(text)
+    length := len(runes)
 
 	for i := 0; i < length; i++ {
 		r := runes[i]
@@ -89,6 +89,15 @@ func ApplyPunctuationRules(text string) string {
 		}
 	}
 
-	out := strings.Join(strings.Fields(b.String()), " ")
-	return strings.TrimSpace(out)
+    // Preserve line breaks while normalizing spaces within each line.
+    // We avoid a global strings.Fields to keep '\n' structure intact.
+    built := b.String()
+    lines := strings.Split(built, "\n")
+    for i := range lines {
+        // Collapse runs of whitespace on each line to single spaces
+        // (leading/trailing spaces on the line are trimmed by Fields).
+        lines[i] = strings.Join(strings.Fields(lines[i]), " ")
+    }
+    out := strings.Join(lines, "\n")
+    return strings.TrimSpace(out)
 }
