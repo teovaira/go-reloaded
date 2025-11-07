@@ -7,21 +7,28 @@ import "strings"
 // The comparison is case-insensitive, and the loop stops before the last
 // word to prevent out-of-range errors.
 func FixArticles(words []string) []string {
-	for i := 0; i < len(words)-1; i++ { //stop before the last word
-		current := strings.ToLower(words[i])
-		next := strings.ToLower(words[i+1])
+    for i := 0; i < len(words)-1; i++ { // stop before the last word
+        currentLower := strings.ToLower(words[i])
+        if currentLower != "a" {
+            continue
+        }
 
-		if current == "a" {
-			
-			if strings.HasPrefix(next, "a") ||
-			 strings.HasPrefix(next, "e") ||
-			 strings.HasPrefix(next, "i") ||
-			 strings.HasPrefix(next, "o") ||
-			 strings.HasPrefix(next, "u") ||
-			 strings.HasPrefix(next, "h") {
-			 words[i] = "an"
-			}
-		}
-	}
-	return words
+        // Peek next token and ignore leading quotes when deciding
+        nextLower := strings.ToLower(words[i+1])
+        // Strip ASCII quotes at the start (common in our tokenization)
+        trimmed := strings.TrimLeft(nextLower, "'\"")
+        if trimmed == "" {
+            continue
+        }
+
+        if strings.HasPrefix(trimmed, "a") ||
+            strings.HasPrefix(trimmed, "e") ||
+            strings.HasPrefix(trimmed, "i") ||
+            strings.HasPrefix(trimmed, "o") ||
+            strings.HasPrefix(trimmed, "u") ||
+            strings.HasPrefix(trimmed, "h") {
+            words[i] = "an"
+        }
+    }
+    return words
 }
