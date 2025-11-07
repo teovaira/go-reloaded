@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
+    "strings"
 )
 
 // processText is the main text-processing pipeline
@@ -30,21 +30,21 @@ import (
 // }
 
 func ProcessText(text string) string {
-    // 1️⃣ Pre-cleaning
-    prepped := FixQuotes(text)
-    prepped = ApplyPunctuationRules(prepped)
-
-    // 2️⃣ Tokenization
-    words := Tokenize(prepped)
+    // Tokenize first
+    words := Tokenize(text)
     fmt.Printf("debug raw tokens: %#v", words)
 
-    // 3️⃣ Transformations
+    // Core transformations on tokens
     words = ConvertHexAndBin(words)
     words = FixArticles(words)
     words = ApplyCaseRules(words)
 
-    // 4️⃣ Rebuild text
-    finalText := strings.Join(words, " ")
+    // Rebuild text from tokens
+    rebuilt := strings.Join(words, " ")
+
+    // Final formatting passes (spacing, quotes) last
+    rebuilt = ApplyPunctuationRules(rebuilt)
+    finalText := FixQuotes(rebuilt)
 
     fmt.Println("DEBUG tokens:", finalText)
     return finalText
