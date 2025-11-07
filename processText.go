@@ -41,7 +41,7 @@ func ProcessText(text string) string {
     // 3️⃣ Transformations
     words = ConvertHexAndBin(words)
     words = FixArticles(words)
-    words = applyCaseRules(words)
+    words = ApplyCaseRules(words)
 
     // 4️⃣ Rebuild text
     finalText := strings.Join(words, " ")
