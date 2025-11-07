@@ -4,7 +4,7 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 
 **Student:** Theodore Vairaktaris  
 **Institution:** Zone01 Athens  
-**Status:** Planning Phase (Week 1 - No Code Yet!)  
+**Status:** Implementation & Refinement (Pipeline working)  
 **License:** MIT
 
 ---
@@ -18,7 +18,7 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 - Punctuation spacing fixes
 - Quote pairing with proper marks
 
-**Project Scope:** ~200-300 lines of Go code
+**Project Scope:** ~600 lines of Go code (at this stage)
 
 ---
 
@@ -52,17 +52,19 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 **Pipeline Model:** Sequential transformations
 
 ```
-Input → Tokenize → Transform Pipeline → Detokenize → Output
+Input → Tokenize → Transform Pipeline (per line) → Detokenize → Output
                         ↓
             [hex/bin] → [article] → [case] → [punct] → [quotes]
 ```
 
-**Transformation Order Matters:**
-1. Number conversions first
-2. Article correction second
-3. Case transformations (applied to corrected articles)
+**Transformation Order Matters (final):**
+1. Number conversions (hex/bin)
+2. Article correction (a → an)
+3. Case transformations (up/low/cap)
 4. Punctuation spacing
-5. Quote pairing last
+5. Quote pairing
+
+Order rationale: Token-based transforms happen first; spacing and quotes run last to avoid re-introducing spaces when tokens are joined. The pipeline processes input per line to preserve newlines.
 
 ---
 
@@ -131,6 +133,12 @@ go build -o go-reloaded
 - **[GOLDEN-TEST-SET.md](docs/GOLDEN-TEST-SET.md)** - Complete test specifications
 - **[AGILE-ROADMAP.md](docs/AGILE-ROADMAP.md)** - Sprint overview and workflow
 - **Sprint Files** - Task breakdowns in `docs/sprints/`
+
+Notes on behavior (as implemented):
+- Words include both alphabetic tokens and decimal numbers; punctuation is tokenized separately.
+- Invalid markers (e.g., `(up, )`, `(low, -1)`) are ignored and kept literal.
+- Capitalization is Unicode-aware.
+- Newlines are preserved; spaces are normalized within each line.
 
 ---
 
