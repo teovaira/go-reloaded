@@ -1,7 +1,7 @@
 # AI Agent Guidelines
 
 **Project:** go-reloaded - Text transformation CLI tool  
-**Current Phase:** Planning & Analysis (Week 1 - No code yet!)  
+**Current Phase:** Implementation & Refinement (Pipeline working)  
 **Methodology:** TDD + Agile
 
 ---
@@ -36,7 +36,7 @@ Build a CLI tool that transforms text files:
 - Punctuation spacing
 - Quote pairing
 
-**Target:** ~200-300 lines of Go code, 25 tasks, 4 sprints
+**Target:** ~600 lines of Go code at this stage (initial estimate was 200–300), 25 tasks, 4 sprints
 
 ---
 
