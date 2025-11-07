@@ -2,6 +2,9 @@
 .amazonq/
 *.out
 .claude
+integration_test.go
+tokenizer_test.go
+transform_test.go
 
 # Go build cache
 .gocache/

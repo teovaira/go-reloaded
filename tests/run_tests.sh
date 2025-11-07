@@ -17,4 +17,4 @@ else
 fi
 
 
-# // Make it executable with chmod +x tests/run_tests.sh.
+#  Make it executable with chmod +x tests/run_tests.sh.
