@@ -32,6 +32,9 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 - `hello (up)` → `HELLO`
 - `WORLD (low)` → `world`
 - `title (cap)` → `Title`
+- `hello world (up, 2)` → `HELLO WORLD`
+- `MAKE THIS lower (low, 2)` → `MAKE this lower`
+- `this is nice (cap, 3)` → `This Is Nice`
 
 **Context-Aware:**
 - `a apple` → `an apple`
