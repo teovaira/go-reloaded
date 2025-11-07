@@ -167,8 +167,6 @@ He said, 'hello.'
 # ──────────────────────────────
 # 6. Advanced linguistic and logic edge cases
 # ──────────────────────────────
-# Multi-word transformations, numbers as words, punctuation boundaries, malformed parentheses.
-
 it (cap) was the best of times, it was (up, 3) the worst of times
 ---
 it (cap) was the best of times, it was (up, 5) the worst of times
@@ -191,6 +189,30 @@ A house (cap) on a hill (up, 2) stood beside "another a apple" (cap,2) and shout
 ---
 It was cold,"she said,"but bright." (cap,3)
 ---
+Wait...what?!This should be fixed! (cap)
+---
+Go!(up)
+---
+Go! (up)
+---
+Wow!!!(cap)
+---
+He shouted! (low)
+---
+She whispered?! (up)
+---
+Please convert 1111 (bin), add 1E (hex), then say "done (up)"!
+---
+"1E (hex)!" shouted the student (up).
+---
+The code printed 101 (bin), which equals "5"! (cap)
+---
+"Go!(up)" she said, then added "Wait?! (low)".
+---
+He yelled: "Stop!(up)" (low)
+---
+"Wait... (cap)" she said, "this code works! (up)"
+---
 
 # ──────────────────────────────
 # 7. Final paragraph stress test
@@ -203,4 +225,8 @@ Suddenly, a storm began; "the  sky (low) was BLUE (low)" and the wind shouted, "
 Meanwhile, the old man said, 'this is (up,(low)) nonsense', and wrote it down (cap,2).
 When all was calm, the apple smiled, saying, "don’t worry (low), everything’s (cap,2) fine."
 At that exact moment, 1111 (bin) transformed into 15 (hex), proving that even code can tell a story.
+---
+Then the professor said, "It works...Amazing! (cap)" while students shouted "yes!!!(up)".
+Moments later, Go!(up) appeared on the screen, followed by 1111 (bin), 1E (hex), and "done! (cap)".
+Even punctuation like "Wait?! (up)" was now handled gracefully, proving that (bin) and (hex) logic worked under stress.
 ---
