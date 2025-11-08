@@ -29,9 +29,13 @@ A text transformation CLI tool built in Go using Test-Driven Development (TDD) a
 - `1010 (bin)` → `10`
 
 **Case Transformations:**
+
+*Single word (marker applies to preceding word):*
 - `hello (up)` → `HELLO`
 - `WORLD (low)` → `world`
 - `title (cap)` → `Title`
+
+*Multiple words (marker with count applies to N preceding words):*
 - `hello world (up, 2)` → `HELLO WORLD`
 - `MAKE THIS lower (low, 2)` → `MAKE this lower`
 - `this is nice (cap, 3)` → `This Is Nice`
@@ -67,7 +71,11 @@ Input → Tokenize → Transform Pipeline (per line) → Detokenize → Output
 4. Punctuation spacing
 5. Quote pairing
 
-Order rationale: Token-based transforms happen first; spacing and quotes run last to avoid re-introducing spaces when tokens are joined. The pipeline processes input per line to preserve newlines.
+**Order rationale:**
+- **Token-based transforms first (1-3):** Number conversions, article corrections, and case transformations modify individual tokens before they're assembled into the final output
+- **Spacing fixes near the end (4):** Punctuation spacing runs after token modifications to ensure proper spacing around commas, periods, etc., without interfering with word transformations
+- **Quote pairing last (5):** Quotes are handled at the very end to properly match opening/closing quotes and adjust spacing, preventing any prior transformations from disrupting quote pairs
+- **Per-line processing:** The pipeline processes each line independently to preserve original newline characters in the output
 
 ---
 
@@ -76,13 +84,27 @@ Order rationale: Token-based transforms happen first; spacing and quotes run las
 ```
 go-reloaded/
 ├── README.md                    # This file
+├── LICENSE                      # MIT License
 ├── go.mod                       # Go module file
 ├── main.go                      # Entry point
+├── internal/                    # Internal packages
+│   ├── fileio/
+│   │   └── fileio.go           # File I/O operations
+│   ├── pipeline/
+│   │   └── pipeline.go         # Main processing pipeline
+│   ├── tokenizer/
+│   │   └── tokenizer.go        # Text tokenization
+│   └── transform/
+│       ├── numbers.go          # Hex/bin conversions
+│       ├── articles.go         # Article correction (a/an)
+│       ├── cases.go            # Case transformations
+│       ├── punctuation.go      # Punctuation spacing
+│       └── quotes.go           # Quote pairing
 ├── docs/
 │   ├── PROJECT-ANALYSIS.md      # Requirements analysis
 │   ├── GOLDEN-TEST-SET.md       # Test cases
 │   ├── AGILE-ROADMAP.md         # Sprint overview
-│   └── sprints/
+│   └── sprints/                 # Sprint documentation
 │       ├── SPRINT-0-INFRASTRUCTURE.md
 │       ├── SPRINT-1-CORE-TRANSFORMATIONS.md
 │       ├── SPRINT-2-ADVANCED-TRANSFORMATIONS.md
