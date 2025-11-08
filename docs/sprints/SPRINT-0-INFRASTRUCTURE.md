@@ -32,7 +32,7 @@ Infrastructure task - manual verification:
 ### Implementation Goal (TDD - Green Phase)
 Initialize project structure:
 - Run `go mod init go-reloaded`
-- Create directories: `tests/` and `testdata/`
+- Create directories: `tests/` 
 - Create empty `main.go` with package declaration
 - Verify `go build` succeeds
 
