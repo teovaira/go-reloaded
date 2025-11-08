@@ -4,6 +4,10 @@ import "strings"
 
 // Tokenize splits the text into words while keeping punctuation
 // as separate tokens and preserving markers like (up, 2).
+//
+// Example:
+//   Input:  "hello world (up, 2) !"
+//   Output: ["hello", "world", "(up, 2)", "!"]
 func Tokenize(text string) []string {
 	var tokens []string
 	current := ""

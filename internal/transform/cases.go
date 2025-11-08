@@ -23,7 +23,7 @@ func ParseMarkerCount(token string) (int, bool) {
 	return n, true
 }
 
-// Capitalize turns the first letter uppercase and the rest lowercase
+// Capitalize turns the first letter uppercase and the rest lowercase.
 func Capitalize(word string) string {
 	if word == "" {
 		return word
@@ -38,7 +38,7 @@ func Capitalize(word string) string {
 
 // ApplyCaseRules detects (up), (low) and (cap) markers
 // and applies the appropriate transformation to the
-// previous one or multiple words. Markers are removed from the final output
+// previous one or multiple words. Markers are removed from the final output.
 func ApplyCaseRules(words []string) []string {
 	var result []string
 
