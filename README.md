@@ -110,7 +110,13 @@ go-reloaded/
 │       ├── SPRINT-2-ADVANCED-TRANSFORMATIONS.md
 │       └── SPRINT-3-INTEGRATION.md
 └── tests/
-    └── testdata/                # Golden test files
+    ├── golden.txt               # Golden test input (12 cases)
+    ├── golden_expected.txt      # Golden test expected output
+    ├── sample.txt               # Extended test input
+    ├── result_expected.txt      # Extended test expected output
+    ├── result.txt               # Actual test output
+    ├── run_tests.sh             # Test runner script
+    └── README_tests.md          # Test documentation
 ```
 
 ---
