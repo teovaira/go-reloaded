@@ -25,7 +25,7 @@ This roadmap references:
 
 **Document Flow:**
 ```
-Analysis → Planning (you are here) → Implementation → Validation
+Analysis → Planning → Implementation → Validation
 ```
 
 ---
