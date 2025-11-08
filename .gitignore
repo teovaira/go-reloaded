@@ -1,18 +1,21 @@
-*.exe
+# IDE and AI assistants
+.claude/
 .amazonq/
+
+# Go build artifacts
+*.exe
 *.out
-.claude
+go-reloaded
+
+# Go cache
+.gocache/
+tests/.gocache/
+
+# Test files (excluded from repo)
 integration_test.go
 tokenizer_test.go
 transform_test.go
 
-# Go build cache
-.gocache/
-tests/.gocache/
-
-# Build artifacts/binaries
-go-reloaded
-
-# Generated outputs
+# Generated output files
 result.txt
 output.txt
