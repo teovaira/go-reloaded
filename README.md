@@ -87,19 +87,22 @@ go-reloaded/
 ├── LICENSE                      # MIT License
 ├── go.mod                       # Go module file
 ├── main.go                      # Entry point
+├── integration_test.go          # Integration tests (gitignored)
 ├── internal/                    # Internal packages
 │   ├── fileio/
 │   │   └── fileio.go           # File I/O operations
 │   ├── pipeline/
 │   │   └── pipeline.go         # Main processing pipeline
 │   ├── tokenizer/
-│   │   └── tokenizer.go        # Text tokenization
+│   │   ├── tokenizer.go        # Text tokenization
+│   │   └── tokenizer_test.go   # Unit tests (gitignored)
 │   └── transform/
 │       ├── numbers.go          # Hex/bin conversions
 │       ├── articles.go         # Article correction (a/an)
 │       ├── cases.go            # Case transformations
 │       ├── punctuation.go      # Punctuation spacing
-│       └── quotes.go           # Quote pairing
+│       ├── quotes.go           # Quote pairing
+│       └── transform_test.go   # Unit tests (gitignored)
 ├── docs/
 │   ├── PROJECT-ANALYSIS.md      # Requirements analysis
 │   ├── GOLDEN-TEST-SET.md       # Test cases
