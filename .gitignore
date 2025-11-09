@@ -5,6 +5,7 @@
 # Go build artifacts
 *.exe
 *.out
+*.html
 go-reloaded
 
 # Test files (excluded from repo)
