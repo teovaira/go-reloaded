@@ -13,11 +13,11 @@ import (
 func ProcessText(text string) string {
 	// Preserve newlines by processing line-by-line
 	lines := strings.Split(text, "\n")
-	out := make([]string, 0, len(lines))
+	output := make([]string, 0, len(lines))
 
 	for _, line := range lines {
 		if line == "" {
-			out = append(out, "")
+			output = append(output, "")
 			continue
 		}
 		// Tokenize and apply token-level transforms
@@ -27,11 +27,11 @@ func ProcessText(text string) string {
 		words = transform.ApplyCaseRules(words)
 
 		// Rebuild the line
-		rebuilt := strings.Join(words, " ")
+		rebuiltLine := strings.Join(words, " ")
 		// Final spacing and quotes per line
-		rebuilt = transform.ApplyPunctuationRules(rebuilt)
-		rebuilt = transform.FixQuotes(rebuilt)
-		out = append(out, rebuilt)
+		rebuiltLine = transform.ApplyPunctuationRules(rebuiltLine)
+		rebuiltLine = transform.FixQuotes(rebuiltLine)
+		output = append(output, rebuiltLine)
 	}
-	return strings.Join(out, "\n")
+	return strings.Join(output, "\n")
 }
