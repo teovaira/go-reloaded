@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>fileio: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">go-reloaded/internal/fileio/fileio.go (0.0%)</option>
+				
+				<option value="file1">go-reloaded/internal/pipeline/pipeline.go (100.0%)</option>
+				
+				<option value="file2">go-reloaded/internal/tokenizer/tokenizer.go (92.3%)</option>
+				
+				<option value="file3">go-reloaded/internal/transform/articles.go (90.9%)</option>
+				
+				<option value="file4">go-reloaded/internal/transform/cases.go (96.1%)</option>
+				
+				<option value="file5">go-reloaded/internal/transform/numbers.go (100.0%)</option>
+				
+				<option value="file6">go-reloaded/internal/transform/punctuation.go (100.0%)</option>
+				
+				<option value="file7">go-reloaded/internal/transform/quotes.go (89.6%)</option>
+				
+				<option value="file8">go-reloaded/main.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package fileio
+
+import "os"
+
+// ReadInputFile opens the given file and returns its content as a string
+func ReadInputFile(path string) (string, error) <span class="cov0" title="0">{
+        data, err := os.ReadFile(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">return string(data), nil</span> // convert []byte to string and return it
+}
+
+// WriteOutputFile writes the transformed content after all transformation rules applied into a file at the given path
+func WriteOutputFile(path, content string) error <span class="cov0" title="0">{
+        err := os.WriteFile(path, []byte(content), 0o644)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package pipeline
+
+import (
+        "strings"
+
+        "go-reloaded/internal/tokenizer"
+        "go-reloaded/internal/transform"
+)
+
+// ProcessText is the main text-processing pipeline.
+// It processes text line-by-line to preserve newlines while applying
+// all transformation stages in the correct order.
+func ProcessText(text string) string <span class="cov8" title="1">{
+        // Preserve newlines by processing line-by-line
+        lines := strings.Split(text, "\n")
+        out := make([]string, 0, len(lines))
+
+        for _, line := range lines </span><span class="cov8" title="1">{
+                if line == "" </span><span class="cov8" title="1">{
+                        out = append(out, "")
+                        continue</span>
+                }
+                // Tokenize and apply token-level transforms
+                <span class="cov8" title="1">words := tokenizer.Tokenize(line)
+                words = transform.ConvertHexAndBin(words)
+                words = transform.FixArticles(words)
+                words = transform.ApplyCaseRules(words)
+
+                // Rebuild the line
+                rebuilt := strings.Join(words, " ")
+                // Final spacing and quotes per line
+                rebuilt = transform.ApplyPunctuationRules(rebuilt)
+                rebuilt = transform.FixQuotes(rebuilt)
+                out = append(out, rebuilt)</span>
+        }
+        <span class="cov8" title="1">return strings.Join(out, "\n")</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package tokenizer
+
+import "strings"
+
+// Tokenize splits the text into words while keeping punctuation
+// as separate tokens and preserving markers like (up, 2).
+//
+// Example:
+//
+//        Input:  "hello world (up, 2) !"
+//        Output: ["hello", "world", "(up, 2)", "!"]
+func Tokenize(text string) []string <span class="cov8" title="1">{
+        var tokens []string
+        current := ""
+        inParentheses := false // new flag to check if we are inside commands
+
+        for _, r := range text </span><span class="cov8" title="1">{
+                ch := string(r)
+
+                switch </span>{
+                case r == '(':<span class="cov8" title="1">
+                        if current != "" </span><span class="cov0" title="0">{
+                                tokens = append(tokens, current)
+                                current = ""
+                        }</span>
+                        <span class="cov8" title="1">inParentheses = true
+                        current += ch</span>
+
+                case r == ')':<span class="cov8" title="1">
+                        current += ch
+                        inParentheses = false
+                        tokens = append(tokens, current)
+                        current = ""</span>
+
+                case strings.ContainsRune(" \n\t", r) &amp;&amp; !inParentheses:<span class="cov8" title="1">
+                        if current != "" </span><span class="cov8" title="1">{
+                                tokens = append(tokens, current)
+                                current = ""
+                        }</span>
+
+                case strings.ContainsRune(".,!?;:", r) &amp;&amp; !inParentheses:<span class="cov8" title="1">
+                        if current != "" </span><span class="cov8" title="1">{
+                                tokens = append(tokens, current)
+                                current = ""
+                        }</span>
+                        <span class="cov8" title="1">tokens = append(tokens, ch)</span>
+
+                default:<span class="cov8" title="1">
+                        current += ch</span>
+                }
+        }
+        <span class="cov8" title="1">if current != "" </span><span class="cov8" title="1">{
+                tokens = append(tokens, current)
+        }</span>
+        <span class="cov8" title="1">return tokens</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package transform
+
+import "strings"
+
+// FixArticles checks every occurrence of "a" in the text and changes it
+// to "an" if the next word starts with a vowel (a, e, i, o, u) or 'h'.
+// The comparison is case-insensitive, and the loop stops before the last
+// word to prevent out-of-range errors.
+func FixArticles(words []string) []string <span class="cov8" title="1">{
+        for i := 0; i &lt; len(words)-1; i++ </span><span class="cov8" title="1">{ // stop before the last word
+                currentLower := strings.ToLower(words[i])
+                if currentLower != "a" </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+
+                // Peek next token and ignore leading quotes when deciding
+                <span class="cov8" title="1">nextLower := strings.ToLower(words[i+1])
+                // Strip ASCII quotes at the start (common in our tokenization)
+                trimmed := strings.TrimLeft(nextLower, "'\"")
+                if trimmed == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">if strings.HasPrefix(trimmed, "a") ||
+                        strings.HasPrefix(trimmed, "e") ||
+                        strings.HasPrefix(trimmed, "i") ||
+                        strings.HasPrefix(trimmed, "o") ||
+                        strings.HasPrefix(trimmed, "u") ||
+                        strings.HasPrefix(trimmed, "h") </span><span class="cov8" title="1">{
+                        words[i] = "an"
+                }</span>
+        }
+        <span class="cov8" title="1">return words</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package transform
+
+import (
+        "strconv"
+        "strings"
+        "unicode"
+)
+
+// ParseMarkerCount extracts the count from markers like (up, 3) or (low, 2).
+// Returns (n, true) when a valid positive integer is present; otherwise (0, false).
+// Invalid counts (negative, zero, or malformed) return (0, false).
+func ParseMarkerCount(token string) (int, bool) <span class="cov8" title="1">{
+        token = strings.TrimSuffix(strings.TrimPrefix(token, "("), ")")
+        parts := strings.Split(token, ",")
+        if len(parts) &lt; 2 </span><span class="cov8" title="1">{
+                return 0, false
+        }</span>
+        <span class="cov8" title="1">numStr := strings.TrimSpace(parts[1])
+        n, err := strconv.Atoi(numStr)
+        if err != nil || n &lt;= 0 </span><span class="cov8" title="1">{
+                return 0, false
+        }</span>
+        <span class="cov8" title="1">return n, true</span>
+}
+
+// Capitalize turns the first letter uppercase and the rest lowercase.
+func Capitalize(word string) string <span class="cov8" title="1">{
+        if word == "" </span><span class="cov8" title="1">{
+                return word
+        }</span>
+        <span class="cov8" title="1">runes := []rune(word)
+        runes[0] = unicode.ToUpper(runes[0])
+        for i := 1; i &lt; len(runes); i++ </span><span class="cov8" title="1">{
+                runes[i] = unicode.ToLower(runes[i])
+        }</span>
+        <span class="cov8" title="1">return string(runes)</span>
+}
+
+// ApplyCaseRules detects (up), (low) and (cap) markers
+// and applies the appropriate transformation to the
+// previous one or multiple words. Markers are removed from the final output.
+func ApplyCaseRules(words []string) []string <span class="cov8" title="1">{
+        var result []string
+
+        for i := 0; i &lt; len(words); i++ </span><span class="cov8" title="1">{
+                word := words[i]
+
+                // Handle (up, n)
+                if strings.HasPrefix(word, "(up,") &amp;&amp; strings.HasSuffix(word, ")") </span><span class="cov8" title="1">{
+                        if n, ok := ParseMarkerCount(word); ok </span><span class="cov8" title="1">{
+                                for j := 1; j &lt;= n &amp;&amp; len(result)-j &gt;= 0; j++ </span><span class="cov8" title="1">{
+                                        result[len(result)-j] = strings.ToUpper(result[len(result)-j])
+                                }</span>
+                                // consume marker
+                                <span class="cov8" title="1">continue</span>
+                        }
+                        // invalid marker: keep as literal
+                        <span class="cov8" title="1">result = append(result, word)
+                        continue</span>
+                }
+
+                // Handle (low, n)
+                <span class="cov8" title="1">if strings.HasPrefix(word, "(low,") &amp;&amp; strings.HasSuffix(word, ")") </span><span class="cov8" title="1">{
+                        if n, ok := ParseMarkerCount(word); ok </span><span class="cov8" title="1">{
+                                for j := 1; j &lt;= n &amp;&amp; len(result)-j &gt;= 0; j++ </span><span class="cov8" title="1">{
+                                        result[len(result)-j] = strings.ToLower(result[len(result)-j])
+                                }</span>
+                                <span class="cov8" title="1">continue</span>
+                        }
+                        <span class="cov8" title="1">result = append(result, word)
+                        continue</span>
+                }
+
+                // Handle (cap, n)
+                <span class="cov8" title="1">if strings.HasPrefix(word, "(cap,") &amp;&amp; strings.HasSuffix(word, ")") </span><span class="cov8" title="1">{
+                        if n, ok := ParseMarkerCount(word); ok </span><span class="cov8" title="1">{
+                                for j := 1; j &lt;= n &amp;&amp; len(result)-j &gt;= 0; j++ </span><span class="cov8" title="1">{
+                                        result[len(result)-j] = Capitalize(result[len(result)-j])
+                                }</span>
+                                <span class="cov8" title="1">continue</span>
+                        }
+                        <span class="cov0" title="0">result = append(result, word)
+                        continue</span>
+                }
+
+                // Handle (up)
+                <span class="cov8" title="1">if word == "(up)" &amp;&amp; len(result) &gt; 0 </span><span class="cov8" title="1">{
+                        result[len(result)-1] = strings.ToUpper(result[len(result)-1])
+                        continue</span>
+                }
+
+                // Handle (low)
+                <span class="cov8" title="1">if word == "(low)" &amp;&amp; len(result) &gt; 0 </span><span class="cov8" title="1">{
+                        result[len(result)-1] = strings.ToLower(result[len(result)-1])
+                        continue</span>
+                }
+
+                // Handle (cap)
+                <span class="cov8" title="1">if word == "(cap)" &amp;&amp; len(result) &gt; 0 </span><span class="cov8" title="1">{
+                        result[len(result)-1] = Capitalize(result[len(result)-1])
+                        continue</span>
+                }
+                <span class="cov8" title="1">result = append(result, word)</span>
+        }
+        <span class="cov8" title="1">return result</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package transform
+
+import (
+        "fmt"
+        "strconv"
+        "strings"
+)
+
+const (
+        // BaseHexadecimal is the numeric base for hexadecimal numbers
+        BaseHexadecimal = 16
+        // BaseBinary is the numeric base for binary numbers
+        BaseBinary = 2
+)
+
+// ConvertHexAndBin scans the tokenized text for patterns like "&lt;number&gt; (hex)" or "&lt;number&gt; (bin)"
+// and replaces the numeric word before them with its decimal equivalent.
+//
+// It supports punctuation directly following the markers, such as (hex). or (bin),
+// since punctuation normalization guarantees they are separate tokens or adjacent punctuation.
+//
+// Example:
+// Input tokens: ["1E", "(hex)", "files", "were", "added", "."]
+// Output:       ["30", "files", "were", "added", "."]
+//
+// Input tokens: ["1111", "(bin),", "add", "1E", "(hex)."]
+// Output:       ["15", "add", "30", "."]
+func ConvertHexAndBin(words []string) []string <span class="cov8" title="1">{
+        var result []string
+
+        for i := 0; i &lt; len(words); i++ </span><span class="cov8" title="1">{
+                word := words[i]
+
+                // Defensive check: look ahead to the next token if available
+                if i+1 &lt; len(words) </span><span class="cov8" title="1">{
+                        // Trim possible trailing punctuation from the next token
+                        next := strings.Trim(words[i+1], ".,!?;:")
+
+                        switch next </span>{
+                        case "(hex)":<span class="cov8" title="1">
+                                // Attempt hexadecimal conversion
+                                value, err := strconv.ParseInt(word, BaseHexadecimal, 64)
+                                if err == nil </span><span class="cov8" title="1">{
+                                        result = append(result, fmt.Sprintf("%d", value))
+                                }</span> else<span class="cov8" title="1"> {
+                                        result = append(result, word) // keep original if not a valid hex number
+                                }</span>
+                                <span class="cov8" title="1">i++ // skip the "(hex)" token
+                                continue</span>
+
+                        case "(bin)":<span class="cov8" title="1">
+                                // Attempt binary conversion
+                                value, err := strconv.ParseInt(word, BaseBinary, 64)
+                                if err == nil </span><span class="cov8" title="1">{
+                                        result = append(result, fmt.Sprintf("%d", value))
+                                }</span> else<span class="cov8" title="1"> {
+                                        result = append(result, word)
+                                }</span>
+                                <span class="cov8" title="1">i++ // skip the "(bin)" token
+                                continue</span>
+                        }
+                }
+
+                // Normal word (not followed by a marker)
+                <span class="cov8" title="1">result = append(result, word)</span>
+        }
+
+        <span class="cov8" title="1">return result</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package transform
+
+import (
+        "bytes"
+        "strings"
+        "unicode"
+)
+
+// ApplyPunctuationRules fixes spacing for . , ! ? : ; according to the spec.
+//
+// Rules implemented:
+// 1) Remove spaces before punctuation (. , ! ? : ;)
+// 2) Add one space after punctuation if next is a letter, digit, quote, or '('
+// 3) Treat multi-punctuation groups (..., !!, !?, etc.) as one unit
+// 4) Never add or remove spaces around parentheses except when '(' follows punctuation
+//
+// Example:
+// Input:  "I was sitting over there ,and then BAMM !!"
+// Output: "I was sitting over there, and then BAMM!!"
+func ApplyPunctuationRules(text string) string <span class="cov8" title="1">{
+        var b bytes.Buffer
+        runes := []rune(text)
+        length := len(runes)
+
+        for i := 0; i &lt; length; i++ </span><span class="cov8" title="1">{
+                r := runes[i]
+
+                // --- Rule 1: remove spaces before punctuation
+                if unicode.IsSpace(r) &amp;&amp; i+1 &lt; length </span><span class="cov8" title="1">{
+                        next := runes[i+1]
+                        if strings.ContainsRune(".,!?;:", next) </span><span class="cov8" title="1">{
+                                continue</span> // skip writing this space
+                        }
+                }
+
+                // --- Write current rune
+                <span class="cov8" title="1">b.WriteString(string(r))
+
+                // --- Rule 3: detect punctuation groups (like ... or !?)
+                if strings.ContainsRune(".,!?;:", r) </span><span class="cov8" title="1">{
+                        // Peek ahead to see if next is punctuation too
+                        if i+1 &lt; length &amp;&amp; strings.ContainsRune(".,!?;:", runes[i+1]) </span><span class="cov8" title="1">{
+                                // Don't insert space yet — still inside group
+                                continue</span>
+                        }
+
+                        // --- Rule 2: add a space after punctuation if next is word, quote, or '('
+                        <span class="cov8" title="1">if i+1 &lt; length </span><span class="cov8" title="1">{
+                                next := runes[i+1]
+                                if unicode.IsLetter(next) || unicode.IsDigit(next) || next == '"' || next == '\'' || next == '(' </span><span class="cov8" title="1">{
+                                        b.WriteByte(' ')
+                                }</span>
+                        }
+                }
+        }
+
+        // Preserve line breaks while normalizing spaces within each line.
+        // We avoid a global strings.Fields to keep '\n' structure intact.
+        <span class="cov8" title="1">built := b.String()
+        lines := strings.Split(built, "\n")
+        for i := range lines </span><span class="cov8" title="1">{
+                // Collapse runs of whitespace on each line to single spaces
+                // (leading/trailing spaces on the line are trimmed by Fields).
+                lines[i] = strings.Join(strings.Fields(lines[i]), " ")
+        }</span>
+        <span class="cov8" title="1">out := strings.Join(lines, "\n")
+        return strings.TrimSpace(out)</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package transform
+
+import (
+        "bytes"
+        "strings"
+        "unicode"
+        "unicode/utf8"
+)
+
+// FixQuotes cleans spacing around both "double" and "single" quotation marks
+//
+// Rules implemented:
+// 1) Keep one space before an opening quote if there was any space before it.
+//   - If multiple spaces exist before the opening quote, collapse them to exactly one.
+//   - We do not delete the single space before the opening quote.
+//
+// 2) Remove spaces immediately inside quotes:
+//   - After opening quote.
+//   - Before closing quote.
+//
+// 3) After a closing quote, insert one space if the next rune is a letter, a digit or '('.
+//   - Do not insert a space if the next rune is punctuation (.,!?:;) or whitespace
+//
+// 4) Handles both " and ' quotes, and only closes with the same quote type opened
+// 5) Unicode safe: uses utf8.DecodeLastRuneInString + Builder. for in-place trimming.
+func FixQuotes(text string) string <span class="cov8" title="1">{
+        var b bytes.Buffer // Efficient builder for UTF-8 bytes
+        inQuotes := false
+        var quoteType rune // Tracks opening quote type
+
+        runes := []rune(text)
+
+        for i := 0; i &lt; len(runes); i++ </span><span class="cov8" title="1">{
+                ch := runes[i]
+
+                // Treat apostrophes inside words as literal, not as quotes
+                if (ch == '\'' || ch == '’') &amp;&amp; i-1 &gt;= 0 &amp;&amp; i+1 &lt; len(runes) &amp;&amp;
+                        (unicode.IsLetter(runes[i-1]) || unicode.IsDigit(runes[i-1])) &amp;&amp;
+                        (unicode.IsLetter(runes[i+1]) || unicode.IsDigit(runes[i+1])) </span><span class="cov8" title="1">{
+                        b.WriteRune(ch)
+                        continue</span>
+                }
+
+                // Handle quote characters (straight and curly)
+                <span class="cov8" title="1">if ch == '"' || ch == '\'' || ch == '“' || ch == '”' || ch == '‘' || ch == '’' </span><span class="cov8" title="1">{
+                        // Normalize curly quotes to straight for consistency in spacing rules
+                        isSingle := (ch == '\'' || ch == '‘' || ch == '’')
+                        normalized := ch
+                        if ch == '“' || ch == '”' </span><span class="cov0" title="0">{
+                                normalized = '"'
+                        }</span>
+                        <span class="cov8" title="1">if ch == '‘' || ch == '’' </span><span class="cov0" title="0">{
+                                normalized = '\''
+                        }</span>
+
+                        <span class="cov8" title="1">if !inQuotes </span><span class="cov8" title="1">{
+                                // Collapse multiple spaces before opening quote to exactly one
+                                if b.Len() &gt; 0 </span><span class="cov8" title="1">{
+                                        trailingSpaces := 0
+                                        for b.Len() &gt; 0 </span><span class="cov8" title="1">{
+                                                r, size := utf8.DecodeLastRune(b.Bytes())
+                                                if size == 0 || !unicode.IsSpace(r) </span><span class="cov8" title="1">{
+                                                        break</span>
+                                                }
+                                                <span class="cov8" title="1">trailingSpaces++
+                                                b.Truncate(b.Len() - size)</span>
+                                        }
+                                        <span class="cov8" title="1">if trailingSpaces &gt; 0 </span><span class="cov8" title="1">{
+                                                b.WriteRune(' ')
+                                        }</span>
+                                }
+
+                                <span class="cov8" title="1">b.WriteRune(normalized)
+                                inQuotes = true
+                                quoteType = normalized
+
+                                // Remove spaces immediately after opening quote
+                                for i+1 &lt; len(runes) &amp;&amp; unicode.IsSpace(runes[i+1]) </span><span class="cov8" title="1">{
+                                        i++
+                                }</span>
+                                <span class="cov8" title="1">continue</span>
+                        }
+
+                        // Closing quote (match type)
+                        <span class="cov8" title="1">if inQuotes &amp;&amp; ((isSingle &amp;&amp; quoteType == '\'') || (!isSingle &amp;&amp; quoteType == '"')) </span><span class="cov8" title="1">{
+                                // Remove spaces before closing quote
+                                for b.Len() &gt; 0 </span><span class="cov8" title="1">{
+                                        r, size := utf8.DecodeLastRune(b.Bytes())
+                                        if size == 0 || !unicode.IsSpace(r) </span><span class="cov8" title="1">{
+                                                break</span>
+                                        }
+                                        <span class="cov8" title="1">b.Truncate(b.Len() - size)</span>
+                                }
+
+                                <span class="cov8" title="1">b.WriteRune(quoteType)
+                                inQuotes = false
+
+                                // Add a space after closing quote if followed by a letter/digit or '('
+                                if i+1 &lt; len(runes) </span><span class="cov0" title="0">{
+                                        next := runes[i+1]
+                                        if unicode.IsLetter(next) || unicode.IsDigit(next) || next == '(' </span><span class="cov0" title="0">{
+                                                b.WriteRune(' ')
+                                        }</span>
+                                }
+                                <span class="cov8" title="1">continue</span>
+                        }
+                }
+
+                // Default: copy character as-is
+                <span class="cov8" title="1">b.WriteRune(ch)</span>
+        }
+        <span class="cov8" title="1">return strings.TrimSpace(b.String())</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">// -----------------------------------------------
+// Project: go-reloaded
+// File: main.go
+// Author: Theodore Vairaktaris
+// Description: Entry point for the go-reloaded project.
+// This program reads a text file, applies transformations,
+// and writes the modified content into another file.
+// -----------------------------------------------
+
+package main
+
+import (
+        "fmt"
+        "os"
+
+        "go-reloaded/internal/fileio"
+        "go-reloaded/internal/pipeline"
+)
+
+func main() <span class="cov0" title="0">{
+        // validation for correct number arguments
+        if len(os.Args) != 3 </span><span class="cov0" title="0">{
+                fmt.Println("Usage: go run . &lt;input.txt&gt; &lt;output.txt&gt;")
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">inputFile := os.Args[1]
+        outputFile := os.Args[2]
+
+        inputText, err := fileio.ReadInputFile(inputFile)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error in reading the input file:", err)
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">outputText := pipeline.ProcessText(inputText)
+
+        err = fileio.WriteOutputFile(outputFile, outputText)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error in writing the output file:", err)
+                os.Exit(1)
+        }</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
