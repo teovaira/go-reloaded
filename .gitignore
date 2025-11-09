@@ -16,3 +16,4 @@ internal/transform/transform_test.go
 # Generated output files
 result.txt
 output.txt
+tests/golden_result.txt
