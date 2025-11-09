@@ -38,26 +38,38 @@ func ConvertHexAndBin(words []string) []string {
 
 			switch next {
 			case "(hex)":
+				// Strip quotes for parsing, but preserve them in output
+				cleanWord := strings.Trim(word, "\"'")
+				prefix := strings.TrimSuffix(word, cleanWord)
+				suffix := strings.TrimPrefix(word, prefix+cleanWord)
+
 				// Attempt hexadecimal conversion
-				value, err := strconv.ParseInt(word, BaseHexadecimal, 64)
+				value, err := strconv.ParseInt(cleanWord, BaseHexadecimal, 64)
 				if err == nil {
-					result = append(result, fmt.Sprintf("%d", value))
-				} else {
-					result = append(result, word) // keep original if not a valid hex number
+					// Successfully converted - preserve any quotes around the converted number
+					result = append(result, prefix+fmt.Sprintf("%d", value)+suffix)
+					i++ // skip the "(hex)" token
+					continue
 				}
-				i++ // skip the "(hex)" token
-				continue
+				// If conversion failed, keep both word and marker unchanged
+				// Fall through to append word normally (marker will be added in next iteration)
 
 			case "(bin)":
+				// Strip quotes for parsing, but preserve them in output
+				cleanWord := strings.Trim(word, "\"'")
+				prefix := strings.TrimSuffix(word, cleanWord)
+				suffix := strings.TrimPrefix(word, prefix+cleanWord)
+
 				// Attempt binary conversion
-				value, err := strconv.ParseInt(word, BaseBinary, 64)
+				value, err := strconv.ParseInt(cleanWord, BaseBinary, 64)
 				if err == nil {
-					result = append(result, fmt.Sprintf("%d", value))
-				} else {
-					result = append(result, word)
+					// Successfully converted - preserve any quotes around the converted number
+					result = append(result, prefix+fmt.Sprintf("%d", value)+suffix)
+					i++ // skip the "(bin)" token
+					continue
 				}
-				i++ // skip the "(bin)" token
-				continue
+				// If conversion failed, keep both word and marker unchanged
+				// Fall through to append word normally (marker will be added in next iteration)
 			}
 		}
 
