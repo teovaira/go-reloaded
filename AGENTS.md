@@ -15,15 +15,16 @@ This project is **Implementation Complete**. All core functionality has been imp
 ## 📚 Key Documents
 
 **Start here:**
-1. `docs/PROJECT-ANALYSIS.md` - Problem breakdown, architecture choice, edge cases
-2. `docs/GOLDEN-TEST-SET.md` - 12 test cases that must pass
-3. `docs/AGILE-ROADMAP.md` - Sprint overview and workflow
+1. [PROJECT-ANALYSIS.md](docs/PROJECT-ANALYSIS.md) - Problem breakdown, architecture choice, edge cases
+2. [GOLDEN-TEST-SET.md](docs/GOLDEN-TEST-SET.md) - 12 test cases that must pass
+3. [AGILE-ROADMAP.md](docs/AGILE-ROADMAP.md) - Sprint overview and workflow
+4. [README.md](README.md) - Project overview and usage
 
 **Task details:**
-- `docs/sprints/SPRINT-0-INFRASTRUCTURE.md` - Tasks 001-005
-- `docs/sprints/SPRINT-1-CORE-TRANSFORMATIONS.md` - Tasks 006-014
-- `docs/sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md` - Tasks 015-019
-- `docs/sprints/SPRINT-3-INTEGRATION.md` - Tasks 020-025
+- [SPRINT-0-INFRASTRUCTURE.md](docs/sprints/SPRINT-0-INFRASTRUCTURE.md) - Tasks 001-005
+- [SPRINT-1-CORE-TRANSFORMATIONS.md](docs/sprints/SPRINT-1-CORE-TRANSFORMATIONS.md) - Tasks 006-014
+- [SPRINT-2-ADVANCED-TRANSFORMATIONS.md](docs/sprints/SPRINT-2-ADVANCED-TRANSFORMATIONS.md) - Tasks 015-019
+- [SPRINT-3-INTEGRATION.md](docs/sprints/SPRINT-3-INTEGRATION.md) - Tasks 020-025
 
 ---
 
@@ -57,10 +58,10 @@ go test -v
 
 **Daily workflow:**
 ```bash
-go test -v          # Run tests
-go test -cover      # Check coverage
-go fmt ./...        # Format code
-go vet ./...        # Check for issues
+go test -v ./...        # Run all tests (all packages)
+go test -cover ./...    # Check coverage (all packages)
+go fmt ./...            # Format code
+go vet ./...            # Check for issues
 ```
 
 **Running the program:**
