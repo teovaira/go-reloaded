@@ -203,7 +203,7 @@ She whispered?!
 ---
 Please convert 15, add 30, then say "DONE"!
 ---
-"1E!" shouted the STUDENT.
+"30!" shouted the STUDENT.
 ---
 The code printed 5, which equals "5"!
 ---
@@ -220,7 +220,7 @@ He yelled: "Stop!"
 Once upon a time, "a honest Apple" fell from an ugly tree near an elephant.
 The Owl watching from ABOVE SHOUTED: "look out, below!"
 Then the cat whispered "it's fine, we will fix It".
-In the distance, someone murmured, "1A plus 5 EQUALS MAGIC".
+In the distance, someone murmured, "26 plus 5 EQUALS MAGIC".
 Suddenly, a storm began; "the sky was blue" and the wind shouted, "STOP"!
 Meanwhile, the old man said, 'this is (up, ) nonsense', and wrote It Down.
 When all was calm, the apple smiled, saying, "don’t worry, Everything’s fine."
@@ -228,5 +228,5 @@ At that exact moment, 15 transformed into 21, proving that even code can tell a 
 ---
 Then the professor said, "It works... Amazing!" while students shouted "yes!!!".
 Moments later, Go! appeared on the screen, followed by 15, 30, and "done!".
-Even punctuation like "Wait?!" was now handled gracefully, proving that and logic worked under stress.
+Even punctuation like "Wait?!" was now handled gracefully, proving that (bin) and (hex) logic worked under stress.
 ---
