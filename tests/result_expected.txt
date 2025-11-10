@@ -215,7 +215,23 @@ He yelled: "Stop!"
 ---
 
 # ──────────────────────────────
-# 7. Final paragraph stress test
+# 7. Edge cases: Punctuation as word boundaries
+# ──────────────────────────────
+hel! lo
+---
+hello! world
+---
+example. com
+---
+hello!!!
+---
+3. 14
+---
+hello, world! test
+---
+
+# ──────────────────────────────
+# 8. Final paragraph stress test
 # ──────────────────────────────
 Once upon a time, "a honest Apple" fell from an ugly tree near an elephant.
 The Owl watching from ABOVE SHOUTED: "look out, below!"
