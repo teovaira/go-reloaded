@@ -33,8 +33,8 @@ func ConvertHexAndBin(words []string) []string {
 
 		// Defensive check: look ahead to the next token if available
 		if i+1 < len(words) {
-			// Trim possible trailing punctuation from the next token
-			next := strings.Trim(words[i+1], ".,!?;:")
+			// Trim possible trailing punctuation and quotes from the next token
+			next := strings.Trim(words[i+1], ".,!?;:\"'")
 
 			switch next {
 			case "(hex)":
