@@ -9,6 +9,27 @@ import "strings"
 //
 //	Input:  "hello world (up, 2) !"
 //	Output: ["hello", "world", "(up, 2)", "!"]
+//
+// Design Decision: Punctuation as Word Boundaries
+//
+// This tokenizer treats all punctuation marks (.,!?;:) as word boundaries,
+// meaning they always separate tokens. This design choice ensures:
+//
+//  1. Consistency: Punctuation always splits tokens, regardless of position
+//  2. Predictability: Simple rule with no special cases
+//  3. Compatibility: Works with ApplyPunctuationRules which attaches
+//     punctuation to previous words
+//
+// Edge Cases:
+//
+//   - "hello!world" → ["hello", "!", "world"] (splits even without spaces)
+//   - "hel!lo" → ["hel", "!", "lo"] (punctuation in middle splits word)
+//   - "example.com" → ["example", ".", "com"] (URLs get split)
+//   - "3.14" → ["3", ".", "14"] (decimals get split)
+//
+// This behavior is intentional. Natural language text rarely has punctuation
+// in the middle of words, and this approach keeps the tokenizer simple while
+// handling the specification's requirements for normal cases.
 func Tokenize(text string) []string {
 	var tokens []string
 	current := ""
