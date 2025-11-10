@@ -23,13 +23,13 @@ There is an apple and a
 ---
 There is an apple and an Hut.
 ---
-an orange fell on an elephant.
+An orange fell on an elephant.
 ---
-an honest man told an ugly truth.
+An honest man told an ugly truth.
 ---
-an apple fell from the tree.
+An apple fell from the tree.
 ---
-"A apple" fell from the tree.
+"An apple" fell from the tree.
 ---
 There is an house and an owl next to an elephant.
 ---
@@ -183,9 +183,9 @@ this is (up, ) wrong
 ---
 Please convert 15, add 30, and then shout "RESULT" immediately!
 ---
-The Quick Brown Fox jumped over "a angry dog", then yelled "wow, WHAT A DAY!" and ran.
+The Quick Brown Fox jumped over "an angry dog", then yelled "wow, WHAT A DAY!" and ran.
 ---
-an House on AN HILL stood beside "another An Apple" and SHOUTED!
+An House on AN HILL stood beside "another An Apple" and SHOUTED!
 ---
 It was cold, "she said," but Bright. "
 ---
@@ -233,7 +233,7 @@ hello, world! test
 # ──────────────────────────────
 # 8. Final paragraph stress test
 # ──────────────────────────────
-Once upon a time, "a honest Apple" fell from an ugly tree near an elephant.
+Once upon a time, "an honest Apple" fell from an ugly tree near an elephant.
 The Owl watching from ABOVE SHOUTED: "look out, below!"
 Then the cat whispered "it's fine, we will fix It".
 In the distance, someone murmured, "26 plus 5 EQUALS MAGIC".
