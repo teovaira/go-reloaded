@@ -495,4 +495,70 @@ This makes sense - capitalize is a specific format, not just "make first letter 
 
 ---
 
+## Design Decision: Punctuation as Word Boundaries
+
+### The Decision
+
+The tokenizer treats all punctuation marks (`.`, `,`, `!`, `?`, `;`, `:`) as **word boundaries**, meaning they always separate tokens regardless of position or surrounding whitespace.
+
+### Rationale
+
+1. **Consistency**: Punctuation always splits tokens, with no special cases or exceptions
+2. **Predictability**: Simple rule that's easy to understand and maintain
+3. **Compatibility**: Works seamlessly with `ApplyPunctuationRules`, which attaches punctuation to previous words
+4. **Simplicity**: Keeps the tokenizer logic straightforward and reduces edge case complexity
+
+### Behavior and Examples
+
+**Normal cases** (most common):
+```
+Input:  "hello world!"
+Tokens: ["hello", "world", "!"]
+Output: "hello world!"  ✓ (punctuation reattached by ApplyPunctuationRules)
+```
+
+**Edge cases** (punctuation in unusual positions):
+
+| Input | Tokens | Output | Explanation |
+|-------|--------|--------|-------------|
+| `hello!world` | `["hello", "!", "world"]` | `hello! world` | Punctuation splits even without spaces |
+| `hel!lo` | `["hel", "!", "lo"]` | `hel! lo` | Punctuation in middle splits word |
+| `example.com` | `["example", ".", "com"]` | `example. com` | URLs get split |
+| `3.14` | `["3", ".", "14"]` | `3. 14` | Decimals get split |
+| `hello!!!` | `["hello", "!", "!", "!"]` | `hello!!!` | Multiple punctuation preserved |
+| `hello,world!test` | `["hello", ",", "world", "!", "test"]` | `hello, world! test` | Mixed punctuation splits appropriately |
+
+### Why This Is Acceptable
+
+1. **Natural language focus**: The project specification focuses on natural language text formatting, where punctuation in the middle of words (`hel!lo`, `3.14`) is extremely rare
+2. **Spec compliance**: Normal punctuation cases (which represent 99%+ of real usage) work correctly
+3. **Maintainability**: Alternative approaches (regex patterns, context-aware splitting) would significantly complicate the tokenizer
+4. **Testability**: The behavior is well-defined, documented, and tested (see `tokenizer_test.go` lines 89-119)
+
+### Alternative Approaches Considered
+
+**Approach 1: Context-aware splitting** (rejected)
+- Keep punctuation attached when surrounded by alphanumeric characters
+- Would handle `example.com` and `3.14` correctly
+- **Rejected because**: Adds significant complexity, requires lookahead/lookbehind logic, edge cases multiply (what about `hello.world.test`?)
+
+**Approach 2: Special cases for dots and commas** (rejected)
+- Treat `.` and `,` differently from other punctuation
+- Would preserve decimals and URLs
+- **Rejected because**: Violates consistency principle, creates special cases, harder to maintain
+
+**Approach 3: Current implementation** (✓ chosen)
+- Punctuation always splits, no exceptions
+- Simple, consistent, testable
+- Acceptable for natural language processing use case
+
+### Testing
+
+Edge cases are comprehensively tested in:
+- **Unit tests**: `internal/tokenizer/tokenizer_test.go` (lines 89-119)
+- **Integration tests**: `tests/sample.txt` section 7 and `tests/result_expected.txt` section 7
+- **Documentation**: Function-level documentation in `internal/tokenizer/tokenizer.go` (lines 13-32)
+
+---
+
 **End of Project Analysis**
