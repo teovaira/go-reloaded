@@ -8,7 +8,8 @@ import "strings"
 // word to prevent out-of-range errors.
 func FixArticles(words []string) []string {
 	for i := 0; i < len(words)-1; i++ { // stop before the last word
-		currentLower := strings.ToLower(words[i])
+		// Strip leading quotes to check if this is an article
+		currentLower := strings.ToLower(strings.TrimLeft(words[i], "\"'"))
 		if currentLower != "a" {
 			continue
 		}
@@ -21,13 +22,20 @@ func FixArticles(words []string) []string {
 			continue
 		}
 
+		// HasPrefix handles empty strings by returning false, no panic.
 		if strings.HasPrefix(trimmed, "a") ||
 			strings.HasPrefix(trimmed, "e") ||
 			strings.HasPrefix(trimmed, "i") ||
 			strings.HasPrefix(trimmed, "o") ||
 			strings.HasPrefix(trimmed, "u") ||
 			strings.HasPrefix(trimmed, "h") {
-			words[i] = "an"
+			// Preserve original case and any leading quotes
+			// Replace "a" or "A" with "an" or "An" while keeping quotes
+			if strings.Contains(words[i], "A") {
+				words[i] = strings.Replace(words[i], "A", "An", 1)
+			} else {
+				words[i] = strings.Replace(words[i], "a", "an", 1)
+			}
 		}
 	}
 	return words
