@@ -9,7 +9,7 @@ import "strings"
 func FixArticles(words []string) []string {
 	for i := 0; i < len(words)-1; i++ { // stop before the last word
 		// Strip leading quotes to check if this is an article
-		currentLower := strings.ToLower(strings.TrimLeft(words[i], "\"'"))
+		currentLower := strings.ToLower(strings.Trim(words[i], "\"'"))
 		if currentLower != "a" {
 			continue
 		}
